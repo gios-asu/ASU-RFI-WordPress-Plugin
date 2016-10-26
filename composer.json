@@ -8,6 +8,9 @@
       "email": "ryan.raub@gmail.com"
     }
   ],
+  "autoload": {
+    "classmap" : [ "src/" ]
+  },
   "repositories": [
     {
       "url": "https://github.com/gios-asu/nectary.git",
