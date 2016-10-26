@@ -1,0 +1,32 @@
+{
+  "name": "gios-asu/asu-rfi-wordpress-plugin",
+  "description": "ASU Request For Information WordPress Plugin to submit requests into Salesforce.",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Ryan Raub",
+      "email": "ryan.raub@gmail.com"
+    }
+  ],
+  "repositories": [
+    {
+      "url": "https://github.com/gios-asu/nectary.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/gios-asu/honeycomb.git",
+      "type": "git"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.5",
+    "gios-asu/nectary": "^0.1.9",
+    "gios-asu/honeycomb": "^1.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8",
+    "satooshi/php-coveralls": "^1.0",
+    "squizlabs/php_codesniffer": "^2.7"
+  }
+}
