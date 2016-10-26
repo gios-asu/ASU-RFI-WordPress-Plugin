@@ -2,7 +2,9 @@
 namespace ASURFIWordPress\Shortcodes;
 use Honeycomb\Wordpress\Hook;
 
-
+/** ASU_RFI_Form_Shortcodes
+ * provides the shortcode [asu-rfi-form]
+ */
 class ASU_RFI_Form_Shortcodes extends Hook {
 
   public function __construct() {
@@ -14,7 +16,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   }
 
   public function asu_rfi_form( $atts, $content = '' ) {
-    return "Hello from the ASU RFI Form";
+    return 'Hello from the ASU RFI Form';
   }
-  
+
 }

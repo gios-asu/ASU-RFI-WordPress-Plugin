@@ -25,3 +25,4 @@ $registry = new \Honeycomb\Services\Register();
 $registry->register(
     require __DIR__ . '/src/registry/wordpress-registry.php'
 );
+
