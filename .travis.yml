@@ -33,4 +33,4 @@ before_script:
 
 script: 
   - phpunit  --coverage-clover coverage/clover.xml
-  - ./vendor/bin/phpcs --standard=ruleset.xml src 
+  - ./vendor/bin/phpcs --standard=.phpcs-ruleset.xml src 
