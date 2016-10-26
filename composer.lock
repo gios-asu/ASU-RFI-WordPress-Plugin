@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "215e87fa0f2e408d089642aaabcd005b",
-    "content-hash": "566b8a015607e39a82dfb56a7f285626",
+    "hash": "85635173a1649afbef99ad18eb68512c",
+    "content-hash": "ef856f634f6d96e324025063353469e4",
     "packages": [
         {
             "name": "coduo/php-humanizer",
@@ -2024,6 +2024,42 @@
                 "validate"
             ],
             "time": "2016-08-09 15:02:57"
+        },
+        {
+            "name": "wp-coding-standards/wpcs",
+            "version": "0.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git",
+                "reference": "b39490465f6fd7375743a395019cd597e12119c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress-Coding-Standards/WordPress-Coding-Standards/zipball/b39490465f6fd7375743a395019cd597e12119c9",
+                "reference": "b39490465f6fd7375743a395019cd597e12119c9",
+                "shasum": ""
+            },
+            "require": {
+                "squizlabs/php_codesniffer": "^2.6"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/graphs/contributors"
+                }
+            ],
+            "description": "PHP_CodeSniffer rules (sniffs) to enforce WordPress coding conventions",
+            "keywords": [
+                "phpcs",
+                "standards",
+                "wordpress"
+            ],
+            "time": "2016-08-29 20:04:47"
         }
     ],
     "aliases": [],
@@ -2032,7 +2068,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.3"
+        "php": ">=5.5"
     },
     "platform-dev": []
 }
