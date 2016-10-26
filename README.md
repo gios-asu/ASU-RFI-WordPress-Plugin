@@ -1,4 +1,6 @@
 # ASU-RFI-WordPress-Plugin
+[![Build Status](https://travis-ci.org/gios-asu/ASU-RFI-WordPress-Plugin.svg?branch=develop)](https://travis-ci.org/gios-asu/ASU-RFI-WordPress-Plugin)
+
 WordPress plugin to submit Request For Information requests into Salesforce
 
 # Requirements
@@ -8,5 +10,5 @@ WordPress plugin to submit Request For Information requests into Salesforce
 
 # Shortcodes
 
-* [asu-rfi-form] - For displaying an Request For Information form.
+* `[asu-rfi-form]` - For displaying an Request For Information form.
 
