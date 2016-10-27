@@ -12,8 +12,8 @@ use ASURFIWordPress\Services\AddressService;
  */
 class AddressTestService extends WP_UnitTestCase {
 
-  function test_getCountries() {
-    $countries = AddressService::getCountries();
+  function test_get_countries() {
+    $countries = AddressService::get_countries();
     $this->assertInternalType('array', $countries);
     $this->assertNotEmpty($countries);
     $this->assertGreaterThan(200, count($countries), 'there should be more than 200 countries'); 
