@@ -9,6 +9,9 @@ use PhpXmlRpc\Client;
 
 /** ASUDegreeService
  * Providing data from ASU Degrees
+ * XML RPC API Docs: http://www.public.asu.edu/~lcabre/javadocs/dsws/
+ * @group services
+ * @group asu-degree-service
  */
 class ASUDegreeService {
   const ASU_DIRECTORY_XML_RPC_SERVER = 'https://webapp4.asu.edu/programs/XmlRpcServer';
@@ -28,7 +31,7 @@ class ASUDegreeService {
    *  "2109" for Winter, 2010 
    *  "2177" for Summer, 2017
    */
-  public function get_enrollment_terms() {
+  public function get_available_enrollment_terms() {
     $semseter_names = array(
       1 => 'Spring',
       4 => 'Summer',
@@ -47,7 +50,7 @@ class ASUDegreeService {
           'name' => $semseter_name.' '.$year);
       }
     }
-    
+
     return $terms;
   }
 
@@ -57,6 +60,29 @@ class ASUDegreeService {
    */
   private function encode_year_and_semester( $year, $semester_number ) {
     return substr($year,0,1).substr($year,2,2).$semester_number;
+  }
+
+  // public function get_campuses() {
+  //   return array(
+  //     'TEMPE' => 'Tempe, Az',
+  //     'PLOY' => '',
+  //     'TDPHX' => 'Down Town Phoenix',
+
+  //     String campus = "TEMPE" String campus = "POLY" String campus = "DTPHX" String campus = "WEST" String campus = "ONLNE"
+  //     );
+  // }
+
+  public function get_programs( $college ) {
+
+  }
+
+  public function get_colleges() {
+    $request = new Request('eAdvisorDSFind.listColleges');
+    $response = $this->client->send($request);
+    return array_map( function( $item ) {
+        return array( 'name' => $item->me['string'] );
+    }, $response->val->me['array'] );
+
   }
 
 }
