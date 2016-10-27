@@ -17,8 +17,22 @@ class AddressTestService extends WP_UnitTestCase {
     $this->assertInternalType('array', $countries);
     $this->assertNotEmpty($countries);
     $this->assertGreaterThan(200, count($countries), 'there should be more than 200 countries'); 
-    $this->assertNotNull($countries[0]['name']);
-    $this->assertNotNull($countries[0]['code']);
+
+    $first_country = current($countries);
+    $this->assertNotNull($first_country['name']);
+    $this->assertNotNull($first_country['code']);
   }
+
+  function test_get_states() {
+    $states = AddressService::get_states( 'US' );
+    $this->assertInternalType('array', $states);
+    $this->assertNotEmpty($states);
+    $this->assertGreaterThan(50, count($states), 'there should be more than 50 US states'); 
+
+    $first_state = current($states);
+    $this->assertNotNull($first_state['name']);
+    $this->assertNotNull($first_state['code']);
+  }
+
 
 }
