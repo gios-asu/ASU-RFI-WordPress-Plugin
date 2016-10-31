@@ -31,7 +31,7 @@ class AddressService {
 
   public static function get_states( $country_code ) {
     $loader = new Loader();
-    $subdivisions = $loader->loadSubdivisions($country_code);
+    $subdivisions = $loader->loadSubdivisions( $country_code );
 
     return array_map( function( $item ) {
         return array( 'name' => $item->getName(), 'code' => $item->getCode() );
