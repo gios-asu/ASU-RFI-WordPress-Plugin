@@ -23,7 +23,9 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   public function asu_rfi_form( $atts, $content = '' ) {
      $response = view('rfi-form.form')->add_data(
         array(
-          'redirect_back_url' => get_permalink()
+          'redirect_back_url' => get_permalink(),
+          'source_id' => 87,
+          'testmode' => 'Test',
         )
     )->build();
     return $response->content;

@@ -1,6 +1,6 @@
 <form method="post" action="https://requestinfo-qa.asu.edu/routing_form_post">
-<ul>
-      <li>First: <input type="text" name="firstName" value="foo">*</li>
+  <ul>
+      <li>First: <input type="text" name="firstName" value="{{ first_name }}">*</li>
       <li>Last: <input type="text" name="lastName">*</li>
       <li>Birthdate: <input type="text" name="birthdate"></li>
       <li>Email: <input type="text" name="emailAddress">*</li>
@@ -16,16 +16,15 @@
       <li>projectedEnrollment: <input type="text" name="projectedEnrollment">*</li>
       <li>collegeOfInterest: <input type="text" name="collegeOfInterest">*</li>
       <li>poiCode: <input type="text" name="poiCode">*</li>
-      <li>source_id: <input type="text" name="source_id" value="86"></li>
       <li>online: <input type="text" name="online"></li>
       <li>trackingId: <input type="text" name="trackingId"></li>
       <li>questions: <input type="text" name="questions"></li>
       <li>degreeLevel: <input type="text" name="degreeLevel" value="ugrad"></li>
 
-      <input type="hidden" name="testmode" value="Test">
+      <input type="hidden" name="testmode" value="{{ testmode }}">
       <input type="hidden" name="formUrl" value="{{ redirect_back_url }}">
-      <input type="hidden" name="source_id" value="86">
-      
+      <input type="hidden" name="source_id" value="{{ source_id }}">
+
       <li><input type="submit" value="Submit"></li>
-</ul>
-    </form>
+  </ul>
+</form>
