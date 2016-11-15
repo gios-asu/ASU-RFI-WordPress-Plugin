@@ -6,9 +6,14 @@ use Honeycomb\Wordpress\Hook;
  * provides the shortcode [asu-rfi-form]
  */
 class ASU_RFI_Form_Shortcodes extends Hook {
+  private $path_to_views;
 
   public function __construct() {
     $this->define_hooks();
+    $this->path_to_views = __DIR__ . '/../views/';
+
+    $instance = \Nectary\Configuration::get_instance();
+    $instance->add( 'path_to_views', __DIR__ . '/../views/' );
   }
 
   public function define_hooks() {
@@ -16,7 +21,12 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   }
 
   public function asu_rfi_form( $atts, $content = '' ) {
-    return 'Hello from the ASU RFI Form';
+     $response = view('rfi-form.form')->add_data(
+        array(
+          'redirect_back_url' => get_permalink()
+        )
+    )->build();
+    return $response->content;
   }
 
 }
