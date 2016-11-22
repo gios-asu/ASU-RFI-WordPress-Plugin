@@ -17,7 +17,7 @@ class ShortCodesTest extends WP_UnitTestCase {
     $this->assertTrue( shortcode_exists( 'asu-rfi-form' ) );
   }
 
-  function test_shortcode_returns_something() {
+  function test_shortcode_returns_a_form() {
     $result = do_shortcode( '[asu-rfi-form]' );
     $this->assertContains('<form', $result);
   }
