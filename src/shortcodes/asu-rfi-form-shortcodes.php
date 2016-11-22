@@ -49,10 +49,11 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     wp_enqueue_style( $this->plugin_slug, $url_to_css_file, array(), $this->version );
   }
 
+  /**
+   * Handle the shortcode [asu-rfi-form]
+   */
   public function asu_rfi_form( $atts, $content = '' ) {
-
-    $response = view('rfi-form.form')->add_data(
-        array(
+    $view_data =  array(
           'redirect_back_url' => get_permalink(),
           'source_id' => 87,
           'testmode' => 'Test',
@@ -65,8 +66,21 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           //   'field_label' => 'First',
           //   'field_type' => 'text'),
           'student_types' => Services\StudentTypeService::get_student_types()
-        )
-      )->build();
+        );
+
+    $response_status_code = get_query_var('statusFlag');
+    if( $response_status_code ) {
+      $message = get_query_var('msg');
+      // we have submitted the request form and should display a success or error message 
+      if( '200' == $response_status_code ) {
+        $view_data['success_message'] = $message ? $message : 'Thank you for submitting';
+      } else  {
+        $view_data['error_message'] = $message ? $message : 'Something went wrong with your submission';
+        error_log('error submitting ASU RFI (code: '.$response_status_code.') :'.$message);
+      }
+    }
+
+    $response = view('rfi-form.form')->add_data($view_data )->build();
     return $response->content;
   }
 

@@ -1,3 +1,16 @@
+{{#if success_message }}
+  <div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ success_message }}
+  </div>
+{{/if}}
+{{#if error_message }}
+  <div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ error_message }}
+  </div>
+{{/if}}
+
 <form method="post" action="https://requestinfo-qa.asu.edu/routing_form_post" class="form-horizontal">
 
     <input type="hidden" name="degreeLevel" value="{{ degreeLevel }}">
