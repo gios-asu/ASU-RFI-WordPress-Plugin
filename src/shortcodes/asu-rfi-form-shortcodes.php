@@ -8,18 +8,29 @@ use Honeycomb\Wordpress\Hook;
 class ASU_RFI_Form_Shortcodes extends Hook {
   private $path_to_views;
 
-  public function __construct() {
-    $this->define_hooks();
+  public function __construct( $version ) {
+    parent::__construct( 'asu-rfi-form-shortcodes', $version );
     $this->path_to_views = __DIR__ . '/../views/';
+    $this->define_hooks();
 
     $instance = \Nectary\Configuration::get_instance();
     $instance->add( 'path_to_views', __DIR__ . '/../views/' );
   }
 
   public function define_hooks() {
+    $this->add_action( 'wp_enqueue_scripts', $this, 'wp_enqueue_scripts' );
     $this->add_shortcode( 'asu-rfi-form', $this, 'asu_rfi_form' );
     // TODO: add url variables 'statusFlag' and 'msg' eg: ?statusFlag=200&msg=Sucessful%20submission
 
+  }
+
+  /**
+   * Enqueue the CSS
+   * Hooks onto `wp_enqueue_scritps`.
+   */
+  public function wp_enqueue_scripts() {
+    $url_to_css_file = plugin_dir_url( dirname( dirname( __FILE__ ) ) ) . 'assets/css/asu-rfi.css';
+    wp_enqueue_style( $this->plugin_slug, $url_to_css_file, array(), $this->version );
   }
 
   public function asu_rfi_form( $atts, $content = '' ) {
