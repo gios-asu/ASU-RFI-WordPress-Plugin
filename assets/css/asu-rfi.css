@@ -2,4 +2,7 @@
   display: none;
 }
 
-/*.required { }*/
+.required label:after { 
+  content: " (required)";
+  color: red;
+}
