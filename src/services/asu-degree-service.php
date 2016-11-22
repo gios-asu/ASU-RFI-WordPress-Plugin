@@ -6,6 +6,12 @@ use PhpXmlRpc\Value;
 use PhpXmlRpc\Request;
 use PhpXmlRpc\Client;
 
+// Avoid direct calls to this file
+if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
+  header( 'Status: 403 Forbidden' );
+  header( 'HTTP/1.1 403 Forbidden' );
+  exit();
+}
 
 /** ASUDegreeService
  * Providing data from ASU Degrees

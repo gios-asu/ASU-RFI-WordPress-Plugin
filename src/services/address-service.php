@@ -4,6 +4,12 @@ namespace ASURFIWordPress\Services;
 
 use Phine\Country\Loader\Loader;
 
+// Avoid direct calls to this file
+if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
+  header( 'Status: 403 Forbidden' );
+  header( 'HTTP/1.1 403 Forbidden' );
+  exit();
+}
 
 /** AddressService
  * Providing data on postal addresses to aide in Form building.

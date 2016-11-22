@@ -1,6 +1,14 @@
 <?php
 namespace ASURFIWordPress\Shortcodes;
 use Honeycomb\Wordpress\Hook;
+use ASURFIWordPress\Services as Services;
+
+// Avoid direct calls to this file
+if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
+  header( 'Status: 403 Forbidden' );
+  header( 'HTTP/1.1 403 Forbidden' );
+  exit();
+}
 
 /** ASU_RFI_Form_Shortcodes
  * provides the shortcode [asu-rfi-form]
@@ -8,8 +16,8 @@ use Honeycomb\Wordpress\Hook;
 class ASU_RFI_Form_Shortcodes extends Hook {
   private $path_to_views;
 
-  public function __construct( $version ) {
-    parent::__construct( 'asu-rfi-form-shortcodes', $version );
+  public function __construct() {
+    parent::__construct( 'asu-rfi-form-shortcodes', ASU_RFI_WORDPRESS_PLUGIN_VERSION );
     $this->path_to_views = __DIR__ . '/../views/';
     $this->define_hooks();
 
@@ -20,8 +28,16 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   public function define_hooks() {
     $this->add_action( 'wp_enqueue_scripts', $this, 'wp_enqueue_scripts' );
     $this->add_shortcode( 'asu-rfi-form', $this, 'asu_rfi_form' );
-    // TODO: add url variables 'statusFlag' and 'msg' eg: ?statusFlag=200&msg=Sucessful%20submission
+    $this->add_action( 'init', $this, 'setup_rewrites' );
+  }
 
+  /** Set up any url rewrites:
+   * WordPress requires that you tell it that you are using
+   * additional parameters.
+   */
+  public function setup_rewrites() {
+    add_rewrite_tag( '%statusFlag%' , '([^&]+)' );
+    add_rewrite_tag( '%msg%' , '([^&]+)' );
   }
 
   /**
@@ -34,7 +50,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   }
 
   public function asu_rfi_form( $atts, $content = '' ) {
-     $response = view('rfi-form.form')->add_data(
+
+    $response = view('rfi-form.form')->add_data(
         array(
           'redirect_back_url' => get_permalink(),
           'source_id' => 87,
@@ -47,16 +64,9 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           //   'field_name' => 'firstName',
           //   'field_label' => 'First',
           //   'field_type' => 'text'),
-          'student_types' => array(
-            array('value' => 'Freshman', 'label' => 'Undergraduate Freshman'),
-            array('value' => 'Transfer', 'label' => 'Undergraduate Transfer'),
-            array('value' => 'Masters', 'label' => 'Graduate Masters'),
-            array('value' => 'Doctoral', 'label' => 'Graduate Doctoral'),
-            array('value' => 'cert', 'label' => 'Graduate Certificate'),
-            array('value' => 'nd', 'label' => 'Graduate Non-degree')
-          )
+          'student_types' => Services\StudentTypeService::get_student_types()
         )
-    )->build();
+      )->build();
     return $response->content;
   }
 
