@@ -11,7 +11,7 @@
   </div>
 {{/if}}
 
-<form method="post" action="https://requestinfo-qa.asu.edu/routing_form_post" class="form-horizontal">
+<form method="post" action="{{ form_endpoint }}" class="form-horizontal">
 
     <input type="hidden" name="degreeLevel" value="{{ degreeLevel }}">
     <input type="hidden" name="testmode" value="{{ testmode }}">

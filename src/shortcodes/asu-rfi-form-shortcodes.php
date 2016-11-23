@@ -54,6 +54,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    */
   public function asu_rfi_form( $atts, $content = '' ) {
     $view_data =  array(
+          'form_endpoint' => 'https://requestinfo-qa.asu.edu/routing_form_post', // could aslo be requestinfo.asu.edu for prod
           'redirect_back_url' => get_permalink(),
           'source_id' => 87,
           'testmode' => 'Test',
