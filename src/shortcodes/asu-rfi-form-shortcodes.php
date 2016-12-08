@@ -62,8 +62,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    * Handle the shortcode [asu-rfi-form]
    *   attributes:
    *     type = 'full' or leave blank for the default simple form
-   *     degreeLevel = 'ugrad' or 'grad' Default is 'ugrad'
-   *     testmode = 'test' or leave blank for the default production
+   *     degree_level = 'ugrad' or 'grad' Default is 'ugrad'
+   *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting 
    */
   public function asu_rfi_form( $atts, $content = '' ) {
@@ -78,11 +78,11 @@ class ASU_RFI_Form_Shortcodes extends Hook {
               )
           ),
           'testmode' => 'Prod', // default to production mode
-          'degreeLevel' => 'ugrad', // or 'grad'
+          'degreeLevel' => 'ugrad', // default to und
           'student_types' => Services\StudentTypeService::get_student_types()
         );
 
-    if( isset( $atts['testmode'] ) && 'test' == $atts['testmode'] ) {
+    if( isset( $atts['test_mode'] ) && 0 === strcasecmp('test', $atts['test_mode'] ) ) {
       $view_data['testmode'] = 'Test';
     }
 
@@ -91,6 +91,13 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       $view_data['source_id'] = intval($atts['source_id']);
     }
 
+    // Use the attribute source id over the sites option 
+    if( isset( $atts['degree_level'] ) && (
+         0 === strcasecmp('grad', $atts['degree_level'] ) || 
+         0 === strcasecmp('graduate', $atts['degree_level'] ) ) ) {
+      $view_data['degreeLevel'] = 'grad';
+      error_log("graduate level engage!");
+    }
 
     $view_data = $this->look_for_a_submission_response( $view_data );
 
