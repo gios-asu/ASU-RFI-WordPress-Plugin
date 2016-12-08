@@ -38,83 +38,30 @@
         </div>
       </div>
       <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="birthdate">Birthdate</label>
-        <div class="col-sm-9">
-          <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ email }}" placeholder="YYYY-MM-DD"> {{!-- TODO: polyfil date picker --}}
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="countryOfCitizenship">Country Of Citizenship</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="countryOfCitizenship" name="countryOfCitizenship" value="{{ countryOfCitizenship }}">
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="veteranStatus">US Military/Veteran Status</label>
-        <div class="col-sm-9">
-          <select name="veteranStatus" id="veteranStatus" class="form-select">
-            <option value="" selected="selected">- None -</option>
-            <option value="member">I am a service member or a veteran</option>
-            <option value="dependent">I am a spouse or dependent of a service member or a veteran</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="countryOfResidence">Country Of Residence</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="countryOfResidence" name="countryOfResidence" value="{{ countryOfResidence }}">
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="addressLine1">Address</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="addressLine1" name="addressLine1" value="{{ addressLine1 }}" maxlength="50">
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="city">City</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="city" name="city" value="{{ city }}" maxlength="40">
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="state">State</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="state" name="state" value="{{ state }}" maxlength="40">
-        </div>
-      </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="zip">Zip Code</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="zip" name="zip" value="{{ zip }}" maxlength="20">
-        </div>
-      </div>
-      <div class="form-group has-feedback">
         <label class="control-label col-sm-3" for="phoneNumber">Phone</label>
         <div class="col-sm-9">
           <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ phoneNumber }}" placeholder='(123) 456-7890' maxlength="30">
         </div>
       </div>
-{{!-- Not a documented feild???      --}}
-      <!-- <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="currentPrevStudent">Current or Previous Student?</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="currentPrevStudent" name="currentPrevStudent" value="{{ currentPrevStudent }}">
-        </div>
-      </div> -->
       <div class="form-group has-feedback required">
+        <label class="control-label col-sm-3" for="question">Question?</label>
+        <div class="col-sm-9">
+          <textarea type="text" class="form-control" id="question" name="question" maxlength="500"></textarea>
+        </div>
+      </div>
+      <div class="form-group has-feedback">
         <label class="control-label col-sm-3" for="projectedEnrollment">Projected Enrollment Term</label>
         <div class="col-sm-9">
           <input type="text" class="form-control" id="projectedEnrollment" name="projectedEnrollment" value="{{ projectedEnrollment }}" placeholder=''> {{!-- TODO: needs to be a dropdown of peoplesoft codes --}}
         </div>
       </div>
-      <div class="form-group has-feedback required">
+      <div class="form-group has-feedback">
         <label class="control-label col-sm-3" for="collegeOfInterest">Program code</label>
         <div class="col-sm-9">
           <input type="text" class="form-control" id="collegeOfInterest" name="collegeOfInterest" value="{{ collegeOfInterest }}" placeholder='' maxlength="4"> {{!-- TODO: needs to be a dropdown of Degree codes (e.g. UGBA or GRHI ) --}}
         </div>
       </div>
-      <div class="form-group has-feedback required">
+      <div class="form-group has-feedback">
         <label class="control-label col-sm-3" for="poiCode">Plan code</label>
         <div class="col-sm-9">
           <input type="text" class="form-control" id="poiCode" name="poiCode" value="{{ poiCode }}" placeholder='' maxlength="10"> {{!-- TODO: needs to be a dropdown of valid plan codes, please check Degree Search for valid codes (e.g. BAFULLMBA) --}}
@@ -131,22 +78,8 @@
           </select>
         </div>
       </div>
-      <div class="form-group has-feedback">
-        <label class="control-label col-sm-3" for="online">Interested in taking Online courses?</label>
-        <div class="col-sm-9">
-          <select name="online" id="online" class="form-select">
-            <option value="" selected="selected">-</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group has-feedback required">
-        <label class="control-label col-sm-3" for="question">Additional Questions?</label>
-        <div class="col-sm-9">
-          <textarea type="text" class="form-control" id="question" name="question" maxlength="500"></textarea>
-        </div>
-      </div>
+      
+      
       <div class="form-group has-feedback">
         <label class="control-label col-sm-3" for="submit"></label>
         <div class="col-sm-9">

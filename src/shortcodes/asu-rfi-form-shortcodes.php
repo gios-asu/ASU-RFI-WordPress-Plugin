@@ -15,14 +15,13 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  */
 class ASU_RFI_Form_Shortcodes extends Hook {
   private $path_to_views;
+  const PRODUCTION_FORM_ENDPOINT  = 'https://requestinfo.asu.edu/routing_form_post';
+  const DEVELOPMENT_FORM_ENDPOINT = 'https://requestinfo-qa.asu.edu/routing_form_post';
 
   public function __construct() {
     parent::__construct( 'asu-rfi-form-shortcodes', ASU_RFI_WORDPRESS_PLUGIN_VERSION );
     $this->path_to_views = __DIR__ . '/../views/';
     $this->define_hooks();
-
-    $instance = \Nectary\Configuration::get_instance();
-    $instance->add( 'path_to_views', __DIR__ . '/../views/' );
   }
 
   public function define_hooks() {
@@ -30,6 +29,12 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     $this->add_shortcode( 'asu-rfi-form', $this, 'asu_rfi_form' );
     $this->add_action( 'init', $this, 'setup_rewrites' );
   }
+
+  private function view( $template_name ) {
+    return new \Nectary\Factories\View_Factory( $template_name, $this->path_to_views );
+  }
+
+
 
   /** Set up any url rewrites:
    * WordPress requires that you tell it that you are using
@@ -51,24 +56,43 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
   /**
    * Handle the shortcode [asu-rfi-form]
+   *   attributes:
+   *     type = 'full' or leave blank for the default simple form
+   *     degreeLevel = 'ugrad' or 'grad' Default is 'ugrad'
+   *     testmode = 'test' or leave blank for the default production
+   *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting 
    */
   public function asu_rfi_form( $atts, $content = '' ) {
     $view_data =  array(
-          'form_endpoint' => 'https://requestinfo-qa.asu.edu/routing_form_post', // could aslo be requestinfo.asu.edu for prod
+          'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
-          'source_id' => 87,
-          'testmode' => 'Test',
-          'first_name' => 'foo',
+          'source_id' => 87, // todo 
+          'testmode' => 'Prod', // default to prod
+          // 'first_name' => '',
           'degreeLevel' => 'ugrad', // or 'grad'
-          // 'first' => array(
-          //   'required' => true,
-          //   'placeholder' => 'First Name',
-          //   'field_name' => 'firstName',
-          //   'field_label' => 'First',
-          //   'field_type' => 'text'),
           'student_types' => Services\StudentTypeService::get_student_types()
         );
 
+    if( isset($atts['testmode']) && 'test' == $atts['testmode'] ) {
+      $view_data['testmode'] = 'Test';
+    }
+
+    $view_data = $this->look_for_a_submission_response( $view_data );
+
+    // Figure out what form to show
+    $view_name = 'rfi-form.simple-request-info-form';
+    if(isset($atts['type']) && $atts['type'] == 'full') {
+      $view_name = 'rfi-form.form';
+    }
+
+    $response = $this->view( $view_name )->add_data( $view_data )->build();
+    return $response->content;
+  }
+
+  /** look_for_a_submission_response() 
+   * Look at the statusFlag and msg query var and return a human readable message that can be used 
+   */
+  private function look_for_a_submission_response( $view_data ) {
     $response_status_code = get_query_var('statusFlag');
     if( $response_status_code ) {
       $message = get_query_var('msg');
@@ -76,13 +100,11 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       if( '200' == $response_status_code ) {
         $view_data['success_message'] = $message ? $message : 'Thank you for submitting';
       } else  {
+        error_log('error submitting ASU RFI (code: '.$response_status_code.') : '.$message);
         $view_data['error_message'] = $message ? $message : 'Something went wrong with your submission';
-        error_log('error submitting ASU RFI (code: '.$response_status_code.') :'.$message);
       }
     }
-
-    $response = view('rfi-form.form')->add_data($view_data )->build();
-    return $response->content;
+    return $view_data;
   }
 
 }
