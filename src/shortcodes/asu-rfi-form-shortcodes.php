@@ -2,6 +2,8 @@
 namespace ASURFIWordPress\Shortcodes;
 use Honeycomb\Wordpress\Hook;
 use ASURFIWordPress\Services as Services;
+use ASURFIWordPress\Admin as Admin;
+
 
 // Avoid direct calls to this file
 if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
@@ -14,6 +16,8 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * provides the shortcode [asu-rfi-form]
  */
 class ASU_RFI_Form_Shortcodes extends Hook {
+  use \ASURFIWordPress\Options_Handler_Trait;
+
   private $path_to_views;
   const PRODUCTION_FORM_ENDPOINT  = 'https://requestinfo.asu.edu/routing_form_post';
   const DEVELOPMENT_FORM_ENDPOINT = 'https://requestinfo-qa.asu.edu/routing_form_post';
@@ -66,20 +70,31 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     $view_data =  array(
           'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
-          'source_id' => 87, // todo 
-          'testmode' => 'Prod', // default to prod
-          // 'first_name' => '',
+          'source_id' =>  $value = $this->get_option_attribute_or_default(
+              array(
+                'name'      => Admin\ASU_RFI_Admin_Page::$options_name,
+                'attribute' => Admin\ASU_RFI_Admin_Page::$source_id_option_name,
+                'default'   => 0,
+              )
+          ),
+          'testmode' => 'Prod', // default to production mode
           'degreeLevel' => 'ugrad', // or 'grad'
           'student_types' => Services\StudentTypeService::get_student_types()
         );
 
-    if( isset($atts['testmode']) && 'test' == $atts['testmode'] ) {
+    if( isset( $atts['testmode'] ) && 'test' == $atts['testmode'] ) {
       $view_data['testmode'] = 'Test';
     }
 
+    // Use the attribute source id over the sites option 
+    if( isset( $atts['source_id'] ) ) {
+      $view_data['source_id'] = intval($atts['source_id']);
+    }
+
+
     $view_data = $this->look_for_a_submission_response( $view_data );
 
-    // Figure out what form to show
+    // Figure out which form to show
     $view_name = 'rfi-form.simple-request-info-form';
     if(isset($atts['type']) && $atts['type'] == 'full') {
       $view_name = 'rfi-form.form';

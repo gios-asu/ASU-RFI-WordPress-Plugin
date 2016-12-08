@@ -17,6 +17,7 @@ require_once $_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
+  require dirname( __FILE__ ) . '/data-loader.php';
 	require dirname( dirname( __FILE__ ) ) . '/asu-rfi-wordpress-plugin.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
