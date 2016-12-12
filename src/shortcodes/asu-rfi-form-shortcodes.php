@@ -121,10 +121,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       $message = get_query_var( 'msg' );
       // we have submitted the request form and should display a success or error message
       if ( 200 === intval( $response_status_code ) ) {
-        $view_data['success_message'] = $message ? $message : 'Thank you for submitting';
+        $view_data['success_message'] = 'Thank you for your submission!';
       } else {
         error_log( 'error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message );
-        $view_data['error_message'] = $message ? $message : 'Something went wrong with your submission';
+        $view_data['error_message'] = $message ? 'Error:'.$message : 'Something went wrong with your submission';
       }
     }
     return $view_data;
