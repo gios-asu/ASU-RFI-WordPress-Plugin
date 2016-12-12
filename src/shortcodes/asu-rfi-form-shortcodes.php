@@ -79,6 +79,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           ),
           'testmode' => 'Prod', // default to production mode
           'degreeLevel' => 'ugrad', // default to und
+          'enrollment_terms' => Services\ASUDegreeService::get_available_enrollment_terms(),
           'student_types' => Services\StudentTypeService::get_student_types(),
         );
 
