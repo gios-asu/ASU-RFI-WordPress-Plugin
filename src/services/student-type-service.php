@@ -22,7 +22,7 @@ class StudentTypeService {
         array( 'value' => 'Masters',  'label' => 'Graduate Masters' ),
         array( 'value' => 'Doctoral', 'label' => 'Graduate Doctoral' ),
         array( 'value' => 'cert',     'label' => 'Graduate Certificate' ),
-        array( 'value' => 'nd', '      label' => 'Graduate Non-degree' ),
+        array( 'value' => 'nd',       'label' => 'Graduate Non-degree' ),
       );
   }
 }
