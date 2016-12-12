@@ -38,7 +38,7 @@ class ShortCodesTest extends WP_UnitTestCase {
     $result = do_shortcode( '[asu-rfi-form]' );
     $this->assertContains('name="testmode" value="Prod"', $result);
   }
-  
+
   function test_shortcode_default_test_mode() {
     $result = do_shortcode( '[asu-rfi-form test_mode="test"]' );
     $this->assertContains('name="testmode" value="Test"', $result);

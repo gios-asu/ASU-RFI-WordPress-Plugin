@@ -64,13 +64,13 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     type = 'full' or leave blank for the default simple form
    *     degree_level = 'ugrad' or 'grad' Default is 'ugrad'
    *     test_mode = 'test' or leave blank for the default production
-   *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting 
+   *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
    */
   public function asu_rfi_form( $atts, $content = '' ) {
-    $view_data =  array(
+    $view_data = array(
           'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
-          'source_id' =>  $value = $this->get_option_attribute_or_default(
+          'source_id' => $value = $this->get_option_attribute_or_default(
               array(
                 'name'      => Admin\ASU_RFI_Admin_Page::$options_name,
                 'attribute' => Admin\ASU_RFI_Admin_Page::$source_id_option_name,
@@ -79,31 +79,31 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           ),
           'testmode' => 'Prod', // default to production mode
           'degreeLevel' => 'ugrad', // default to und
-          'student_types' => Services\StudentTypeService::get_student_types()
+          'student_types' => Services\StudentTypeService::get_student_types(),
         );
 
-    if( isset( $atts['test_mode'] ) && 0 === strcasecmp('test', $atts['test_mode'] ) ) {
+    if ( isset( $atts['test_mode'] ) && 0 === strcasecmp( 'test', $atts['test_mode'] ) ) {
       $view_data['testmode'] = 'Test';
     }
 
-    // Use the attribute source id over the sites option 
-    if( isset( $atts['source_id'] ) ) {
-      $view_data['source_id'] = intval($atts['source_id']);
+    // Use the attribute source id over the sites option
+    if ( isset( $atts['source_id'] ) ) {
+      $view_data['source_id'] = intval( $atts['source_id'] );
     }
 
-    // Use the attribute source id over the sites option 
-    if( isset( $atts['degree_level'] ) && (
-         0 === strcasecmp('grad', $atts['degree_level'] ) || 
-         0 === strcasecmp('graduate', $atts['degree_level'] ) ) ) {
+    // Use the attribute source id over the sites option
+    if ( isset( $atts['degree_level'] ) && (
+         0 === strcasecmp( 'grad', $atts['degree_level'] ) ||
+         0 === strcasecmp( 'graduate', $atts['degree_level'] ) ) ) {
       $view_data['degreeLevel'] = 'grad';
-      error_log("graduate level engage!");
+      error_log( 'graduate level engage!' );
     }
 
     $view_data = $this->look_for_a_submission_response( $view_data );
 
     // Figure out which form to show
     $view_name = 'rfi-form.simple-request-info-form';
-    if(isset($atts['type']) && $atts['type'] == 'full') {
+    if ( isset( $atts['type'] ) && 0 === strcasecmp( 'full', $atts['type'] ) ) {
       $view_name = 'rfi-form.form';
     }
 
@@ -111,18 +111,18 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     return $response->content;
   }
 
-  /** look_for_a_submission_response() 
-   * Look at the statusFlag and msg query var and return a human readable message that can be used 
+  /**
+   * Look at the statusFlag and msg query var and return a human readable message that can be used
    */
   private function look_for_a_submission_response( $view_data ) {
-    $response_status_code = get_query_var('statusFlag');
-    if( $response_status_code ) {
-      $message = get_query_var('msg');
-      // we have submitted the request form and should display a success or error message 
-      if( '200' == $response_status_code ) {
+    $response_status_code = get_query_var( 'statusFlag' );
+    if ( $response_status_code ) {
+      $message = get_query_var( 'msg' );
+      // we have submitted the request form and should display a success or error message
+      if ( 200 === intval( $response_status_code ) ) {
         $view_data['success_message'] = $message ? $message : 'Thank you for submitting';
-      } else  {
-        error_log('error submitting ASU RFI (code: '.$response_status_code.') : '.$message);
+      } else {
+        error_log( 'error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message );
         $view_data['error_message'] = $message ? $message : 'Something went wrong with your submission';
       }
     }

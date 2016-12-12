@@ -37,17 +37,9 @@ class ASU_RFI_Admin_Page extends Hook {
         )
     );
 
-    $this->load_dependencies();
     $this->define_hooks();
-
   }
 
-  /**
-   * @override
-   */
-  public function load_dependencies() {
-    // No dependencies for now
-  }
 
   /**
    * Add filters and actions
@@ -97,12 +89,12 @@ class ASU_RFI_Admin_Page extends Hook {
     $path = plugin_dir_url( __FILE__ );
 
     add_options_page(
-            'Settings Admin', 
-            'ASU RFI Form', 
-            $capability, 
-            self::$page_name, 
-            array( $this, 'render_admin_page' )
-        );
+        'Settings Admin',
+        'ASU RFI Form',
+        $capability,
+        self::$page_name,
+        array( $this, 'render_admin_page' )
+    );
 
   }
 
@@ -163,9 +155,9 @@ HTML;
    * Handle form submissions for validations
    */
   public function form_submit( $input ) {
-    // intval the source_id_option_name 
-    if(isset($input[self::$source_id_option_name])) {
-      $input[self::$source_id_option_name] = intval($input[self::$source_id_option_name]);
+    // intval the source_id_option_name
+    if ( isset( $input[ self::$source_id_option_name ] ) ) {
+      $input[ self::$source_id_option_name ] = intval( $input[ self::$source_id_option_name ] );
     }
     return $input;
   }
