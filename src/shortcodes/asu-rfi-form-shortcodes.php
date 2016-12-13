@@ -32,47 +32,47 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     $this->add_action( 'wp_enqueue_scripts', $this, 'wp_enqueue_scripts' );
     $this->add_shortcode( 'asu-rfi-form', $this, 'asu_rfi_form' );
     $this->add_action( 'init', $this, 'setup_rewrites' );
-    $this->add_action( 'wp', $this, 'add_http_cache_header' ); 
+    $this->add_action( 'wp', $this, 'add_http_cache_header' );
     $this->add_action( 'wp_head', $this, 'add_html_cache_header' );
   }
 
-  /** 
+  /**
    * Shorthand view wrapper to make rendering a view using nectary's factories easier in this plugin
    */
   private function view( $template_name ) {
     return new \Nectary\Factories\View_Factory( $template_name, $this->path_to_views );
   }
 
-  /** 
-   * Do not cache any sensitive form data - ASU Web Application Security Standards 
+  /**
+   * Do not cache any sensitive form data - ASU Web Application Security Standards
    */
   public function add_html_cache_header() {
-    if( $this->current_page_has_rfi_shortcode() ) {
+    if ( $this->current_page_has_rfi_shortcode() ) {
       echo '<meta http-equiv="Pragma" content="no-cache"/>
             <meta http-equiv="Expires" content="-1"/>
             <meta http-equiv="Cache-Control" content="no-store,no-cache" />';
     }
   }
 
-  /** 
-   * Do not cache any sensitive form data - ASU Web Application Security Standards 
+  /**
+   * Do not cache any sensitive form data - ASU Web Application Security Standards
    * This call back needs to hook after send_headers since we depend on the $post variable
    * and that is not populated at the time of send_headers.
    */
   public function add_http_cache_header() {
-    if( $this->current_page_has_rfi_shortcode() ) {
-      header('Cache-Control: no-Cache, no-Store, must-Revalidate');
-      header('Pragma: no-Cache');
-      header('Expires: 0');
+    if ( $this->current_page_has_rfi_shortcode() ) {
+      header( 'Cache-Control: no-Cache, no-Store, must-Revalidate' );
+      header( 'Pragma: no-Cache' );
+      header( 'Expires: 0' );
     }
   }
 
-  /** 
-   * return true if the page is using the [asu-rfi-form] shortcode, else false
+  /**
+   * Returns true if the page is using the [asu-rfi-form] shortcode, else false
    */
   private function current_page_has_rfi_shortcode() {
     global $post;
-    return ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'asu-rfi-form') );
+    return ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'asu-rfi-form' ) );
   }
 
   /** Set up any url rewrites:
@@ -89,7 +89,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    * Hooks onto `wp_enqueue_scritps`.
    */
   public function wp_enqueue_scripts() {
-    if( $this->current_page_has_rfi_shortcode() ) {
+    if ( $this->current_page_has_rfi_shortcode() ) {
       $url_to_css_file = plugin_dir_url( dirname( dirname( __FILE__ ) ) ) . 'assets/css/asu-rfi.css';
       wp_enqueue_style( $this->plugin_slug, $url_to_css_file, array(), $this->version );
     }
