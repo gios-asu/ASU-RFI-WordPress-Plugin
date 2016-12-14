@@ -26,6 +26,8 @@ matrix:
 
 install:
   - composer install --no-interaction --prefer-source
+  - npm install
+  - bower install
 
 before_script:
   - bash bin/install-wp-tests.sh wordpress_test_asu_rfi root '' localhost $WP_VERSION
