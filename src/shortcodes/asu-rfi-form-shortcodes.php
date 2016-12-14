@@ -85,13 +85,15 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   }
 
   /**
-   * Enqueue the CSS
-   * Hooks onto `wp_enqueue_scritps`.
+   * Enqueue CSS and JS
+   * Hooks onto `wp_enqueue_scripts`.
    */
   public function wp_enqueue_scripts() {
     if ( $this->current_page_has_rfi_shortcode() ) {
       $url_to_css_file = plugin_dir_url( dirname( dirname( __FILE__ ) ) ) . 'assets/css/asu-rfi.css';
       wp_enqueue_style( $this->plugin_slug, $url_to_css_file, array(), $this->version );
+      $url_to_jquery_validator = plugin_dir_url( dirname( dirname( __FILE__ ) ) ) . 'bower_components/jquery-validation/dist/jquery.validate.min.js';
+      wp_enqueue_script( 'jquery-validation', $url_to_jquery_validator, array( 'jquery' ), '1.16.0', false );
     }
   }
 
