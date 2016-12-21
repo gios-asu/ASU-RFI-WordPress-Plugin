@@ -1,0 +1,161 @@
+{{#if success_message }}
+  <div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ success_message }}
+  </div>
+{{/if}}
+{{#if error_message }}
+  <div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ error_message }}
+  </div>
+{{/if}}
+
+<form method="post" action="{{ form_endpoint }}" class="form-horizontal asu-rfi-form">
+
+    <input type="hidden" name="degreeLevel" value="{{ degreeLevel }}">
+    <input type="hidden" name="testmode" value="{{ testmode }}">
+    <input type="hidden" name="formUrl" value="{{ redirect_back_url }}">
+    <input type="hidden" name="source_id" value="{{ source_id }}">
+    <div class='honey'><input type="text" name="email"></div>
+
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="firstName">First Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="firstName" name="firstName" value="{{ first_name }}" placeholder="First Name" maxlength="40" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="lastName">Last Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="lastName" name="lastName" value="{{ last_name }}" placeholder="Last Name" maxlength="50" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="emailAddress">Email</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="emailAddress" name="emailAddress" value="{{ email }}" placeholder="Email@example.com" maxlength="50" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="birthdate">Birthdate</label>
+        <div class="col-sm-9">
+          <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ email }}" placeholder="YYYY-MM-DD"> {{!-- TODO: polyfil date picker --}}
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="countryOfCitizenship">Country Of Citizenship</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="countryOfCitizenship" name="countryOfCitizenship" value="{{ countryOfCitizenship }}">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="veteranStatus">US Military/Veteran Status</label>
+        <div class="col-sm-9">
+          <select name="veteranStatus" id="veteranStatus" class="form-select">
+            <option value="" selected="selected">- None -</option>
+            <option value="member">I am a service member or a veteran</option>
+            <option value="dependent">I am a spouse or dependent of a service member or a veteran</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="countryOfResidence">Country Of Residence</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="countryOfResidence" name="countryOfResidence" value="{{ countryOfResidence }}">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="addressLine1">Address</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="addressLine1" name="addressLine1" value="{{ addressLine1 }}" maxlength="50">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="city">City</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="city" name="city" value="{{ city }}" maxlength="40">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="state">State</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="state" name="state" value="{{ state }}" maxlength="40">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="zip">Zip Code</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="zip" name="zip" value="{{ zip }}" maxlength="20">
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="phoneNumber">Phone</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ phoneNumber }}" placeholder='(123) 456-7890' maxlength="30">
+        </div>
+      </div>
+{{!-- Not a documented feild???      --}}
+      <!-- <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="currentPrevStudent">Current or Previous Student?</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="currentPrevStudent" name="currentPrevStudent" value="{{ currentPrevStudent }}">
+        </div>
+      </div> -->
+      <div class="form-group optional has-feedback">
+        <label class="control-label col-sm-3" for="projectedEnrollment">Projected Enrollment Term</label>
+        <div class="col-sm-9">
+          <select name="projectedEnrollment" id="projectedEnrollment" class="form-select">
+            <option value="" selected="selected">-</option>
+            {{#each enrollment_terms }}
+              <option value="{{ value }}">{{ label }}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group has-feedback required">
+        <label class="control-label col-sm-3" for="collegeOfInterest">Program code</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="collegeOfInterest" name="collegeOfInterest" value="{{ collegeOfInterest }}" placeholder='' maxlength="4"> {{!-- TODO: needs to be a dropdown of Degree codes (e.g. UGBA or GRHI ) and a required field --}}
+        </div>
+      </div>
+      <div class="form-group has-feedback required">
+        <label class="control-label col-sm-3" for="poiCode">Plan code</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="poiCode" name="poiCode" value="{{ poiCode }}" placeholder='' maxlength="10"> {{!-- TODO: needs to be a dropdown of valid plan codes, please check Degree Search for valid codes (e.g. BAFULLMBA) --}}
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="StudentType">Student Type</label>
+        <div class="col-sm-9">
+          <select name="StudentType" id="StudentType" class="form-select">
+            <option value="" selected="selected">-</option>
+            {{#each student_types }}
+              <option value="{{ value }}">{{ label }}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="online">Interested in taking Online courses?</label>
+        <div class="col-sm-9">
+          <select name="online" id="online" class="form-select">
+            <option value="" selected="selected">-</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="question">Additional Questions?</label>
+        <div class="col-sm-9">
+          <textarea type="text" class="form-control" id="question" name="question" maxlength="500"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9">
+          <input type="submit" value="Submit" class="btn btn-default" aria-label="Submit Request">
+        </div>
+      </div>
+</form>

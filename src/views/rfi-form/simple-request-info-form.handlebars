@@ -1,0 +1,73 @@
+{{#if success_message }}
+  <div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ success_message }}
+  </div>
+{{/if}}
+{{#if error_message }}
+  <div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ error_message }}
+  </div>
+{{/if}}
+
+<form method="post" action="{{ form_endpoint }}" class="form-horizontal asu-rfi-form">
+
+    <input type="hidden" name="degreeLevel" value="{{ degreeLevel }}">
+    <input type="hidden" name="testmode" value="{{ testmode }}">
+    <input type="hidden" name="formUrl" value="{{ redirect_back_url }}">
+    <input type="hidden" name="source_id" value="{{ source_id }}">
+    <div class='honey'><input type="text" name="email"></div>
+
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="firstName">First Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="firstName" name="firstName" value="{{ first_name }}" placeholder="First Name" maxlength="40" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="lastName">Last Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="lastName" name="lastName" value="{{ last_name }}" placeholder="Last Name" maxlength="50" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="emailAddress">Email</label>
+        <div class="col-sm-9">
+          <input type="email" class="form-control" id="emailAddress" name="emailAddress" value="{{ email }}" placeholder="Email@example.com" maxlength="50" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group optional has-feedback">
+        <label class="control-label col-sm-3" for="phoneNumber">Phone</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ phoneNumber }}" placeholder='(123) 456-7890' maxlength="30">
+        </div>
+      </div>
+      <div class="form-group has-feedback required">
+        <label class="control-label col-sm-3" for="question">Question?</label>
+        <div class="col-sm-9">
+          <textarea type="text" class="form-control" id="question" name="question" maxlength="500" required aria-required="true"></textarea>
+        </div>
+      </div>
+      <div class="form-group optional has-feedback">
+        <label class="control-label col-sm-3" for="StudentType">I am going to be a</label>
+        <div class="col-sm-9">
+          <select name="StudentType" id="StudentType" class="form-select">
+            <option value="" selected="selected">-</option>
+            {{#each student_types }}
+              <option value="{{ value }}">{{ label }}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      
+      
+      <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9">
+          <input type="submit" value="Submit" class="btn btn-default" aria-label="Submit Request">
+        </div>
+      </div>
+</form>
+{{> rfi-form/form-javascript }}
+

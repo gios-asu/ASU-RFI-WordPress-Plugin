@@ -19,6 +19,8 @@ if ( ! function_exists( 'add_filter' ) ) {
   exit();
 }
 
+define( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION', '0.0.1' );
+
 require __DIR__ . '/vendor/autoload.php';
 
 $registry = new \Honeycomb\Services\Register();
