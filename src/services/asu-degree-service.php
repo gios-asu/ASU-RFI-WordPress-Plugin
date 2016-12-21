@@ -40,7 +40,7 @@ class ASUDegreeService {
    *  "2177" for Summer, 2017
    */
   public static function get_available_enrollment_terms() {
-    $semseter_names = array(
+    $semester_names = array(
       1 => 'Spring',
       4 => 'Summer',
       7 => 'Fall',
@@ -52,10 +52,10 @@ class ASUDegreeService {
     $terms = array();
 
     foreach ( $years as $year ) {
-      foreach ( $semseter_names as $semseter_key => $semseter_name ) {
+      foreach ( $semester_names as $semester_key => $semester_name ) {
         $terms[] = array(
-          'value' => self::get_peoplesoft_semester_code( $year, $semseter_key ),
-          'label' => $semseter_name . ' ' . $year,
+          'value' => self::get_peoplesoft_semester_code( $year, $semester_key ),
+          'label' => $semester_name . ' ' . $year,
         );
       }
     }
