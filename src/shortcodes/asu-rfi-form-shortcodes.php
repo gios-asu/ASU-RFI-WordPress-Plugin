@@ -136,7 +136,6 @@ class ASU_RFI_Form_Shortcodes extends Hook {
          0 === strcasecmp( 'grad', $atts['degree_level'] ) ||
          0 === strcasecmp( 'graduate', $atts['degree_level'] ) ) ) {
       $view_data['degreeLevel'] = 'grad';
-      error_log( 'graduate level engage!' );
     }
 
     $view_data = $this->look_for_a_submission_response( $view_data );
