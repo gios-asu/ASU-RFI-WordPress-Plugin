@@ -83,6 +83,51 @@ class ASUDegreeService {
   // }
 
   public function get_programs( $college ) {
+    // $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray' );
+    // $response = $this->client->send( $request );
+    // return array_map( function( $item ) {
+    //     return array( 'name' => $item->me['string'] );
+    // }, $response->val->me['array'] );
+
+  }
+
+  /**
+   * the response object is rather obscure to work with, it looks like this:
+   * 
+   PhpXmlRpc\Response Object (
+    [val] => PhpXmlRpc\Value Object
+        ( [me] => Array (
+            [array] => Array (
+                [0] => PhpXmlRpc\Value Object (
+                    [me] => Array (
+                        [struct] => Array (
+                            [AcadCareer] => PhpXmlRpc\Value Object (
+                                [me] => Array (
+                                    [string] => "blah blah"
+                                )
+                              )
+                              ....
+
+   */
+  public function get_programs_per_campus( $campus = 'TEMPE', $program = 'graduate' ) {
+    $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', array(
+       new Value( $campus, 'string' ), 
+       new Value( $program, 'string'), 
+       new Value(FALSE, 'boolean')) );
+
+    $response = $this->client->send( $request );
+    $value = $response->value()->me;
+    $value = array_pop($value);
+    
+    return array_map( function( $item ) {
+      $program = $item->me['struct'];
+        return array( 
+          'majorcode'   => $program['AcadPlan']->me['string'],
+          'majorname'   => $program['Descr100']->me['string'],
+          'programname' => $program['DiplomaDescr']->me['string'],
+          'programcode' => $program['AcadProg']->me['string'],
+         );
+    }, $value );
 
   }
 
