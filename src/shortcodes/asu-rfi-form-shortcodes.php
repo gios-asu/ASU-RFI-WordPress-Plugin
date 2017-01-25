@@ -117,9 +117,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
               )
           ),
           'testmode' => 'Prod', // default to production mode
-          'degreeLevel' => 'ugrad', // default to und
+          'degreeLevel' => 'ugrad', // default to undergrad
           'enrollment_terms' => Services\ASUDegreeService::get_available_enrollment_terms(),
           'student_types' => Services\StudentTypeService::get_student_types(),
+          'college_program_code' => null,
         );
 
     if ( isset( $atts['test_mode'] ) && 0 === strcasecmp( 'test', $atts['test_mode'] ) ) {
@@ -136,6 +137,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
          0 === strcasecmp( 'grad', $atts['degree_level'] ) ||
          0 === strcasecmp( 'graduate', $atts['degree_level'] ) ) ) {
       $view_data['degreeLevel'] = 'grad';
+    }
+
+    if( isset( $atts['college_program_code'] ) ) {
+      $view_data['college_program_code'] = $atts['college_program_code'];
     }
 
     $view_data = $this->look_for_a_submission_response( $view_data );

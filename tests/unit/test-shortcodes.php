@@ -44,4 +44,10 @@ class ShortCodesTest extends WP_UnitTestCase {
     $this->assertContains('name="testmode" value="Test"', $result);
   }
 
+  function test_shortcode_college_code() {
+    $result = do_shortcode( '[asu-rfi-form college_program_code="abcd"]' );
+    $this->assertContains('"abcd"', $result);
+  }
+
+
 }

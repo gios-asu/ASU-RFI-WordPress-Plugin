@@ -61,7 +61,10 @@
         </div>
       </div>
       
-      
+      {{#if college_program_code }}
+        <input type="hidden" name="collegeOfInterest" value="{{ college_program_code }}">
+      {{/if}}
+
       <div class="form-group">
         <div class="col-sm-3"></div>
         <div class="col-sm-9">
