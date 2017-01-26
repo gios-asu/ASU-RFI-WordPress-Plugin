@@ -5,6 +5,7 @@ namespace ASURFIWordPress\Services;
 use PhpXmlRpc\Value;
 use PhpXmlRpc\Request;
 use PhpXmlRpc\Client;
+use ASURFIWordPress\Helpers\ConditionalHelper;
 
 // Avoid direct calls to this file
 if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
@@ -109,11 +110,21 @@ class ASUDegreeService {
                               ....
 
    */
-  public function get_programs_per_campus( $program = 'graduate', $campus = 'TEMPE' ) {
-    $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', array(
-       new Value( $campus, 'string' ), 
-       new Value( $program, 'string'), 
-       new Value(FALSE, 'boolean')) );
+  public function get_programs_per_campus( $degree_level = 'graduate', $campus = 'TEMPE' ) {
+    // the RPC endpoint expects specific spelling for grad and undergrad
+    if( ConditionalHelper::graduate( $degree_level ) ) { 
+      $program_to_search = 'graduate';
+    } else {
+      $program_to_search = 'undergrad';
+    }
+
+    $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', 
+      array(
+        new Value( $campus, 'string' ), 
+        new Value( $program_to_search, 'string'), 
+        new Value( FALSE, 'boolean'),
+      )
+    );
 
     $response = $this->client->send( $request );
     $value = $response->value()->me;
@@ -131,11 +142,12 @@ class ASUDegreeService {
 
   }
 
-  public function get_majors_per_college($college_code, $program = 'graduate', $campus = 'TEMPE' ) {
-    $programs = $this->get_programs_per_campus( $program , $campus ); 
+  public function get_majors_per_college($college_code, $degree_level = 'graduate', $campus = 'TEMPE' ) {
+    $programs = $this->get_programs_per_campus( $degree_level , $campus ); 
     $subset = array(); 
-    foreach($programs as $program) {
-      if ( $program['programcode'] == $college_code) {
+
+    foreach( $programs as $program ) {
+      if ( 0 === strcasecmp( $college_code, $program['programcode'] ) ) {
         $subset []= array( 
           'label' => $this->get_display_name( $program ),
           'value' => $program['majorcode'],

@@ -146,7 +146,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       $view_data['student_types'] = Services\StudentTypeService::get_student_types('grad');
     } else if ( isset( $atts['degree_level'] ) && ConditionalHelper::undergraduate( $atts['degree_level']) ) {
       $view_data['degreeLevel'] = 'ugrad';
-      $view_data['student_types'] = Services\StudentTypeService::get_student_types('ugrad');
+      $view_data['student_types'] = Services\StudentTypeService::get_student_types('undergrad');
     }
 
     if( isset( $atts['college_program_code'] ) ) {
@@ -154,7 +154,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
       if( isset( $atts['major_code_picker'] ) ) {
         $service = new Services\ASUDegreeService();
-        $view_data['major_codes'] = $service->get_majors_per_college($atts['college_program_code']);
+        $view_data['major_codes'] = $service->get_majors_per_college( $atts['college_program_code'], $view_data['degreeLevel']);
       }
     }
 
