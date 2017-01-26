@@ -26,8 +26,28 @@ class ASUDegreeServiceTest extends WP_UnitTestCase {
 
   function test_get_programs_per_campus() {
     $service = new ASUDegreeService();
-    $programs = $service->get_programs_per_campus('TEMPE');
+    $programs = $service->get_programs_per_campus();
     $this->assertInternalType('array', $programs);
-    $this->assertGreaterThan(4, count($programs), 'there should be more than 4 programs');  
+    $this->assertGreaterThan(4, count($programs), 'there should be more than 4 programs');
+  }
+  function test_get_programs_per_campus_undergrad() {
+    $service = new ASUDegreeService();
+    $programs = $service->get_programs_per_campus('undergraduate');
+    $this->assertInternalType('array', $programs);
+    $this->assertGreaterThan(4, count($programs), 'there should be more than 4 programs');
+  }
+
+  function test_get_majors_per_college() {
+    $service = new ASUDegreeService();
+    $majors = $service->get_majors_per_college('GRSU', 'graduate');
+    $this->assertInternalType('array', $majors);
+    $this->assertGreaterThan(4, count($majors), 'there should be more than 4 majors');
+  }
+
+  function test_get_majors_per_college_undergrad() {
+    $service = new ASUDegreeService();
+    $majors = $service->get_majors_per_college('UGSU', 'undergraduate');
+    $this->assertInternalType('array', $majors);
+    $this->assertGreaterThan(1, count($majors), 'there should be more than 1 majors');
   }
 }

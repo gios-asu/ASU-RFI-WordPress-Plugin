@@ -109,7 +109,7 @@ class ASUDegreeService {
                               ....
 
    */
-  public function get_programs_per_campus( $campus = 'TEMPE', $program = 'graduate' ) {
+  public function get_programs_per_campus( $program = 'graduate', $campus = 'TEMPE' ) {
     $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', array(
        new Value( $campus, 'string' ), 
        new Value( $program, 'string'), 
@@ -129,6 +129,21 @@ class ASUDegreeService {
          );
     }, $value );
 
+  }
+
+  public function get_majors_per_college($college_code, $program = 'graduate', $campus = 'TEMPE' ) {
+    $programs = $this->get_programs_per_campus( $program , $campus ); 
+    $subset = array(); 
+    foreach($programs as $program) {
+      if($program['programcode'] == $college_code) {
+        $last_two_letters_of_major_code = substr($program['majorcode'], -2 );
+        $subset []= array( 
+          'label' => $program['majorname']." (".$last_two_letters_of_major_code.")",
+          'value' => $program['majorcode'],
+         );
+      }
+    }
+    return $subset;
   }
 
   public function get_colleges() {

@@ -104,6 +104,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     degree_level = 'ugrad' or 'grad' Default is 'ugrad'
    *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
+   *     college_program_code = 4 character string, usually all caps, like 
+   *         "GRLA" for College of Liberal Arts and Sciences or "GRSU" for "School of Sustainability"  
+   *     major_code_picker = boolean, if true then programs for the college will be provided in a dropdown
+   *     major_code = string, if provided then no picker, just a hidden major code value 
    */
   public function asu_rfi_form( $atts, $content = '' ) {
     $view_data = array(
@@ -121,6 +125,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           'enrollment_terms' => Services\ASUDegreeService::get_available_enrollment_terms(),
           'student_types' => Services\StudentTypeService::get_student_types(),
           'college_program_code' => null,
+          'major_code_picker' => false,
+          'major_code' => null,
         );
 
     if ( isset( $atts['test_mode'] ) && 0 === strcasecmp( 'test', $atts['test_mode'] ) ) {
@@ -141,6 +147,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
     if( isset( $atts['college_program_code'] ) ) {
       $view_data['college_program_code'] = $atts['college_program_code'];
+    }
+
+    if( isset( $atts['major_code_picker']) && $atts['major_code_picker']) {
+      $view_data['major_codes'] = Services\ASUDegreeSErvice::get_majors_per_college($atts['college_program_code']);
     }
 
     $view_data = $this->look_for_a_submission_response( $view_data );
