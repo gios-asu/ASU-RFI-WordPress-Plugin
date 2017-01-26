@@ -128,7 +128,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           'student_types' => Services\StudentTypeService::get_student_types(),
           'college_program_code' => null,
           'major_code_picker' => false,
-          // 'major_code' => null,
+          'major_code' => null,
         );
 
     if ( isset( $atts['test_mode'] ) && 0 === strcasecmp( 'test', $atts['test_mode'] ) ) {
@@ -151,11 +151,15 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
     if( isset( $atts['college_program_code'] ) ) {
       $view_data['college_program_code'] = $atts['college_program_code'];
+
+      if( isset( $atts['major_code_picker'] ) ) {
+        $service = new Services\ASUDegreeService();
+        $view_data['major_codes'] = $service->get_majors_per_college($atts['college_program_code']);
+      }
     }
 
-    if( isset( $atts['major_code_picker']) && 0 === strcasecmp( 'true', $atts['major_code_picker'])) {
-      $service = new Services\ASUDegreeService();
-      $view_data['major_codes'] = $service->get_majors_per_college($atts['college_program_code']);
+    if( isset( $atts['major_code'])) {
+      $view_data['major_code'] = $atts['major_code'];
     }
 
     $view_data = $this->look_for_a_submission_response( $view_data );

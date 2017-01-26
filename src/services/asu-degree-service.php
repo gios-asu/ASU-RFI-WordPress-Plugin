@@ -135,10 +135,9 @@ class ASUDegreeService {
     $programs = $this->get_programs_per_campus( $program , $campus ); 
     $subset = array(); 
     foreach($programs as $program) {
-      if($program['programcode'] == $college_code) {
-        $last_two_letters_of_major_code = substr($program['majorcode'], -2 );
+      if ( $program['programcode'] == $college_code) {
         $subset []= array( 
-          'label' => $program['majorname']." (".$last_two_letters_of_major_code.")",
+          'label' => $this->get_display_name( $program ),
           'value' => $program['majorcode'],
          );
       }
@@ -155,4 +154,16 @@ class ASUDegreeService {
 
   }
 
+  /** get_display_name( $program ) - if needed, append in () the last two digets
+   * of the majorcode unless there is a () in the major name already.
+   */
+  private function get_display_name( $program ) {
+    if ( strpos( $program['majorname'], '(' ) === FALSE ) {
+      $last_two_letters_of_major_code = substr($program['majorcode'], -2 );
+      return $program['majorname']." (".$last_two_letters_of_major_code.")";          
+    } else {
+      return $program['majorname'];
+    }
+
+  }
 }
