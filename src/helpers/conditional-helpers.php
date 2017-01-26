@@ -10,7 +10,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
   exit();
 }
 
-/** Helpers for conditionals
+/** Helpers for conditionals that get repeated 
  *
  */
 class ConditionalHelper {

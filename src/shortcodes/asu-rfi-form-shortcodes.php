@@ -3,6 +3,7 @@ namespace ASURFIWordPress\Shortcodes;
 use Honeycomb\Wordpress\Hook;
 use ASURFIWordPress\Services as Services;
 use ASURFIWordPress\Admin as Admin;
+use ASURFIWordPress\Helpers\ConditionalHelper;
 
 
 // Avoid direct calls to this file
@@ -110,6 +111,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     major_code = string, if provided then no picker, just a hidden major code value 
    */
   public function asu_rfi_form( $atts, $content = '' ) {
+
     $view_data = array(
           'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
@@ -126,7 +128,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           'student_types' => Services\StudentTypeService::get_student_types(),
           'college_program_code' => null,
           'major_code_picker' => false,
-          'major_code' => null,
+          // 'major_code' => null,
         );
 
     if ( isset( $atts['test_mode'] ) && 0 === strcasecmp( 'test', $atts['test_mode'] ) ) {
@@ -139,18 +141,21 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     }
 
     // Use the attribute source id over the sites option
-    if ( isset( $atts['degree_level'] ) && (
-         0 === strcasecmp( 'grad', $atts['degree_level'] ) ||
-         0 === strcasecmp( 'graduate', $atts['degree_level'] ) ) ) {
+    if ( isset( $atts['degree_level'] ) && ConditionalHelper::graduate( $atts['degree_level']) ) {
       $view_data['degreeLevel'] = 'grad';
+      $view_data['student_types'] = Services\StudentTypeService::get_student_types('grad');
+    } else if ( isset( $atts['degree_level'] ) && ConditionalHelper::undergraduate( $atts['degree_level']) ) {
+      $view_data['degreeLevel'] = 'ugrad';
+      $view_data['student_types'] = Services\StudentTypeService::get_student_types('ugrad');
     }
 
     if( isset( $atts['college_program_code'] ) ) {
       $view_data['college_program_code'] = $atts['college_program_code'];
     }
 
-    if( isset( $atts['major_code_picker']) && $atts['major_code_picker']) {
-      $view_data['major_codes'] = Services\ASUDegreeSErvice::get_majors_per_college($atts['college_program_code']);
+    if( isset( $atts['major_code_picker']) && 0 === strcasecmp( 'true', $atts['major_code_picker'])) {
+      $service = new Services\ASUDegreeService();
+      $view_data['major_codes'] = $service->get_majors_per_college($atts['college_program_code']);
     }
 
     $view_data = $this->look_for_a_submission_response( $view_data );
