@@ -40,4 +40,16 @@ class ConditionalHelper {
     return false;
   }
 
+  /** 
+   * return true if the input is any one of the ways you might spell online
+   */
+  public static function online( $input ) {
+    if( 0 === strcasecmp( 'ONLNE', $input ) ||
+        0 === strcasecmp( 'on-line', $input ) ||
+        0 === strcasecmp( 'online', $input ) ) {
+      return true;
+    } 
+    return false;
+  }
+
 }

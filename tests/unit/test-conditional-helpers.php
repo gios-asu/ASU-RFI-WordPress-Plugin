@@ -25,4 +25,10 @@ class ConditionalHelperTest extends WP_UnitTestCase {
     $this->assertFalse(ConditionalHelper::undergraduate('foo'));
   }
 
+  function test_online_helper() {
+    $this->assertTrue(ConditionalHelper::online('online'));
+    $this->assertTrue(ConditionalHelper::online('onlne'));
+    $this->assertTrue(ConditionalHelper::online('on-line'));
+    $this->assertFalse(ConditionalHelper::online('twoline'));
+  }
 }

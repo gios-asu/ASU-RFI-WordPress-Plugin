@@ -118,6 +118,12 @@ class ASUDegreeService {
       $program_to_search = 'undergrad';
     }
 
+    if( ConditionalHelper::online( $campus ) ) { 
+      // They want Online to be spelled this way..
+      $campus = 'ONLNE';
+    }
+
+    
     $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', 
       array(
         new Value( $campus, 'string' ), 
