@@ -177,7 +177,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
         $view_data['major_codes'] = $service->get_majors_per_college(
             $atts['college_program_code'],
             $view_data['degreeLevel'],
-            $campus
+            $atts['campus']
           );
       }
     }
