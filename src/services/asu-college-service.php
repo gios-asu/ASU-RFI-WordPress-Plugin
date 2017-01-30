@@ -60,7 +60,7 @@ class ASUCollegeService {
     $program_code = strtoupper( $program_code ); // they should all be UPPER CASE
 
     // Base Case: empty strings should return empty strings
-    if ( 1 > strlen( $program_code ) ) { 
+    if ( 1 > strlen( $program_code ) ) {
       return $program_code;
     }
 

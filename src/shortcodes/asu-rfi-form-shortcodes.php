@@ -168,7 +168,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
       $atts['college_program_code'] = ASUCollegeService::add_degree_level_prefix(
           $atts['college_program_code'],
-      $view_data['degreeLevel']);
+          $view_data['degreeLevel']
+      );
 
       $view_data['college_program_code'] = $atts['college_program_code'];
 
@@ -178,7 +179,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
             $atts['college_program_code'],
             $view_data['degreeLevel'],
             $atts['campus']
-          );
+        );
       }
     }
 
