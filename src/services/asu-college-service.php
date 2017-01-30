@@ -40,7 +40,7 @@ class ASUCollegeService {
 
   /** Get College code given the display name
    *  eg: given 'Sustainability, School of' this will return 'CSS',
-   * Note: this is not the same as the college code for the programs!! 
+   * Note: this is not the same as the college code for the programs!!
    */
   public function get_college_code( $college_name ) {
     $request = new Request( 'eAdvisorDSFind.getCollegeCodeForName',
@@ -60,7 +60,9 @@ class ASUCollegeService {
     $program_code = strtoupper( $program_code ); // they should all be UPPER CASE
 
     // Base Case: empty strings should return empty strings
-    if( 1 > strlen($program_code) ) return $program_code;
+    if ( 1 > strlen( $program_code ) ) { 
+      return $program_code;
+    }
 
     if ( ConditionalHelper::graduate( $degree_level ) ) {
       if ( starts_with( $program_code, 'GR' ) ) {
