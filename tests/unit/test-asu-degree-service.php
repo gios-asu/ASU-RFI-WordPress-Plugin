@@ -17,13 +17,6 @@ class ASUDegreeServiceTest extends WP_UnitTestCase {
     $this->assertGreaterThan(4, count($terms), 'there should be more than 4 terms');    
   }
 
-  function test_get_colleges() {
-    $service = new ASUDegreeService();
-    $colleges = $service->get_colleges();
-    $this->assertInternalType('array', $colleges);
-    $this->assertGreaterThan(4, count($colleges), 'there should be more than 4 colleges');  
-  }
-
   function test_get_programs_per_campus() {
     $service = new ASUDegreeService();
     $programs = $service->get_programs_per_campus();

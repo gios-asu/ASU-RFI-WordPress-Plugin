@@ -22,11 +22,10 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * @group asu-degree-service
  */
 class ASUDegreeService {
-  const ASU_DIRECTORY_XML_RPC_SERVER = 'https://webapp4.asu.edu/programs/XmlRpcServer';
 
   public function __construct( $client = null ) {
     if ( null === $client ) {
-      $client = new Client( self::ASU_DIRECTORY_XML_RPC_SERVER );
+      $client = new Client( ASU_DIRECTORY_XML_RPC_SERVER );
     }
     $this->client = $client;
   }
@@ -83,14 +82,14 @@ class ASUDegreeService {
   // );
   // }
 
-  public function get_programs( $college ) {
-    // $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray' );
-    // $response = $this->client->send( $request );
-    // return array_map( function( $item ) {
-    //     return array( 'name' => $item->me['string'] );
-    // }, $response->val->me['array'] );
+  // public function get_programs_on_all_campuses( $college ) {
+  //   // $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray' );
+  //   // $response = $this->client->send( $request );
+  //   // return array_map( function( $item ) {
+  //   //     return array( 'name' => $item->me['string'] );
+  //   // }, $response->val->me['array'] );
 
-  }
+  // }
 
   /**
    * the response object is rather obscure to work with, it looks like this:
@@ -119,11 +118,11 @@ class ASUDegreeService {
     }
 
     if( ConditionalHelper::online( $campus ) ) { 
-      // They want Online to be spelled this way..
+      // They want Online to be spelled this way. 
       $campus = 'ONLNE';
     }
 
-    
+
     $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', 
       array(
         new Value( $campus, 'string' ), 
@@ -148,6 +147,9 @@ class ASUDegreeService {
 
   }
 
+  /** Get major programs 
+   *
+   */
   public function get_majors_per_college($college_code, $degree_level = 'graduate', $campus = 'TEMPE' ) {
     $programs = $this->get_programs_per_campus( $degree_level , $campus ); 
     $subset = array(); 
@@ -155,7 +157,7 @@ class ASUDegreeService {
     foreach( $programs as $program ) {
       if ( 0 === strcasecmp( $college_code, $program['programcode'] ) ) {
         $subset []= array( 
-          'label' => $this->get_display_name( $program ),
+          'label' => $this->get_program_display_name( $program ),
           'value' => $program['majorcode'],
          );
       }
@@ -163,19 +165,10 @@ class ASUDegreeService {
     return $subset;
   }
 
-  public function get_colleges() {
-    $request = new Request( 'eAdvisorDSFind.listColleges' );
-    $response = $this->client->send( $request );
-    return array_map( function( $item ) {
-        return array( 'name' => $item->me['string'] );
-    }, $response->val->me['array'] );
-
-  }
-
-  /** get_display_name( $program ) - if needed, append in () the last two digets
+  /** get_program_display_name( $program ) - if needed, append in () the last two digets
    * of the majorcode unless there is a () in the major name already.
    */
-  private function get_display_name( $program ) {
+  private function get_program_display_name( $program ) {
     if ( strpos( $program['majorname'], '(' ) === FALSE ) {
       $last_two_letters_of_major_code = substr($program['majorcode'], -2 );
       return $program['majorname']." (".$last_two_letters_of_major_code.")";          
