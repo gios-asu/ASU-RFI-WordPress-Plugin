@@ -142,7 +142,7 @@ class ASUDegreeService {
    * if no campus is defined than all campuses are returned.
    */
   public function get_majors_per_college( $college_code, $degree_level = 'graduate', $campus = null ) {
-    if ( null === $campus ) {
+    if ( empty( $campus ) ) {
       $programs = $this->get_programs_on_all_campuses( $degree_level );
     } else {
       $programs = $this->get_programs_per_campus( $degree_level , $campus );
