@@ -105,8 +105,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     degree_level = 'ugrad' or 'grad' Default is 'ugrad'
    *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
-   *     college_program_code = 4 character string, usually all caps, like
-   *         "GRLA" for College of Liberal Arts and Sciences or "GRSU" for "School of Sustainability"
+   *     college_program_code = 2-5 character string, usually all caps, like
+   *         "LA" for College of Liberal Arts and Sciences or "SU" for "School of Sustainability" 
    *     major_code_picker = boolean, if true then programs for the college will be provided in a dropdown
    *     major_code = string, if provided then no picker, just a hidden major code value
    *     campus = string, default is all campuses, if provided the major_code_picker will be 
@@ -114,6 +114,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    */
   public function asu_rfi_form( $atts, $content = '' ) {
     ensure_default($atts, 'campus', null);
+    ensure_default($atts, 'major_code', null);
 
     $view_data = array(
           'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
@@ -125,17 +126,18 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'default'   => 0,
               )
           ),
-          'testmode' => 'Prod', // default to production mode
           'degreeLevel' => 'ugrad', // default to undergrad
           'enrollment_terms' => Services\ASUDegreeService::get_available_enrollment_terms(),
           'student_types' => Services\StudentTypeService::get_student_types(),
           'college_program_code' => null,
           'major_code_picker' => false,
-          'major_code' => null,
+          'major_code' => $atts['major_code'],
         );
 
     if ( isset( $atts['test_mode'] ) && 0 === strcasecmp( 'test', $atts['test_mode'] ) ) {
       $view_data['testmode'] = 'Test';
+    } else {
+      $view_data['testmode'] = 'Prod'; // default to production mode
     }
 
     // Use the attribute source id over the sites option
@@ -153,6 +155,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     }
 
     if ( isset( $atts['college_program_code'] ) ) {
+      $atts['college_program_code'] = add_degree_level_prefix( 
+        $view_data['college_program_code'], 
+        $view_data['degreeLevel']);
+      
       $view_data['college_program_code'] = $atts['college_program_code'];
 
       if ( isset( $atts['major_code_picker'] ) ) {
@@ -164,11 +170,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       }
     }
 
-    if ( isset( $atts['major_code'] ) ) {
-      $view_data['major_code'] = $atts['major_code'];
-    }
-
-    $view_data = $this->look_for_a_submission_response( $view_data );
+    $view_data = $this->add_previous_submission_response( $view_data );
 
     // Figure out which form to show
     $view_name = 'rfi-form.simple-request-info-form';
@@ -183,7 +185,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   /**
    * Look at the statusFlag and msg query var and return a human readable message that can be used
    */
-  private function look_for_a_submission_response( $view_data ) {
+  private function add_previous_submission_response( $view_data ) {
     $response_status_code = get_query_var( 'statusFlag' );
     if ( $response_status_code ) {
       $message = get_query_var( 'msg' );
@@ -197,5 +199,6 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     }
     return $view_data;
   }
+
 
 }

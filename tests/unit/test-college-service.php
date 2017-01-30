@@ -28,4 +28,13 @@ class ASUCollegeServiceTest extends WP_UnitTestCase {
     $this->assertEquals('CSS', $code);
   }
 
+  function test_degree_level_prefixer() {
+    $abcgraduate = ASUCollegeService::add_degree_level_prefix('ABC', 'graduate');
+    $this->assertEquals('GRABC', $abcgraduate);
+    $abcundergraduate = ASUCollegeService::add_degree_level_prefix('UGABC', 'undergraduate');
+    $this->assertEquals('UGABC', $abcundergraduate);
+    $redundantabcundergraduate = ASUCollegeService::add_degree_level_prefix('UGUGABC', 'undergraduate');
+    $this->assertEquals('UGUGABC', $redundantabcundergraduate);
+  }
+
 }
