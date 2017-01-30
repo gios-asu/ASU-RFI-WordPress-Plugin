@@ -25,8 +25,7 @@ class ASUCollegeService {
     $this->client = $client;
   }
 
-  /** Get Colleges Display names in an array 
-   * 
+  /** Get Colleges Display names in an array
    */
   public function get_colleges() {
     $request = new Request( 'eAdvisorDSFind.listColleges' );
@@ -37,14 +36,14 @@ class ASUCollegeService {
 
   }
 
-  /** Get College code given the display name 
-   *  eg: given 'Sustainability, School of' this will return 'CSS', 
+  /** Get College code given the display name
+   *  eg: given 'Sustainability, School of' this will return 'CSS',
    * Note: this is not the same as the college code in the program!
    */
   public function get_college_code( $college_name ) {
-    $request = new Request( 'eAdvisorDSFind.getCollegeCodeForName', 
-      array(
-        new Value( $college_name, 'string' ) 
+    $request = new Request( 'eAdvisorDSFind.getCollegeCodeForName',
+        array(
+        new Value( $college_name, 'string' )
     ) );
     $response = $this->client->send( $request );
     return $response->val->me['string'];

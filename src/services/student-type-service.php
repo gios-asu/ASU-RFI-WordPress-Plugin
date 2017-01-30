@@ -17,13 +17,13 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  */
 class StudentTypeService {
 
-  public static function get_student_types($grad_or_undergrad = null) {
-    if( ConditionalHelper::undergraduate( $grad_or_undergrad ) ) {
+  public static function get_student_types( $grad_or_undergrad = null ) {
+    if ( ConditionalHelper::undergraduate( $grad_or_undergrad ) ) {
       return array(
           array( 'value' => 'Freshman', 'label' => 'Undergraduate Freshman Student' ),
           array( 'value' => 'Transfer', 'label' => 'Undergraduate Transfer Student' ),
         );
-    } else if(  ConditionalHelper::graduate(  $grad_or_undergrad ) ) {
+    } elseif (  ConditionalHelper::graduate( $grad_or_undergrad ) ) {
       return array(
           array( 'value' => 'Masters',  'label' => 'Graduate Masters Student' ),
           array( 'value' => 'Doctoral', 'label' => 'Graduate Doctoral Student' ),

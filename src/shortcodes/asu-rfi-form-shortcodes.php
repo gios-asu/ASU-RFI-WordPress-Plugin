@@ -105,10 +105,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     degree_level = 'ugrad' or 'grad' Default is 'ugrad'
    *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
-   *     college_program_code = 4 character string, usually all caps, like 
-   *         "GRLA" for College of Liberal Arts and Sciences or "GRSU" for "School of Sustainability"  
+   *     college_program_code = 4 character string, usually all caps, like
+   *         "GRLA" for College of Liberal Arts and Sciences or "GRSU" for "School of Sustainability"
    *     major_code_picker = boolean, if true then programs for the college will be provided in a dropdown
-   *     major_code = string, if provided then no picker, just a hidden major code value 
+   *     major_code = string, if provided then no picker, just a hidden major code value
    */
   public function asu_rfi_form( $atts, $content = '' ) {
 
@@ -141,24 +141,24 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     }
 
     // Use the attribute source id over the sites option
-    if ( isset( $atts['degree_level'] ) && ConditionalHelper::graduate( $atts['degree_level']) ) {
+    if ( isset( $atts['degree_level'] ) && ConditionalHelper::graduate( $atts['degree_level'] ) ) {
       $view_data['degreeLevel'] = 'grad';
-      $view_data['student_types'] = Services\StudentTypeService::get_student_types('grad');
-    } else if ( isset( $atts['degree_level'] ) && ConditionalHelper::undergraduate( $atts['degree_level']) ) {
+      $view_data['student_types'] = Services\StudentTypeService::get_student_types( 'grad' );
+    } elseif ( isset( $atts['degree_level'] ) && ConditionalHelper::undergraduate( $atts['degree_level'] ) ) {
       $view_data['degreeLevel'] = 'ugrad';
-      $view_data['student_types'] = Services\StudentTypeService::get_student_types('undergrad');
+      $view_data['student_types'] = Services\StudentTypeService::get_student_types( 'undergrad' );
     }
 
-    if( isset( $atts['college_program_code'] ) ) {
+    if ( isset( $atts['college_program_code'] ) ) {
       $view_data['college_program_code'] = $atts['college_program_code'];
 
-      if( isset( $atts['major_code_picker'] ) ) {
+      if ( isset( $atts['major_code_picker'] ) ) {
         $service = new Services\ASUDegreeService();
-        $view_data['major_codes'] = $service->get_majors_per_college( $atts['college_program_code'], $view_data['degreeLevel']);
+        $view_data['major_codes'] = $service->get_majors_per_college( $atts['college_program_code'], $view_data['degreeLevel'] );
       }
     }
 
-    if( isset( $atts['major_code'])) {
+    if ( isset( $atts['major_code'] ) ) {
       $view_data['major_code'] = $atts['major_code'];
     }
 

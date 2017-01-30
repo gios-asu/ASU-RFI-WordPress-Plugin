@@ -18,7 +18,6 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
 /** ASUDegreeService
  * Providing data from ASU Degrees
  * XML RPC API Docs: http://www.public.asu.edu/~lcabre/javadocs/dsws/
- *
  */
 class ASUDegreeService {
 
@@ -73,21 +72,21 @@ class ASUDegreeService {
 
   /** Get all the programs across all campuses for a specific degree level in one array.
    * 'graduate' or 'undergraduate' are accepted values for degree levels.
-   * returns an array. 
+   * returns an array.
    */
   public function get_programs_on_all_campuses( $degree_level = 'graduate' ) {
     $results = array();
     $campuses = CampusService::get_campus_codes();
-    foreach($campuses as $campus_code) {
-      $results_for_this_campus = $this->get_programs_per_campus($degree_level, $campus_code);
-      $results = array_merge($results, $results_for_this_campus);
+    foreach ( $campuses as $campus_code ) {
+      $results_for_this_campus = $this->get_programs_per_campus( $degree_level, $campus_code );
+      $results = array_merge( $results, $results_for_this_campus );
     }
     return $results;
   }
 
-  /**
+  /** Get Programs offered on a specific Campus
    * the response object is rather obscure to work with, it looks like this:
-   * 
+   *
    PhpXmlRpc\Response Object (
     [val] => PhpXmlRpc\Value Object
         ( [me] => Array (
@@ -101,37 +100,35 @@ class ASUDegreeService {
                                 )
                               )
                               ....
-
    */
   public function get_programs_per_campus( $degree_level = 'graduate', $campus = 'TEMPE' ) {
     // the RPC endpoint expects specific spelling for grad and undergrad
-    if( ConditionalHelper::graduate( $degree_level ) ) { 
+    if ( ConditionalHelper::graduate( $degree_level ) ) {
       $program_to_search = 'graduate';
     } else {
       $program_to_search = 'undergrad';
     }
 
-    if( ConditionalHelper::online( $campus ) ) { 
-      // They want Online to be spelled this way. 
+    if ( ConditionalHelper::online( $campus ) ) {
+      // They want Online to be spelled this way.
       $campus = 'ONLNE';
     }
 
-
-    $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray', 
-      array(
-        new Value( $campus, 'string' ), 
-        new Value( $program_to_search, 'string'), 
-        new Value( FALSE, 'boolean'),
-      )
+    $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray',
+        array(
+        new Value( $campus, 'string' ),
+        new Value( $program_to_search, 'string' ),
+        new Value( false, 'boolean' ),
+        )
     );
 
     $response = $this->client->send( $request );
     $value = $response->value()->me;
-    $value = array_pop($value);
-    
+    $value = array_pop( $value );
+
     return array_map( function( $item ) {
-      $program = $item->me['struct'];
-        return array( 
+        $program = $item->me['struct'];
+        return array(
           'majorcode'   => $program['AcadPlan']->me['string'],
           'majorname'   => $program['Descr100']->me['string'],
           'programname' => $program['DiplomaDescr']->me['string'],
@@ -141,23 +138,21 @@ class ASUDegreeService {
 
   }
 
-  /** Get major programs 
-   *
+  /** Get major programs
    */
-  public function get_majors_per_college($college_code, $degree_level = 'graduate', $campus = 'TEMPE' ) {
-    $programs = $this->get_programs_per_campus( $degree_level , $campus ); 
+  public function get_majors_per_college( $college_code, $degree_level = 'graduate', $campus = 'TEMPE' ) {
+    $programs = $this->get_programs_per_campus( $degree_level , $campus );
     return $this->filter_programs_for_a_college( $college_code, $programs );
   }
 
   /** Filter all programs and return just the programs that belong to a speicific college
-   *
    */
   private function filter_programs_for_a_college( $college_code, $all_programs ) {
-    $subset = array(); 
+    $subset = array();
 
-    foreach( $all_programs as $program ) {
+    foreach ( $all_programs as $program ) {
       if ( 0 === strcasecmp( $college_code, $program['programcode'] ) ) {
-        $subset []= array( 
+        $subset [] = array(
           'label' => $this->get_program_display_name( $program ),
           'value' => $program['majorcode'],
          );
@@ -166,13 +161,13 @@ class ASUDegreeService {
     return $subset;
   }
 
-  /** get_program_display_name( $program ) - if needed, append in () the last two digets
+  /** Get a programs Display Name( $program ) - if needed, append in () the last two digets
    * of the majorcode unless there is a () in the major name already.
    */
   private function get_program_display_name( $program ) {
-    if ( strpos( $program['majorname'], '(' ) === FALSE ) {
-      $last_two_letters_of_major_code = substr($program['majorcode'], -2 );
-      return $program['majorname']." (".$last_two_letters_of_major_code.")";          
+    if ( strpos( $program['majorname'], '(' ) === false ) {
+      $last_two_letters_of_major_code = substr( $program['majorcode'], -2 );
+      return $program['majorname'] . ' (' . $last_two_letters_of_major_code . ')';
     } else {
       return $program['majorname'];
     }
