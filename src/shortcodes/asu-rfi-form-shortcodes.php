@@ -106,7 +106,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
    *     college_program_code = 2-5 character string, usually all caps, like
-   *         "LA" for College of Liberal Arts and Sciences or "SU" for "School of Sustainability"
+   *         "LA" for College of Liberal Arts and Sciences or "SU" for "School of Sustainability". 
+   *         Will default to the value set in the RFI Admin Options menu.
    *     major_code_picker = boolean, if true then programs for the college will be provided in a dropdown
    *     major_code = string, if provided then no picker, just a hidden major code value
    *     campus = string, default is all campuses, if provided the major_code_picker will be
@@ -115,11 +116,17 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   public function asu_rfi_form( $atts, $content = '' ) {
     ensure_default( $atts, 'campus', null );
     ensure_default( $atts, 'major_code', null );
+    ensure_default( $atts, 'college_program_code', $this->get_option_attribute_or_default(
+              array(
+                'name'      => Admin\ASU_RFI_Admin_Page::$options_name,
+                'attribute' => Admin\ASU_RFI_Admin_Page::$college_code_option_name,
+                'default'   => null,
+              ) ) );
 
     $view_data = array(
           'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
-          'source_id' => $value = $this->get_option_attribute_or_default(
+          'source_id' =>  $this->get_option_attribute_or_default(
               array(
                 'name'      => Admin\ASU_RFI_Admin_Page::$options_name,
                 'attribute' => Admin\ASU_RFI_Admin_Page::$source_id_option_name,
@@ -154,10 +161,12 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       $view_data['student_types'] = Services\StudentTypeService::get_student_types( 'undergrad' );
     }
 
+    // get the Majors offered for this college, degree level and/or campus 
     if ( isset( $atts['college_program_code'] ) ) {
-      $atts['college_program_code'] = add_degree_level_prefix(
-          $view_data['college_program_code'],
-      $view_data['degreeLevel']);
+
+      $atts['college_program_code'] = Services\ASUCollegeService::add_degree_level_prefix(
+          $atts['college_program_code'],
+          $view_data['degreeLevel']);
 
       $view_data['college_program_code'] = $atts['college_program_code'];
 
@@ -166,7 +175,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
         $view_data['major_codes'] = $service->get_majors_per_college(
             $atts['college_program_code'],
             $view_data['degreeLevel'],
-        $campus );
+            $campus );
       }
     }
 
