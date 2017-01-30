@@ -18,7 +18,7 @@ class CampusService {
 	/* Get Campus codes as defined by http://www.public.asu.edu/~lcabre/javadocs/dsws/
 	 *	Since there is no actual endpoint to get these, we'll have to hardcode them here.
 	 */
-	publics static function get_campus_codes() {
+	public static function get_campus_codes() {
 		// TODO: Thunderbird and Lake Havasu City campus? 
 		return array('TEMPE', 'POLY', 'DTPHX', 'WEST', 'ONLNE');
 	}
