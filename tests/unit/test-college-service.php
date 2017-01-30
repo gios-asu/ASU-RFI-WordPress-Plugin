@@ -37,4 +37,9 @@ class ASUCollegeServiceTest extends WP_UnitTestCase {
     $this->assertEquals('UGUGABC', $redundantabcundergraduate);
   }
 
+  function test_degree_level_prefixer_null_case() {
+    $abcgraduate = ASUCollegeService::add_degree_level_prefix('', 'graduate');
+    $this->assertEquals('', $abcgraduate);
+  }
+
 }
