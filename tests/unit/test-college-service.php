@@ -3,11 +3,14 @@
  * Class ASUCollegeServiceTest
  *
  * @package Asu_Rfi_Wordpress_Plugin
+
  */
 use ASURFIWordPress\Services\ASUCollegeService;
 
 /**
  * ASUCollegeService test case.
+ * @group services 
+ * @group asu-college-service
  */
 class ASUCollegeServiceTest extends WP_UnitTestCase {
 

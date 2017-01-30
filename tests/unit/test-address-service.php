@@ -9,6 +9,8 @@ use ASURFIWordPress\Services\AddressService;
 
 /**
  * Address Service test cases
+ * @group services
+ * @group address-service
  */
 class AddressTestService extends WP_UnitTestCase {
 

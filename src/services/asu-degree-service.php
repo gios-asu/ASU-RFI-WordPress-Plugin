@@ -6,6 +6,7 @@ use PhpXmlRpc\Value;
 use PhpXmlRpc\Request;
 use PhpXmlRpc\Client;
 use ASURFIWordPress\Helpers\ConditionalHelper;
+use ASURFIWordPress\Services\CampusService;
 
 // Avoid direct calls to this file
 if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
@@ -18,8 +19,6 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * Providing data from ASU Degrees
  * XML RPC API Docs: http://www.public.asu.edu/~lcabre/javadocs/dsws/
  *
- * @group services
- * @group asu-degree-service
  */
 class ASUDegreeService {
 
@@ -47,7 +46,7 @@ class ASUDegreeService {
       9 => 'Winter',
     );
 
-    // TODO: this obviously should be more dynamic
+    // TODO: this obviously should be more dynamic but it will do for the next few years
     $years = array( '2017', '2018', '2019' );
     $terms = array();
 
@@ -72,24 +71,19 @@ class ASUDegreeService {
     return substr( $year,0,1 ) . substr( $year,2,2 ) . $semester_number;
   }
 
-  // public function get_campuses() {
-  // return array(
-  // 'TEMPE' => 'Tempe, Az',
-  // 'PLOY' => '',
-  // 'TDPHX' => 'Down Town Phoenix',
-
-  // String campus = "TEMPE" String campus = "POLY" String campus = "DTPHX" String campus = "WEST" String campus = "ONLNE"
-  // );
-  // }
-
-  // public function get_programs_on_all_campuses( $college ) {
-  //   // $request = new Request( 'eAdvisorDSFind.findDegreeByCampusMapArray' );
-  //   // $response = $this->client->send( $request );
-  //   // return array_map( function( $item ) {
-  //   //     return array( 'name' => $item->me['string'] );
-  //   // }, $response->val->me['array'] );
-
-  // }
+  /** Get all the programs across all campuses for a specific degree level in one array.
+   * 'graduate' or 'undergraduate' are accepted values for degree levels.
+   * returns an array. 
+   */
+  public function get_programs_on_all_campuses( $degree_level = 'graduate' ) {
+    $results = array();
+    $campuses = CampusService::get_campus_codes();
+    foreach($campuses as $campus_code) {
+      $results_for_this_campus = $this->get_programs_per_campus($degree_level, $campus_code);
+      $results = array_merge($results, $results_for_this_campus);
+    }
+    return $results;
+  }
 
   /**
    * the response object is rather obscure to work with, it looks like this:
@@ -152,9 +146,16 @@ class ASUDegreeService {
    */
   public function get_majors_per_college($college_code, $degree_level = 'graduate', $campus = 'TEMPE' ) {
     $programs = $this->get_programs_per_campus( $degree_level , $campus ); 
+    return $this->filter_programs_for_a_college( $college_code, $programs );
+  }
+
+  /** Filter all programs and return just the programs that belong to a speicific college
+   *
+   */
+  private function filter_programs_for_a_college( $college_code, $all_programs ) {
     $subset = array(); 
 
-    foreach( $programs as $program ) {
+    foreach( $all_programs as $program ) {
       if ( 0 === strcasecmp( $college_code, $program['programcode'] ) ) {
         $subset []= array( 
           'label' => $this->get_program_display_name( $program ),
