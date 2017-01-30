@@ -106,15 +106,15 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
    *     college_program_code = 2-5 character string, usually all caps, like
-   *         "LA" for College of Liberal Arts and Sciences or "SU" for "School of Sustainability" 
+   *         "LA" for College of Liberal Arts and Sciences or "SU" for "School of Sustainability"
    *     major_code_picker = boolean, if true then programs for the college will be provided in a dropdown
    *     major_code = string, if provided then no picker, just a hidden major code value
-   *     campus = string, default is all campuses, if provided the major_code_picker will be 
+   *     campus = string, default is all campuses, if provided the major_code_picker will be
    *          restricted down to just the majors offered on that particular campus.
    */
   public function asu_rfi_form( $atts, $content = '' ) {
-    ensure_default($atts, 'campus', null);
-    ensure_default($atts, 'major_code', null);
+    ensure_default( $atts, 'campus', null );
+    ensure_default( $atts, 'major_code', null );
 
     $view_data = array(
           'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
@@ -155,18 +155,18 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     }
 
     if ( isset( $atts['college_program_code'] ) ) {
-      $atts['college_program_code'] = add_degree_level_prefix( 
-        $view_data['college_program_code'], 
-        $view_data['degreeLevel']);
-      
+      $atts['college_program_code'] = add_degree_level_prefix(
+          $view_data['college_program_code'],
+      $view_data['degreeLevel']);
+
       $view_data['college_program_code'] = $atts['college_program_code'];
 
       if ( isset( $atts['major_code_picker'] ) ) {
         $service = new Services\ASUDegreeService();
-        $view_data['major_codes'] = $service->get_majors_per_college( 
-          $atts['college_program_code'], 
-          $view_data['degreeLevel'], 
-          $campus );
+        $view_data['major_codes'] = $service->get_majors_per_college(
+            $atts['college_program_code'],
+            $view_data['degreeLevel'],
+        $campus );
       }
     }
 

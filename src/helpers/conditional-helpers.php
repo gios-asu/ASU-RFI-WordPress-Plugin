@@ -15,9 +15,9 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
 class ConditionalHelper {
 
 
-	/** Graduate? 
-   * return true if the input is any one of the ways you might spell graduate
-   */
+	/** Graduate?
+     * return true if the input is any one of the ways you might spell graduate
+     */
 	public static function graduate( $input ) {
     if ( 0 === strcasecmp( 'grad', $input ) ||
         0 === strcasecmp( 'graduate', $input ) ) {

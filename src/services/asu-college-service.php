@@ -53,23 +53,23 @@ class ASUCollegeService {
 
 
   /** Optionally append either UG or GR to the program_code if neither is already defined.
-   * Since the postfix is the same for Undergraduate (UG) and Graduate (GR) programs then lets  
-   * add it if it gets ommited. 
+   * Since the postfix is the same for Undergraduate (UG) and Graduate (GR) programs then lets
+   * add it if it gets ommited.
    */
   public static function add_degree_level_prefix( $program_code, $degree_level ) {
     $program_code = strtoupper( $program_code ); // they should all be UPPER CASE
 
     if ( ConditionalHelper::graduate( $degree_level ) ) {
-      if( starts_with( $program_code, 'GR' ) ) {
+      if ( starts_with( $program_code, 'GR' ) ) {
         return $program_code;
       } else {
-        return 'GR'.$program_code;
+        return 'GR' . $program_code;
       }
     } else {
-       if( starts_with( $program_code, 'UG' ) ) {
+       if ( starts_with( $program_code, 'UG' ) ) {
         return $program_code;
       } else {
-        return 'UG'.$program_code;
+        return 'UG' . $program_code;
       }
     }
     return $program_code;

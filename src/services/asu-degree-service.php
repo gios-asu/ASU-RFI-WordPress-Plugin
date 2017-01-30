@@ -142,12 +142,12 @@ class ASUDegreeService {
    * if no campus is defined than all campuses are returned.
    */
   public function get_majors_per_college( $college_code, $degree_level = 'graduate', $campus = null ) {
-    if( null === $campus ) {
+    if ( null === $campus ) {
       $programs = $this->get_programs_on_all_campuses( $degree_level );
     } else {
       $programs = $this->get_programs_per_campus( $degree_level , $campus );
     }
-    
+
     return $this->filter_programs_for_a_college( $college_code, $programs );
   }
 
@@ -163,12 +163,12 @@ class ASUDegreeService {
           'value' => $program['majorcode'],
          );
         // there could be duplicate programs offered on multiple campuses
-        if( !in_array($formatted_program, $subset) ) {
-          $subset [] = $formatted_program;  
+        if ( ! in_array( $formatted_program, $subset ) ) {
+          $subset [] = $formatted_program;
         }
       }
     }
-    return $subset; 
+    return $subset;
   }
 
   /** Get a programs Display Name( $program ) - if needed, append in () the last two digets
