@@ -138,10 +138,16 @@ class ASUDegreeService {
 
   }
 
-  /** Get major programs
+  /** Get major programs for a college at a degree level and optionally for a campus.
+   * if no campus is defined than all campuses are returned.
    */
-  public function get_majors_per_college( $college_code, $degree_level = 'graduate', $campus = 'TEMPE' ) {
-    $programs = $this->get_programs_per_campus( $degree_level , $campus );
+  public function get_majors_per_college( $college_code, $degree_level = 'graduate', $campus = null ) {
+    if( null === $campus ) {
+      $programs = $this->get_programs_on_all_campuses( $degree_level );
+    } else {
+      $programs = $this->get_programs_per_campus( $degree_level , $campus );
+    }
+    
     return $this->filter_programs_for_a_college( $college_code, $programs );
   }
 
@@ -152,13 +158,17 @@ class ASUDegreeService {
 
     foreach ( $all_programs as $program ) {
       if ( 0 === strcasecmp( $college_code, $program['programcode'] ) ) {
-        $subset [] = array(
+        $formatted_program = array(
           'label' => $this->get_program_display_name( $program ),
           'value' => $program['majorcode'],
          );
+        // there could be duplicate programs offered on multiple campuses
+        if( !in_array($formatted_program, $subset) ) {
+          $subset [] = $formatted_program;  
+        }
       }
     }
-    return $subset;
+    return $subset; 
   }
 
   /** Get a programs Display Name( $program ) - if needed, append in () the last two digets
