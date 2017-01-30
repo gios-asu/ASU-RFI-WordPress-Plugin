@@ -104,7 +104,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    * Handle the shortcode [asu-rfi-form]
    *   attributes:
    *     type = 'full' or leave blank for the default simple form
-   *     degree_level = 'ugrad' or 'grad' Default is 'ugrad'
+   *     degree_level = 'undergrad' or 'grad' Default is 'undergrad'
    *     test_mode = 'test' or leave blank for the default production
    *     source_id = integer site identifier (issued by Enrollment services department) will default to site wide setting
    *     college_program_code = 2-5 character string, usually all caps, like
@@ -118,6 +118,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
   public function asu_rfi_form( $atts, $content = '' ) {
     ensure_default( $atts, 'campus', null );
     ensure_default( $atts, 'major_code', null );
+    ensure_default( $atts, 'degreeLevel', 'undergrad');
     ensure_default( $atts, 'college_program_code', $this->get_option_attribute_or_default(
         array(
                 'name'      => ASU_RFI_Admin_Page::$options_name,
@@ -135,7 +136,6 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'default'   => 0,
               )
           ),
-          'degreeLevel' => 'ugrad', // default to undergrad
           'enrollment_terms' => ASUDegreeService::get_available_enrollment_terms(),
           'student_types' => StudentTypeService::get_student_types(),
           'college_program_code' => null,
@@ -155,10 +155,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     }
 
     // Use the attribute source id over the sites option
-    if ( isset( $atts['degree_level'] ) && ConditionalHelper::graduate( $atts['degree_level'] ) ) {
+    if ( ConditionalHelper::graduate( $atts['degree_level'] ) ) {
       $view_data['degreeLevel'] = 'grad';
       $view_data['student_types'] = StudentTypeService::get_student_types( 'grad' );
-    } elseif ( isset( $atts['degree_level'] ) && ConditionalHelper::undergraduate( $atts['degree_level'] ) ) {
+    } elseif ( ConditionalHelper::undergraduate( $atts['degree_level'] ) ) {
       $view_data['degreeLevel'] = 'ugrad';
       $view_data['student_types'] = StudentTypeService::get_student_types( 'undergrad' );
     }
