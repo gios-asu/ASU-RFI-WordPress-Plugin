@@ -1,8 +1,10 @@
 <?php
 namespace ASURFIWordPress\Shortcodes;
 use Honeycomb\Wordpress\Hook;
-use ASURFIWordPress\Services as Services;
-use ASURFIWordPress\Admin as Admin;
+use ASURFIWordPress\Services\ASUDegreeService;
+use ASURFIWordPress\Services\StudentTypeService;
+use ASURFIWordPress\Services\ASUCollegeService;
+use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
 
 
@@ -118,8 +120,8 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     ensure_default( $atts, 'major_code', null );
     ensure_default( $atts, 'college_program_code', $this->get_option_attribute_or_default(
         array(
-                'name'      => Admin\ASU_RFI_Admin_Page::$options_name,
-                'attribute' => Admin\ASU_RFI_Admin_Page::$college_code_option_name,
+                'name'      => ASU_RFI_Admin_Page::$options_name,
+                'attribute' => ASU_RFI_Admin_Page::$college_code_option_name,
                 'default'   => null,
     ) ) );
 
@@ -128,14 +130,14 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           'redirect_back_url' => get_permalink(),
           'source_id' => $this->get_option_attribute_or_default(
               array(
-                'name'      => Admin\ASU_RFI_Admin_Page::$options_name,
-                'attribute' => Admin\ASU_RFI_Admin_Page::$source_id_option_name,
+                'name'      => ASU_RFI_Admin_Page::$options_name,
+                'attribute' => ASU_RFI_Admin_Page::$source_id_option_name,
                 'default'   => 0,
               )
           ),
           'degreeLevel' => 'ugrad', // default to undergrad
-          'enrollment_terms' => Services\ASUDegreeService::get_available_enrollment_terms(),
-          'student_types' => Services\StudentTypeService::get_student_types(),
+          'enrollment_terms' => ASUDegreeService::get_available_enrollment_terms(),
+          'student_types' => StudentTypeService::get_student_types(),
           'college_program_code' => null,
           'major_code_picker' => false,
           'major_code' => $atts['major_code'],
@@ -155,27 +157,28 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     // Use the attribute source id over the sites option
     if ( isset( $atts['degree_level'] ) && ConditionalHelper::graduate( $atts['degree_level'] ) ) {
       $view_data['degreeLevel'] = 'grad';
-      $view_data['student_types'] = Services\StudentTypeService::get_student_types( 'grad' );
+      $view_data['student_types'] = StudentTypeService::get_student_types( 'grad' );
     } elseif ( isset( $atts['degree_level'] ) && ConditionalHelper::undergraduate( $atts['degree_level'] ) ) {
       $view_data['degreeLevel'] = 'ugrad';
-      $view_data['student_types'] = Services\StudentTypeService::get_student_types( 'undergrad' );
+      $view_data['student_types'] = StudentTypeService::get_student_types( 'undergrad' );
     }
 
     // get the Majors offered for this college, degree level and/or campus
     if ( isset( $atts['college_program_code'] ) ) {
 
-      $atts['college_program_code'] = Services\ASUCollegeService::add_degree_level_prefix(
+      $atts['college_program_code'] = ASUCollegeService::add_degree_level_prefix(
           $atts['college_program_code'],
       $view_data['degreeLevel']);
 
       $view_data['college_program_code'] = $atts['college_program_code'];
 
       if ( isset( $atts['major_code_picker'] ) ) {
-        $service = new Services\ASUDegreeService();
+        $service = new ASUDegreeService();
         $view_data['major_codes'] = $service->get_majors_per_college(
             $atts['college_program_code'],
             $view_data['degreeLevel'],
-        $campus );
+            $campus
+          );
       }
     }
 
