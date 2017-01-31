@@ -15,7 +15,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
 class ASUSemesterService {
 
   /**
-   * enrollment terms
+   * Get Enrollment terms
    * These are the peoplesoft term identifiers
    *  "2101" for Spring, 2010, or  3
    *  "2104" for Summer, 2010, or  3
@@ -48,7 +48,7 @@ class ASUSemesterService {
   }
 
   /**
-   * get_peoplesoft_semester_code( $year, $semester_number ):
+   * Get peoplesoft Semester Codes given ( $year, $semester_number ):
    * Given $year='2017', $semester_number = '4'
    * returns '2174'
    */
