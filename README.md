@@ -12,7 +12,7 @@ WordPress plugin to submit Request For Information requests into Salesforce
 # Site Settings
 ![screen shot 2016-12-13 at 12 43 24 pm](https://cloud.githubusercontent.com/assets/295804/21156084/c728ccae-c131-11e6-8e0f-7cbc1a6e3db6.png)
 
-**source_id** You will need to uptain a orignal source identifier from the [ASU Enrollment Services Department](mailto:ecomm@asu.edu) for your college or department.
+**source_id** You will need to obtain a orignal source identifier from the [ASU Enrollment Services Department](mailto:ecomm@asu.edu) for your college or department.
 
 **College Code** 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`. This will be the default college used for RFI forms on the site.
 
