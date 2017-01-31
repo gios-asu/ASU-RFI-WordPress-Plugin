@@ -4,6 +4,7 @@ use Honeycomb\Wordpress\Hook;
 use ASURFIWordPress\Services\ASUDegreeService;
 use ASURFIWordPress\Services\StudentTypeService;
 use ASURFIWordPress\Services\ASUCollegeService;
+use ASURFIWordPress\Stores\ASUDegreeStore;
 use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
 
@@ -178,8 +179,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       $view_data['college_program_code'] = $atts['college_program_code'];
 
       if ( isset( $atts['major_code_picker'] ) ) {
-        $service = new ASUDegreeService();
-        $view_data['major_codes'] = $service->get_majors_per_college(
+        $view_data['major_codes'] = ASUDegreeStore::get_programs(
             $atts['college_program_code'],
             $view_data['degreeLevel'],
             $atts['campus']

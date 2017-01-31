@@ -20,6 +20,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * XML RPC API Docs: http://www.public.asu.edu/~lcabre/javadocs/dsws/
  */
 class ASUDegreeService {
+  private static $RPC_TIMEOUT = 10; // seconds
 
   public function __construct( $client = null ) {
     if ( null === $client ) {
@@ -118,11 +119,14 @@ class ASUDegreeService {
         array(
         new Value( $campus, 'string' ),
         new Value( $program_to_search, 'string' ),
-        new Value( false, 'boolean' ),
+        new Value( false, 'boolean' ), // get both certificates and majors
         )
     );
 
-    $response = $this->client->send( $request );
+    $response = $this->client->send( $request, ASUDegreeService::$RPC_TIMEOUT );
+    if( ! empty( $response->errstr ) ) {
+      throw new \Exception('ASU Degree Service Error: '.$response->errno.': '.$response->errstr.' : '.ASU_DIRECTORY_XML_RPC_SERVER);
+    }
     $value = $response->value()->me;
     $value = array_pop( $value );
 
