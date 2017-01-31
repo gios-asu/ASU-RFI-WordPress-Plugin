@@ -19,6 +19,7 @@ class ASU_RFI_Admin_Page extends Hook {
   public static $options_name = 'asu-rfi-options';
   public static $options_group = 'asu-rfi-options_group';
   public static $source_id_option_name = 'source_id';
+  public static $college_code_option_name = 'college_code';
   public static $section_id = 'asu-rfi-section_id';
   public static $section_name = 'asu-rfi-section_name';
   public static $page_name = 'asu-rfi-admin-page';
@@ -34,6 +35,7 @@ class ASU_RFI_Admin_Page extends Hook {
         self::$options_name,
         array(
           self::$source_id_option_name => 0,
+          self::$college_code_option_name => null,
         )
     );
 
@@ -76,6 +78,17 @@ class ASU_RFI_Admin_Page extends Hook {
         array(
           $this,
           'source_id_on_callback',
+        ), // Callback
+        self::$section_name,
+        self::$section_id
+    );
+
+    add_settings_field(
+        self::$college_code_option_name,
+        'Default College Code',
+        array(
+          $this,
+          'college_code_on_callback',
         ), // Callback
         self::$section_name,
         self::$section_id
@@ -123,7 +136,35 @@ class ASU_RFI_Admin_Page extends Hook {
   }
 
   /**
-   * Print the form section for the research group slugs
+   * Print the form section for the college code
+   */
+  public function college_code_on_callback() {
+
+    $value = $this->get_option_attribute_or_default(
+        array(
+          'name'      => self::$options_name,
+          'attribute' => self::$college_code_option_name,
+          'default'   => '',
+        )
+    );
+
+    $html = <<<HTML
+    <input type="text" id="%s" name="%s[%s]" value="%s"/><br/>
+    <em>College Codes are used in the class program catalog, they usually are two or three characters long and in all caps. Also they can be found with `GR` or `UG` prefixes (for undergraduate or graduate courses), leave that prefix off.</em><br/>
+    <span>Example: <strong>SU</strong> for `The School of Sustainbility`</span>
+HTML;
+
+    printf(
+        $html,
+        self::$college_code_option_name,
+        self::$options_name,
+        self::$college_code_option_name,
+        $value
+    );
+  }
+
+  /**
+   * Print the form section for the source_id form element
    */
   public function source_id_on_callback() {
 
@@ -148,7 +189,6 @@ HTML;
         self::$source_id_option_name,
         $value
     );
-
   }
 
   /**
@@ -159,6 +199,11 @@ HTML;
     if ( isset( $input[ self::$source_id_option_name ] ) ) {
       $input[ self::$source_id_option_name ] = intval( $input[ self::$source_id_option_name ] );
     }
+
+    if ( isset( $input[ self::$college_code_option_name ] ) ) {
+      $input[ self::$college_code_option_name ] = strtoupper( $input[ self::$college_code_option_name ] );
+    }
+
     return $input;
   }
 

@@ -7,6 +7,7 @@
 
 /**
  * Shortcodes test case.
+ * @group shortcodes
  */
 class ShortCodesTest extends WP_UnitTestCase {
 
@@ -42,6 +43,22 @@ class ShortCodesTest extends WP_UnitTestCase {
   function test_shortcode_test_mode() {
     $result = do_shortcode( '[asu-rfi-form test_mode="test"]' );
     $this->assertContains('name="testmode" value="Test"', $result);
+  }
+
+  function test_shortcode_college_code() {
+    $result = do_shortcode( '[asu-rfi-form college_program_code="ABCD"]' );
+    $this->assertContains('ABCD"', $result); // Note: the program code gets the GR or UG appended to it
+  }
+
+  function test_shortcode_major_code() {
+    $result = do_shortcode( '[asu-rfi-form major_code="ABCD"]' );
+    $this->assertContains('"ABCD"', $result);
+  }
+
+  // TODO: need to mock services
+  function test_shortcode_major_picker() {
+    $result = do_shortcode( '[asu-rfi-form major_code_picker=true college_program_code="SU"]' );
+    $this->assertContains('<select name="poiCode"', $result);
   }
 
 }

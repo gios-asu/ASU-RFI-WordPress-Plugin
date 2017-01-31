@@ -21,6 +21,8 @@ if ( ! function_exists( 'add_filter' ) ) {
 
 define( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION', '0.0.1' );
 
+define( 'ASU_DIRECTORY_XML_RPC_SERVER', 'https://webapp4.asu.edu/programs/XmlRpcServer');
+
 require __DIR__ . '/vendor/autoload.php';
 
 $registry = new \Honeycomb\Services\Register();
