@@ -14,11 +14,6 @@ use ASURFIWordPress\Services\ASUDegreeService;
  */
 class ASUDegreeServiceTest extends WP_UnitTestCase {
 
-  function test_get_available_enrollment_terms() {
-    $terms = ASUDegreeService::get_available_enrollment_terms();
-    $this->assertInternalType('array', $terms);
-    $this->assertGreaterThan(4, count($terms), 'there should be more than 4 terms');    
-  }
 
   function test_get_programs_per_campus() {
     $service = new ASUDegreeService();

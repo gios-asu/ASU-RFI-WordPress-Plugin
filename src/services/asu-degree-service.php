@@ -6,7 +6,7 @@ use PhpXmlRpc\Value;
 use PhpXmlRpc\Request;
 use PhpXmlRpc\Client;
 use ASURFIWordPress\Helpers\ConditionalHelper;
-use ASURFIWordPress\Services\CampusService;
+use ASURFIWordPress\Services\ASUCampusService;
 
 // Avoid direct calls to this file
 if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
@@ -29,40 +29,7 @@ class ASUDegreeService {
     $this->client = $client;
   }
 
-  /*
-   * enrollment terms
-   * These are the peoplesoft term identifiers
-   *  "2101" for Spring, 2010, or  3
-   *  "2104" for Summer, 2010, or  3
-   *  "2107" for Fall, 2010, or  2
-   *  "2109" for Winter, 2010
-   *  "2177" for Summer, 2017
-   */
-  public static function get_available_enrollment_terms() {
-    $semester_names = array(
-      1 => 'Spring',
-      4 => 'Summer',
-      7 => 'Fall',
-      9 => 'Winter',
-    );
-
-    // TODO: this obviously should be more dynamic but it will do for the next few years
-    $years = array( '2017', '2018', '2019' );
-    $terms = array();
-
-    foreach ( $years as $year ) {
-      foreach ( $semester_names as $semester_key => $semester_name ) {
-        $terms[] = array(
-          'value' => self::get_peoplesoft_semester_code( $year, $semester_key ),
-          'label' => $semester_name . ' ' . $year,
-        );
-      }
-    }
-
-    return $terms;
-  }
-
-  /*
+  /**
    * get_peoplesoft_semester_code( $year, $semester_number ):
    * Given $year='2017', $semester_number = '4'
    * returns '2174'
@@ -77,7 +44,7 @@ class ASUDegreeService {
    */
   public function get_programs_on_all_campuses( $degree_level = 'graduate' ) {
     $results = array();
-    $campuses = CampusService::get_campus_codes();
+    $campuses = ASUCampusService::get_campus_codes();
     foreach ( $campuses as $campus_code ) {
       $results_for_this_campus = $this->get_programs_per_campus( $degree_level, $campus_code );
       $results = array_merge( $results, $results_for_this_campus );

@@ -12,7 +12,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
 
 /** Campus Service - services for the Various ASU Campuses
  */
-class CampusService {
+class ASUCampusService {
 
 	/** Get Campus codes as defined by http://www.public.asu.edu/~lcabre/javadocs/dsws/
 	 *	Since there is no actual endpoint to get these, we'll have to hardcode them here.

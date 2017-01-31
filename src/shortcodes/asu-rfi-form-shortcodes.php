@@ -4,6 +4,7 @@ use Honeycomb\Wordpress\Hook;
 use ASURFIWordPress\Services\ASUDegreeService;
 use ASURFIWordPress\Services\StudentTypeService;
 use ASURFIWordPress\Services\ASUCollegeService;
+use ASURFIWordPress\Services\ASUSemesterService;
 use ASURFIWordPress\Stores\ASUDegreeStore;
 use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
@@ -141,7 +142,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'default'   => 0,
               )
           ),
-          'enrollment_terms' => ASUDegreeService::get_available_enrollment_terms(),
+          'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms(),
           'student_types' => StudentTypeService::get_student_types(),
           'college_program_code' => null,
           'major_code_picker' => false,
