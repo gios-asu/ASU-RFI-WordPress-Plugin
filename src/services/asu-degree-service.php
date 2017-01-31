@@ -88,6 +88,7 @@ class ASUDegreeService {
   /** Get Programs offered on a specific Campus
    * the response object is rather obscure to work with, it looks like this:
    *
+   * @throws \Exception if unable to make RPC request
    PhpXmlRpc\Response Object (
     [val] => PhpXmlRpc\Value Object
         ( [me] => Array (
@@ -124,8 +125,8 @@ class ASUDegreeService {
     );
 
     $response = $this->client->send( $request, ASUDegreeService::$RPC_TIMEOUT );
-    if( ! empty( $response->errstr ) ) {
-      throw new \Exception('ASU Degree Service Error: '.$response->errno.': '.$response->errstr.' : '.ASU_DIRECTORY_XML_RPC_SERVER);
+    if ( ! empty( $response->errstr ) ) {
+      throw new \Exception( 'ASU Degree Service Error: ' . $response->errno . ': ' . $response->errstr . ' : ' . ASU_DIRECTORY_XML_RPC_SERVER );
     }
     $value = $response->value()->me;
     $value = array_pop( $value );
