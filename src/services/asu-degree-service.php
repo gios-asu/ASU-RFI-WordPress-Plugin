@@ -29,15 +29,6 @@ class ASUDegreeService {
     $this->client = $client;
   }
 
-  /**
-   * get_peoplesoft_semester_code( $year, $semester_number ):
-   * Given $year='2017', $semester_number = '4'
-   * returns '2174'
-   */
-  private static function get_peoplesoft_semester_code( $year, $semester_number ) {
-    return substr( $year,0,1 ) . substr( $year,2,2 ) . $semester_number;
-  }
-
   /** Get all the programs across all campuses for a specific degree level in one array.
    * 'graduate' or 'undergraduate' are accepted values for degree levels.
    * returns an array.
