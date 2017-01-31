@@ -116,9 +116,13 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *          restricted down to just the majors offered on that particular campus.
    */
   public function asu_rfi_form( $atts, $content = '' ) {
+    // if there are no attributes passed then $atts is not an array, its a string
+    if( ! is_array( $atts ) ) {
+      $atts = array();
+    }
     ensure_default( $atts, 'campus', null );
     ensure_default( $atts, 'major_code', null );
-    ensure_default( $atts, 'degreeLevel', 'undergrad');
+    ensure_default( $atts, 'degree_level', 'undergrad');
     ensure_default( $atts, 'college_program_code', $this->get_option_attribute_or_default(
         array(
                 'name'      => ASU_RFI_Admin_Page::$options_name,
