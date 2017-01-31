@@ -17,16 +17,16 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * XML RPC API Docs: http://www.public.asu.edu/~lcabre/javadocs/dsws/
  */
 class ASUDegreeStore {
-  public static $transient_TTL = DAY_IN_SECONDS * 30;
 
   public static function get_programs( $college, $degree_level = 'graduate', $campus = null ) {
+    $transient_TTL = DAY_IN_SECONDS * 30;
     $transient_name = ASUDegreeStore::get_transient_name( $college, $degree_level, $campus );
     if ( WP_DEBUG or false === ( $transient_content = get_transient( $transient_name ) ) ) {
       // transient doesn't exist, so regenerate the data and save the transient for next time
       try {
         $degree_service = new ASUDegreeService();
         $transient_content = $degree_service->get_majors_per_college( $college, $degree_level, $campus );
-        set_transient( $transient_name, $transient_content, ASUDegreeStore::$transient_TTL );
+        set_transient( $transient_name, $transient_content, $transient_TTL );
       } catch (Exception $e) {
         // don't store an error in the transient
         error_log( $e->getMessage() );
