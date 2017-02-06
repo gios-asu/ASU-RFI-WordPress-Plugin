@@ -46,7 +46,7 @@
       <div class="form-group has-feedback">
         <label class="control-label col-sm-3" for="questions">Question?</label>
         <div class="col-sm-9">
-          <textarea type="text" class="form-control" id="questions" name="questions" maxlength="500" aria-required="true"></textarea>
+          <textarea type="text" class="form-control" id="questions" name="questions" maxlength="500"></textarea>
         </div>
       </div>
       <div class="form-group optional has-feedback">
@@ -60,7 +60,7 @@
           </select>
         </div>
       </div>
-      
+
       {{#if college_program_code }}
         <input type="hidden" name="collegeOfInterest" value="{{ college_program_code }}">
       {{/if}}
@@ -68,12 +68,12 @@
       {{#if major_code }}
         <input type="hidden" name="poiCode" value="{{ major_code }}">
       {{/if}}
-      
+
       {{#if major_codes }}
-        <div class="form-group optional has-feedback">
+        <div class="form-group has-feedback {{#if_cond degreeLevel '==' 'grad'}}required{{/if_cond}}">
           <label class="control-label col-sm-3" for="poiCode">Major</label>
           <div class="col-sm-9">
-            <select name="poiCode" id="poiCode" class="form-select">
+            <select name="poiCode" id="poiCode" class="form-select" {{#if_cond degreeLevel '==' 'grad'}}required aria-required="true"{{/if_cond}}>
               <option value="" selected="selected">-</option>
               {{#each major_codes }}
                 <option value="{{ value }}">{{ label }}</option>
@@ -91,4 +91,3 @@
       </div>
 </form>
 {{> rfi-form/form-javascript }}
-
