@@ -41,7 +41,7 @@ class ASUSemesterService {
       foreach ( $semester_names as $semester_key => $semester_name ) {
         $terms[] = array(
           'value' => self::get_peoplesoft_semester_code( $year, $semester_key ),
-          'label' => $year. ' ' . $semester_name,
+          'label' => $year . ' ' . $semester_name,
         );
       }
     }
