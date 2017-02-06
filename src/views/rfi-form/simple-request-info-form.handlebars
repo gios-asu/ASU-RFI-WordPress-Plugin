@@ -83,6 +83,20 @@
         </div>
       {{/if}}
 
+      {{#if enrollment_terms }}
+        <div class="form-group optional has-feedback">
+          <label class="control-label col-sm-3" for="projectedEnrollment">My start date</label>
+          <div class="col-sm-9">
+            <select name="projectedEnrollment" id="projectedEnrollment" class="form-select">
+              <option value="" selected="selected">-</option>
+              {{#each enrollment_terms }}
+                <option value="{{ value }}">{{ label }}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      {{/if}}
+
       <div class="form-group">
         <div class="col-sm-3"></div>
         <div class="col-sm-9">

@@ -22,16 +22,18 @@ class ASUSemesterService {
    *  "2107" for Fall, 2010, or  2
    *  "2109" for Winter, 2010
    *  "2177" for Summer, 2017
+   *    Since this is for display purposes only, hide the smaller semesters that
+   *    dont get included on public facing forms
    */
   public static function get_available_enrollment_terms() {
     $semester_names = array(
       1 => 'Spring',
-      4 => 'Summer',
+      // 4 => 'Summer',
       7 => 'Fall',
-      9 => 'Winter',
+      // 9 => 'Winter',
     );
 
-    // TODO: this obviously should be more dynamic but it will do for the next few years
+    // TODO: this obviously should be more dynamic but it will do for now
     $years = array( '2017', '2018', '2019' );
     $terms = array();
 
@@ -39,7 +41,7 @@ class ASUSemesterService {
       foreach ( $semester_names as $semester_key => $semester_name ) {
         $terms[] = array(
           'value' => self::get_peoplesoft_semester_code( $year, $semester_key ),
-          'label' => $semester_name . ' ' . $year,
+          'label' => $year. ' ' . $semester_name,
         );
       }
     }
