@@ -133,7 +133,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
     ) ) );
 
     $view_data = array(
-          'form_endpoint' => self::DEVELOPMENT_FORM_ENDPOINT,
+          'form_endpoint' => self::PRODUCTION_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
           'source_id' => $this->get_option_attribute_or_default(
               array(
