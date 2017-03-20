@@ -21,14 +21,14 @@ WordPress plugin to submit Request For Information requests into Salesforce
 
 `[asu-rfi-form]` - For displaying an Request For Information form.
 * attributes:
-   *     **type** = `full` or leave blank for the default simple form
-   *     **degree_level** = `ugrad` or `grad` Default is `ugrad`, (alternative spellings `undergraduate` and `graduate` will also work)
-   *     **test_mode** = `test` or leave blank for the default production
-   *     **major_code** = eg `SUSMSUS` - for hard coding a specific major for a form
-   *     **major_code_picker** = `true` to enable, leave off or blank to disable showing a drop down of majors based on the campus, school and degree level specified. 
-   *     **source_id** = integer site identifier (issued by Enrollment services department) will default to the site wide setting made in the admin options.
-   *     **college_program_code** = 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`, it will default to the value set in the RFI Admin Options menu so only use this attribute if you want to override one specific form.
-   *     **campus** = eg `TEMPE` or leave blank for all Campuses.
-   *
+  * **type** = `full` or leave blank for the default simple form
+  * **degree_level** = `ugrad` or `grad` Default is `ugrad`, (alternative spellings `undergraduate` and `graduate` will also work)
+  * **test_mode** = `test` or leave blank for the default production
+  * **major_code** = eg `SUSMSUS` - for hard coding a specific major for a form
+  * **major_code_picker** = `true` to enable, leave off or blank to disable showing a drop down of majors based on the campus, school and degree level specified. 
+  * **source_id** = integer site identifier (issued by Enrollment services department) will default to the site wide setting made in the admin options.
+  * **college_program_code** = 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`, it will default to the value set in the RFI Admin Options menu so only use this attribute if you want to override one specific form.
+  * **campus** = eg `TEMPE` or leave blank for all Campuses.
+
 
 ![screen shot 2017-01-30 at 4 55 33 pm](https://cloud.githubusercontent.com/assets/295804/22447084/86dfca7e-e70d-11e6-862f-3373b29064e4.png)
