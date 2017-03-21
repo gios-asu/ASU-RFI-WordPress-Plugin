@@ -76,7 +76,7 @@ class Client_Geocoding_Service {
     } elseif ( array_key_exists( 'HTTP_X_FORWARDED_FOR', $headers ) && filter_var( $headers['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
       $the_ip = $headers['HTTP_X_FORWARDED_FOR'];
     } else {
-      $the_ip = filter_var( $headers['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 );
+      $the_ip = filter_var( $_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 );
     }
     // allow others to apply their own filters for discovering the client ip address
     return apply_filters( 'wpb_get_ip', $the_ip );
