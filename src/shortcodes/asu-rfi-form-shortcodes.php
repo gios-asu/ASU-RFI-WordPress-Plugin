@@ -8,6 +8,7 @@ use ASURFIWordPress\Services\ASUSemesterService;
 use ASURFIWordPress\Stores\ASUDegreeStore;
 use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
+use ASURFIWordPress\Services\Client_Geocodeing_Service;
 
 
 // Avoid direct calls to this file
@@ -210,6 +211,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
       // we have submitted the request form and should display a success or error message
       if ( 200 === intval( $response_status_code ) ) {
         $view_data['success_message'] = 'Thank you for your submission!';
+        $view_data['client_geo_location'] = Client_Geocodeing_Service::client_geo_location();
       } else {
         error_log( 'error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message );
         $view_data['error_message'] = $message ? 'Error:' . $message : 'Something went wrong with your submission';
