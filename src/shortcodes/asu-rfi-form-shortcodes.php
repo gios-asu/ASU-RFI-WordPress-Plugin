@@ -8,7 +8,7 @@ use ASURFIWordPress\Services\ASUSemesterService;
 use ASURFIWordPress\Stores\ASUDegreeStore;
 use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
-use ASURFIWordPress\Services\Client_Geocodeing_Service;
+use ASURFIWordPress\Services\Client_Geocoding_Service;
 
 
 // Avoid direct calls to this file
