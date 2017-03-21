@@ -11,7 +11,7 @@ if ( ! defined( 'GIOS_WP_VERSION' ) ) {
 /** Client Geocoding Service - Provides a service for finding the geographical locations
  * of the web server's client.
  */
-class Client_Geocodeing_Service {
+class Client_Geocoding_Service {
 
   private static $geocoding_service_prodiver = 'http://freegeoip.net/json/%s';
 

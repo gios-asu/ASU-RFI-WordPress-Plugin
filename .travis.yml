@@ -30,7 +30,6 @@ install:
   - bower install
 
 before_script:
-  - composer dump-autoload
   - bash bin/install-wp-tests.sh wordpress_test_asu_rfi root '' localhost $WP_VERSION
   - vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs/
 
