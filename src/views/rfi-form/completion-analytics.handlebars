@@ -53,6 +53,9 @@ $(document).ready(function () {
     ga('require', 'ecommerce');
     var clientGeoLocation = '{{{ client_geo_location }}}';
     submit_analytics_with_location(clientGeoLocation, ga);
+
+    // Also send a standard event
+    ga('send', 'event', '{{college_program_code}}-{{major_code}}-RFI', 'submission');
   }
   // else: no google analytics found 
   
