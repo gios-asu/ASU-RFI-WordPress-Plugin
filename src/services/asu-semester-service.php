@@ -33,7 +33,7 @@ class ASUSemesterService {
       // 9 => 'Winter',
     );
 
-    $years = array( date("Y"), date("Y")+1, date("Y")+2 ); // this year and two years in the future
+    $years = array( date( 'Y' ), date( 'Y' ) + 1, date( 'Y' ) + 2 ); // this year and two years in the future
     $terms = array();
 
     foreach ( $years as $year ) {
@@ -50,10 +50,10 @@ class ASUSemesterService {
     // LOGIC
     // if it is: jan 1st X, first semseter should be Fall of X
     // if it is: April 1st X, first semseter shoudl be Spring of X+1
-    if( $current_month_number >= 0 ) {
+    if ( $current_month_number >= 0 ) {
       array_shift( $terms ); // remove the spring of this year
-    } 
-    if ( $current_month_number >= 5 ) { 
+    }
+    if ( $current_month_number >= 5 ) {
       array_shift( $terms ); // remove fall of this year
     }
 
