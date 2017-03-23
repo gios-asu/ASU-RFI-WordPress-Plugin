@@ -1,0 +1,64 @@
+{{!-- completion-analytics.handlebars --}}
+<!-- Recording a Transactional Value for the RFI submission --> 
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+  function submit_analytics_with_location( data, ga ) {
+    // default if we dont get any geo location data to work with
+    var value = 100;
+    var locale = 'In-State';
+
+    // if we have a location to work with
+    if(data != null ) { 
+      if(data.hasOwnProperty('country_code') && data.country_code == 'US') {
+        if(data.hasOwnProperty('region_code') && data.region_code == 'AZ') {
+          locale = 'In-State';
+          value = 100;
+        } else {
+          locale = 'Out-of-State';
+          value = 200;
+        }
+      } else if( data.hasOwnProperty('country_code') ) { 
+        locale = 'International';
+        value = 300;        
+      }
+    }
+    submit_ga_transaction_value( value, locale, ga );
+  }
+
+  function submit_ga_transaction_value( value , locale, ga ) {
+    var trasaction_id = Date.now(); // epoc time
+
+    ga('ecommerce:addTransaction', {
+      'id': trasaction_id,                     
+      'affiliation': 'RFI - ' + locale + ' - {{ college_program_code }}',   
+      'revenue': value,
+      'currency': 'USD' // local currency code.
+    });
+    ga('ecommerce:addItem', {
+      'id': trasaction_id,
+      'name': '{{ college_program_code }}',
+      'sku': '-{{ major_code }}-RFI',
+      'category': 'RFI',
+      'price': value,
+      'quantity': '1',
+      'currency': 'USD' // local currency code.
+    });
+    ga('ecommerce:send');
+  }
+  
+  var google_analyics_is_defined = typeof ga === 'undefined' || !ga ;
+  if ( ! google_analyics_is_defined ) {
+    ga('require', 'ecommerce');
+    var clientGeoLocation = '{{{ client_geo_location }}}';
+    submit_analytics_with_location(clientGeoLocation, ga);
+
+    // Also send a standard event
+    ga('send', 'event', '{{college_program_code}}-{{major_code}}-RFI', 'submission');
+  }
+  // else: no google analytics found 
+  
+});
+
+</script>

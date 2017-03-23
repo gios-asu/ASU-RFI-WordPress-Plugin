@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a05bb49c362db004fc33100906aff7e5",
-    "content-hash": "8662743fbdbcc105544a2cbc79002d46",
+    "hash": "208a9ff7758c3483df9824fa1b481ed5",
+    "content-hash": "0413de5816360e56de782b39a05f4823",
     "packages": [
         {
             "name": "coduo/php-humanizer",
@@ -70,11 +70,11 @@
         },
         {
             "name": "gios-asu/honeycomb",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gios-asu/honeycomb.git",
-                "reference": "b9ce04f86420b80706715d1c194c623269e49244"
+                "reference": "1cde20954b187fdff0be061c236bbf57ef9b4536"
             },
             "require": {
                 "gios-asu/nectary": ">=0.2.2"
@@ -99,7 +99,7 @@
                 }
             ],
             "description": "A framework for WordPress plugins",
-            "time": "2016-11-15 22:32:33"
+            "time": "2017-02-27 17:39:34"
         },
         {
             "name": "gios-asu/nectary",
@@ -197,6 +197,7 @@
                 "countries",
                 "country"
             ],
+            "abandoned": true,
             "time": "2015-04-21 03:50:08"
         },
         {
@@ -246,6 +247,7 @@
             "keywords": [
                 "exception"
             ],
+            "abandoned": true,
             "time": "2013-08-27 17:43:25"
         },
         {

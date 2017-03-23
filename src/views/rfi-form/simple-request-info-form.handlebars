@@ -3,6 +3,7 @@
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     {{ success_message }}
   </div>
+  {{> rfi-form/completion-analytics }}
 {{/if}}
 {{#if error_message }}
   <div class="alert alert-danger" role="alert">
@@ -84,10 +85,10 @@
       {{/if}}
 
       {{#if enrollment_terms }}
-        <div class="form-group optional has-feedback">
+        <div class="form-group required has-feedback">
           <label class="control-label col-sm-3" for="projectedEnrollment">My start date</label>
           <div class="col-sm-9">
-            <select name="projectedEnrollment" id="projectedEnrollment" class="form-select">
+            <select name="projectedEnrollment" id="projectedEnrollment" class="form-select" required aria-required="true">
               <option value="" selected="selected">-</option>
               {{#each enrollment_terms }}
                 <option value="{{ value }}">{{ label }}</option>
