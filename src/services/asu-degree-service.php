@@ -20,7 +20,8 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * XML RPC API Docs: http://www.public.asu.edu/~lcabre/javadocs/dsws/
  */
 class ASUDegreeService {
-  private static $RPC_TIMEOUT = 10; // seconds
+  // Note: these calls are much slower so these timeouts should be longer than the others
+  private static $RPC_TIMEOUT = 15; // seconds
 
   public function __construct( $client = null ) {
     if ( null === $client ) {
