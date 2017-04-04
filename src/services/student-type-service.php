@@ -20,8 +20,9 @@ class StudentTypeService {
   public static function get_student_types( $grad_or_undergrad = null ) {
     if ( ConditionalHelper::undergraduate( $grad_or_undergrad ) ) {
       return array(
-          array( 'value' => 'Freshman', 'label' => 'Undergraduate Freshman Student' ),
-          array( 'value' => 'Transfer', 'label' => 'Undergraduate Transfer Student' ),
+          array( 'value' => 'Freshman',    'label' => 'Undergraduate Freshman Student' ),
+          array( 'value' => 'Transfer',    'label' => 'Undergraduate Transfer Student' ),
+          array( 'value' => 'Readmission', 'label' => 'Undergraduate Readmission Student' ),
         );
     } elseif (  ConditionalHelper::graduate( $grad_or_undergrad ) ) {
       return array(
@@ -33,12 +34,13 @@ class StudentTypeService {
     }
     // default to returning everything
     return array(
-        array( 'value' => 'Freshman', 'label' => 'Undergraduate Freshman Student' ),
-        array( 'value' => 'Transfer', 'label' => 'Undergraduate Transfer Student' ),
-        array( 'value' => 'Masters',  'label' => 'Graduate Masters Student' ),
-        array( 'value' => 'Doctoral', 'label' => 'Graduate Doctoral Student' ),
-        array( 'value' => 'cert',     'label' => 'Graduate Certificate Student' ),
-        array( 'value' => 'nd',       'label' => 'Graduate Non-Degree Seeking Student' ),
+        array( 'value' => 'Freshman',    'label' => 'Undergraduate Freshman Student' ),
+        array( 'value' => 'Transfer',    'label' => 'Undergraduate Transfer Student' ),
+        array( 'value' => 'Readmission', 'label' => 'Undergraduate Readmission Student' ),
+        array( 'value' => 'Masters',     'label' => 'Graduate Masters Student' ),
+        array( 'value' => 'Doctoral',    'label' => 'Graduate Doctoral Student' ),
+        array( 'value' => 'cert',        'label' => 'Graduate Certificate Student' ),
+        array( 'value' => 'nd',          'label' => 'Graduate Non-Degree Seeking Student' ),
       );
   }
 }
