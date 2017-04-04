@@ -19,7 +19,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * College Information Service for ASU
  */
 class ASUCollegeService {
-  private static $RPC_TIMEOUT = 9; // seconds
+  private static $RPC_TIMEOUT = 15; // seconds
 
   public function __construct( $client = null ) {
     if ( null === $client ) {
