@@ -69,7 +69,7 @@
 
       {{#if major_codes }}
         <div class="form-group has-feedback {{#if_cond degreeLevel '==' 'grad'}}required{{/if_cond}}">
-          <label class="control-label col-sm-3" for="poiCode">{{#if_cond degreeLevel '==' 'ugrad'}}Major{{else}}Program of Interest{{/if_cond}}</label>
+          <label class="control-label col-sm-3" for="poiCode">{{#if_cond degreeLevel '==' 'ugrad'}}Major{{else}}My program of interest{{/if_cond}}</label>
           <div class="col-sm-9">
             <select name="poiCode" id="poiCode" class="form-select" {{#if_cond degreeLevel '==' 'grad'}}required aria-required="true"{{/if_cond}}>
               <option value="" selected="selected">-</option>
@@ -83,7 +83,7 @@
 
       {{#if enrollment_terms }}
         <div class="form-group required has-feedback">
-          <label class="control-label col-sm-3" for="projectedEnrollment">Anticipated start date</label>
+          <label class="control-label col-sm-3" for="projectedEnrollment">My anticipated start date</label>
           <div class="col-sm-9">
             <select name="projectedEnrollment" id="projectedEnrollment" class="form-select" required aria-required="true">
               <option value="" selected="selected">-</option>
