@@ -131,6 +131,7 @@ class ASUDegreeService {
         }
       }
     }
+    asort($subset);
     return $subset;
   }
 
