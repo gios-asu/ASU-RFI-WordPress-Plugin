@@ -25,13 +25,23 @@ class ASUSemesterService {
    *    Since this is for display purposes only, hide the smaller semesters that
    *    dont get included on public facing forms
    */
-  public static function get_available_enrollment_terms() {
-    $semester_names = array(
-      1 => 'Spring',
-      // 4 => 'Summer',
-      7 => 'Fall',
-      // 9 => 'Winter',
-    );
+  public static function get_available_enrollment_terms( $degree_level = 'undergrad' ) {
+    // Enrollment services staff requested Summer session be included for undergrad form
+    if ( 'undergrad' === $degree_level ) {
+      $semester_names = array(
+        1 => 'Spring',
+        4 => 'Summer',
+        7 => 'Fall',
+        // 9 => 'Winter',
+      );
+    } else {
+      $semester_names = array(
+        1 => 'Spring',
+        // 4 => 'Summer',
+        7 => 'Fall',
+        // 9 => 'Winter',
+      );
+    }
 
     $years = array( date( 'Y' ), date( 'Y' ) + 1, date( 'Y' ) + 2 ); // this year and two years in the future
     $terms = array();

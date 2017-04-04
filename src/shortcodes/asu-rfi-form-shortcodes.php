@@ -143,7 +143,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'default'   => 0,
               )
           ),
-          'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms(),
+          'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms( $atts['degree_level'] ),
           'student_types' => StudentTypeService::get_student_types(),
           'college_program_code' => null,
           'major_code_picker' => false,
