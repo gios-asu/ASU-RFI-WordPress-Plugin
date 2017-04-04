@@ -44,10 +44,10 @@
           <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ phoneNumber }}" placeholder='(123) 456-7890' maxlength="30" required aria-required="true">
         </div>
       </div>
-      <div class="form-group optional has-feedback">
+      <div class="form-group required has-feedback">
         <label class="control-label col-sm-3" for="StudentType">I will be a future</label>
         <div class="col-sm-9">
-          <select name="StudentType" id="StudentType" class="form-select">
+          <select name="StudentType" id="StudentType" class="form-select" required aria-required="true">
             <option value="" selected="selected">-</option>
             {{#each student_types }}
               <option value="{{ value }}">{{ label }}</option>
