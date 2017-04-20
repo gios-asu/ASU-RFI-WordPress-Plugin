@@ -1,5 +1,5 @@
 {{!-- completion-analytics.handlebars --}}
-<!-- Recording a Transactional Value for the RFI submission --> 
+<!-- Recording a Transactional Value for the RFI submission -->
 
 <script type="text/javascript">
 
@@ -10,7 +10,7 @@ $(document).ready(function () {
     var locale = 'In-State';
 
     // if we have a location to work with
-    if(data != null ) { 
+    if(data != null ) {
       if(data.hasOwnProperty('country_code') && data.country_code == 'US') {
         if(data.hasOwnProperty('region_code') && data.region_code == 'AZ') {
           locale = 'In-State';
@@ -19,9 +19,9 @@ $(document).ready(function () {
           locale = 'Out-of-State';
           value = 200;
         }
-      } else if( data.hasOwnProperty('country_code') ) { 
+      } else if( data.hasOwnProperty('country_code') ) {
         locale = 'International';
-        value = 300;        
+        value = 300;
       }
     }
     submit_ga_transaction_value( value, locale, ga );
@@ -31,8 +31,8 @@ $(document).ready(function () {
     var trasaction_id = Date.now(); // epoc time
 
     ga('ecommerce:addTransaction', {
-      'id': trasaction_id,                     
-      'affiliation': 'RFI - ' + locale + ' - {{ college_program_code }}',   
+      'id': trasaction_id,
+      'affiliation': 'RFI - ' + locale + ' - {{ college_program_code }}',
       'revenue': value,
       'currency': 'USD' // local currency code.
     });
@@ -47,7 +47,7 @@ $(document).ready(function () {
     });
     ga('ecommerce:send');
   }
-  
+
   var google_analyics_is_defined = typeof ga === 'undefined' || !ga ;
   if ( ! google_analyics_is_defined ) {
     ga('require', 'ecommerce');
@@ -57,8 +57,8 @@ $(document).ready(function () {
     // Also send a standard event
     ga('send', 'event', '{{college_program_code}}-{{major_code}}-RFI', 'submission');
   }
-  // else: no google analytics found 
-  
+  // else: no google analytics found
+
 });
 
 </script>
