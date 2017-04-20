@@ -61,6 +61,4 @@ class ASUDegreeStore {
 
     return 'ASURFI' . $hashed_parameters;
   }
-
-
 }
