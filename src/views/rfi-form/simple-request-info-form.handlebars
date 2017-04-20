@@ -44,6 +44,7 @@
           <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ phoneNumber }}" placeholder='(123) 456-7890' maxlength="30" required aria-required="true">
         </div>
       </div>
+      {{#if_cond degreeLevel '==' 'ugrad'}}
       <div class="form-group required has-feedback">
         <label class="control-label col-sm-3" for="StudentType">I will be a future</label>
         <div class="col-sm-9">
@@ -55,6 +56,7 @@
           </select>
         </div>
       </div>
+      {{/if_cond}}
 
       {{#if college_program_code }}
         <input type="hidden" name="collegeOfInterest" value="{{ college_program_code }}">
@@ -77,6 +79,20 @@
           </div>
         </div>
       {{/if}}
+
+      {{#if_cond degreeLevel '==' 'grad'}} {{! Move the StudentType field after POICode because StudentType will be auto-selected !}}
+        <div class="form-group required has-feedback">
+          <label class="control-label col-sm-3" for="StudentType">I will be a future</label>
+          <div class="col-sm-9">
+            <select name="StudentType" id="StudentType" class="form-select" required aria-required="true">
+              <option value="" selected="selected">-</option>
+              {{#each student_types }}
+                <option value="{{ value }}">{{ label }}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      {{/if_cond}}
 
       {{#if enrollment_terms }}
         <div class="form-group required has-feedback">
