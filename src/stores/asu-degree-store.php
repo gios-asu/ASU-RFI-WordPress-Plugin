@@ -39,7 +39,7 @@ class ASUDegreeStore {
    * Note: transient names shouldn't be longer than 40 characters
    */
   public static function get_transient_name( $college, $degree_level, $campus ) {
-    // Need to coaurse variable spellings into one so we dont store duplicate transients.
+    // Need to coerce variable spellings into one so we dont store duplicate transients.
     if ( ConditionalHelper::graduate( $degree_level ) ) {
       $degree_level = 'grad';
     } else {
@@ -61,6 +61,4 @@ class ASUDegreeStore {
 
     return 'ASURFI' . $hashed_parameters;
   }
-
-
 }
