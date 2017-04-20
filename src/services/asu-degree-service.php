@@ -94,6 +94,7 @@ class ASUDegreeService {
         return array(
           'majorcode'   => $program['AcadPlan']->me['string'],
           'majorname'   => $program['Descr100']->me['string'],
+          'degreedesc'  => $program['DegreeDescrformal']->me['string'],
           'programname' => $program['DiplomaDescr']->me['string'],
           'programcode' => $program['AcadProg']->me['string'],
          );
@@ -123,6 +124,7 @@ class ASUDegreeService {
       if ( 0 === strcasecmp( $college_code, $program['programcode'] ) ) {
         $formatted_program = array(
           'label' => $this->get_program_display_name( $program ),
+          'type'  => $this->get_program_type_name( $program ),
           'value' => $program['majorcode'],
          );
         // there could be duplicate programs offered on multiple campuses
@@ -146,5 +148,31 @@ class ASUDegreeService {
       return $program['majorname'];
     }
 
+  }
+
+  /** Get a program's degree type name ('Bachelor', Master', 'Doctor', 'Certificate', etc.)
+   */
+  private function get_program_type_name( $program ) {
+    if ( false !== strpos( $program['degreedesc'], 'Bachelor' ) ) {
+      $program_type_name = 'Bachelors';
+
+    } elseif ( false !== strpos( $program['degreedesc'], 'Master' ) ) {
+      $program_type_name = 'Masters';
+
+    } elseif ( false !== strpos( $program['degreedesc'], 'Doctor' ) ) {
+      $program_type_name = 'Doctoral';
+
+    } elseif ( false !== strpos( $program['degreedesc'], 'Certificate' ) ) {
+      // to match the studentType code
+      $program_type_name = 'cert';
+
+    } else {
+      // other non-degree types, like "Pre-prof/Exploratory", aren't passed through
+      // because the rfi form will not be able to auto-select the appropriate studentType dropdown.
+      // the end-user will have to select the appropriate value themselves.
+      $program_type_name = '';
+    }
+
+    return $program_type_name;
   }
 }
