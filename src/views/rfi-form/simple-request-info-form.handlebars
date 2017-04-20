@@ -71,7 +71,7 @@
             <select name="poiCode" id="poiCode" class="form-select" {{#if_cond degreeLevel '==' 'grad'}}required aria-required="true"{{/if_cond}}>
               <option value="" selected="selected">-</option>
               {{#each major_codes }}
-                <option value="{{ value }}">{{ label }}</option>
+                <option value="{{ value }}" data-program-type="{{type}}">{{ label }}</option>
               {{/each}}
             </select>
           </div>
