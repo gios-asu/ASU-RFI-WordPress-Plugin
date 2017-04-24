@@ -8,7 +8,7 @@ use ASURFIWordPress\Helpers\ConditionalHelper;
 
 /**
  * ConditionalHelper test case.
- * @group helpers 
+ * @group helpers
  * @group conditional-helpers
  */
 class ConditionalHelperTest extends WP_UnitTestCase {

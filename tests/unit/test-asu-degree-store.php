@@ -9,7 +9,7 @@ use ASURFIWordPress\Stores\ASUDegreeStore;
 
 /**
  * ASUDegreeStore test case.
- * @group stores 
+ * @group stores
  * @group asu-degree-store
  */
 class ASUDegreeStoreTest extends WP_UnitTestCase {
@@ -43,6 +43,6 @@ class ASUDegreeStoreTest extends WP_UnitTestCase {
     $this->assertGreaterThan(4, count($programs));
   }
 
-  // todo: test that the transeient actually gets stored and reused 
+  // todo: test that the transeient actually gets stored and reused
 
 }

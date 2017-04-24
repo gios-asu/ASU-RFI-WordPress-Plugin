@@ -9,7 +9,7 @@ use ASURFIWordPress\Services\ASUDegreeService;
 
 /**
  * ASUDegreeService test case.
- * @group services 
+ * @group services
  * @group asu-degree-service
  */
 class ASUDegreeServiceTest extends WP_UnitTestCase {

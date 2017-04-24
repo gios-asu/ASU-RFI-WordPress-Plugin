@@ -9,7 +9,7 @@ use ASURFIWordPress\Services\ASUCollegeService;
 
 /**
  * ASUCollegeService test case.
- * @group services 
+ * @group services
  * @group asu-college-service
  */
 class ASUCollegeServiceTest extends WP_UnitTestCase {
@@ -18,7 +18,7 @@ class ASUCollegeServiceTest extends WP_UnitTestCase {
     $service = new ASUCollegeService();
     $colleges = $service->get_colleges();
     $this->assertInternalType('array', $colleges);
-    $this->assertGreaterThan(4, count($colleges), 'there should be more than 4 colleges');  
+    $this->assertGreaterThan(4, count($colleges), 'there should be more than 4 colleges');
   }
 
   function test_get_college_code() {
