@@ -67,10 +67,10 @@
       {{/if}}
 
       {{#if major_codes }}
-        <div class="form-group has-feedback {{#if_cond degreeLevel '==' 'grad'}}required{{/if_cond}}">
+        <div class="form-group required has-feedback">
           <label class="control-label col-sm-3" for="poiCode">{{#if_cond degreeLevel '==' 'ugrad'}}Major{{else}}My program of interest{{/if_cond}}</label>
           <div class="col-sm-9">
-            <select name="poiCode" id="poiCode" class="form-select" {{#if_cond degreeLevel '==' 'grad'}}required aria-required="true"{{/if_cond}}>
+            <select name="poiCode" id="poiCode" class="form-select" required aria-required="true">
               <option value="" selected="selected">-</option>
               {{#each major_codes }}
                 <option value="{{ value }}" data-program-type="{{type}}">{{ label }}</option>
