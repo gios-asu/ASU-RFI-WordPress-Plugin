@@ -31,7 +31,7 @@ WordPress plugin to submit Request For Information requests into Salesforce
   * **campus** = eg `TEMPE` or leave blank for all Campuses.
 
 
-![screen shot 2017-01-30 at 4 55 33 pm](https://cloud.githubusercontent.com/assets/295804/22447084/86dfca7e-e70d-11e6-862f-3373b29064e4.png)
+![Screenshot](http://imgur.com/JrLb8Ps)
 
 # Analytics
 If your site is using Google Analytics and has made the `ga` function available in the global scope, uppon successful submission of the form will load the ecommerce plugin and trigger the correct evaluation of the form submission based on the geographical location of the client. Currently the formula is $100 for in state, $200 for nationall, and $300 for international. 
