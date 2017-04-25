@@ -1,0 +1,11 @@
+<script>
+  $(function() {
+    $('#registrationForm').validate();
+
+    if ($('input[name="degreeLevel"]').val() == 'grad') {
+      $('#poiCode').change(function() {
+        $('#StudentType').val($('#poiCode').find(':selected').data('program-type'));
+      })
+    }
+  });
+</script>

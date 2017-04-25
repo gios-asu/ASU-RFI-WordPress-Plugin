@@ -1,0 +1,15 @@
+.honey {
+  display: none;
+}
+
+/*
+.required label:after { 
+  content: " (Required)";
+  color: red;
+}
+*/
+
+.optional label:before { 
+  content: " (Optional) ";
+  color: #8c7c7c;
+}

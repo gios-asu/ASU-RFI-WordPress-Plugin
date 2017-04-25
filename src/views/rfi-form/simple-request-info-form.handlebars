@@ -1,0 +1,125 @@
+{{#if success_message }}
+  <div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ success_message }}
+  </div>
+  {{> rfi-form/completion-analytics }}
+{{/if}}
+{{#if error_message }}
+  <div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ error_message }}
+  </div>
+{{/if}}
+
+<form method="post" action="{{ form_endpoint }}" class="form-horizontal asu-rfi-form">
+
+    <input type="hidden" name="degreeLevel" value="{{ degreeLevel }}">
+    <input type="hidden" name="testmode" value="{{ testmode }}">
+    <input type="hidden" name="formUrl" value="{{ redirect_back_url }}">
+    <input type="hidden" name="source_id" value="{{ source_id }}">
+    <div class='honey'><input type="text" name="email"></div>
+
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="firstName">First Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="firstName" name="firstName" value="{{ first_name }}" placeholder="First Name" maxlength="40" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="lastName">Last Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="lastName" name="lastName" value="{{ last_name }}" placeholder="Last Name" maxlength="50" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="emailAddress">Email</label>
+        <div class="col-sm-9">
+          <input type="email" class="form-control" id="emailAddress" name="emailAddress" value="{{ email }}" placeholder="Email@example.com" maxlength="50" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="phoneNumber">Phone</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ phoneNumber }}" placeholder='(123) 456-7890' maxlength="30" required aria-required="true">
+        </div>
+      </div>
+      {{#if_cond degreeLevel '==' 'ugrad'}}
+      <div class="form-group required has-feedback">
+        <label class="control-label col-sm-3" for="StudentType">I will be a future</label>
+        <div class="col-sm-9">
+          <select name="StudentType" id="StudentType" class="form-select" required aria-required="true">
+            <option value="" selected="selected">-</option>
+            {{#each student_types }}
+              <option value="{{ value }}">{{ label }}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{/if_cond}}
+
+      {{#if college_program_code }}
+        <input type="hidden" name="collegeOfInterest" value="{{ college_program_code }}">
+      {{/if}}
+
+      {{#if major_code }}
+        <input type="hidden" name="poiCode" value="{{ major_code }}">
+      {{/if}}
+
+      {{#if major_codes }}
+        <div class="form-group required has-feedback">
+          <label class="control-label col-sm-3" for="poiCode">{{#if_cond degreeLevel '==' 'ugrad'}}Major{{else}}My program of interest{{/if_cond}}</label>
+          <div class="col-sm-9">
+            <select name="poiCode" id="poiCode" class="form-select" required aria-required="true">
+              <option value="" selected="selected">-</option>
+              {{#each major_codes }}
+                <option value="{{ value }}" data-program-type="{{type}}">{{ label }}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      {{/if}}
+
+      {{#if_cond degreeLevel '==' 'grad'}} {{! Move the StudentType field after POICode because StudentType will be auto-selected !}}
+        <div class="form-group required has-feedback">
+          <label class="control-label col-sm-3" for="StudentType">I will be a future</label>
+          <div class="col-sm-9">
+            <select name="StudentType" id="StudentType" class="form-select" required aria-required="true">
+              <option value="" selected="selected">-</option>
+              {{#each student_types }}
+                <option value="{{ value }}">{{ label }}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      {{/if_cond}}
+
+      {{#if enrollment_terms }}
+        <div class="form-group required has-feedback">
+          <label class="control-label col-sm-3" for="projectedEnrollment">My anticipated start date</label>
+          <div class="col-sm-9">
+            <select name="projectedEnrollment" id="projectedEnrollment" class="form-select" required aria-required="true">
+              <option value="" selected="selected">-</option>
+              {{#each enrollment_terms }}
+                <option value="{{ value }}">{{ label }}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      {{/if}}
+
+      <div class="form-group has-feedback">
+        <label class="control-label col-sm-3" for="questions">Question?</label>
+        <div class="col-sm-9">
+          <textarea type="text" class="form-control" id="questions" name="questions" maxlength="500"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9">
+          <input type="submit" value="Submit" class="btn btn-default" aria-label="Submit Request">
+        </div>
+      </div>
+</form>
+{{> rfi-form/form-javascript }}
