@@ -9,7 +9,7 @@ use ASURFIWordPress\Services\Client_Geocoding_Service;
 
 /**
  * Client_Geocoding_Service  test case.
- * @group services 
+ * @group services
  * @group client-geocoding-service
  */
 class Client_Geocoding_Service_Test extends WP_UnitTestCase {
