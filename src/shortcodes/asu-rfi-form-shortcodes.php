@@ -133,6 +133,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'default'   => null,
     ) ) );
 
+    // shortcode attributes are always passed as strings. this ensures the value is parsed as a Boolean
+    // TRUE if 'true', 1, or 'on' is used (and FALSE otherwise.)
+    $atts['major_code_picker'] = filter_var( $atts['major_code_picker'], FILTER_VALIDATE_BOOLEAN );
+
     $view_data = array(
           'form_endpoint' => self::PRODUCTION_FORM_ENDPOINT,
           'redirect_back_url' => get_permalink(),
@@ -146,7 +150,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
           'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms( $atts['degree_level'] ),
           'student_types' => StudentTypeService::get_student_types(),
           'college_program_code' => null,
-          'major_code_picker' => false,
+          'major_code_picker' => $atts['major_code_picker'],
           'major_code' => $atts['major_code'],
         );
 
@@ -180,7 +184,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
       $view_data['college_program_code'] = $atts['college_program_code'];
 
-      if ( isset( $atts['major_code_picker'] ) ) {
+      if ( $atts['major_code_picker'] ) {
         $view_data['major_codes'] = ASUDegreeStore::get_programs(
             $atts['college_program_code'],
             $view_data['degreeLevel'],
