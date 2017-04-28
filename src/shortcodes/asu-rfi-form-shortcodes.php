@@ -190,6 +190,22 @@ class ASU_RFI_Form_Shortcodes extends Hook {
             $view_data['degreeLevel'],
             $atts['campus']
         );
+
+      } elseif ( 'grad' === $view_data['degreeLevel'] && ! empty( $atts['major_code'] ) ) {
+        // since 'major code picker' is not used, if this is for a Graduate form
+        // assign studentType to match the degree program (Masters, Doctoral, etc.)
+        $programs = ASUDegreeStore::get_programs(
+            $atts['college_program_code'],
+            $view_data['degreeLevel'],
+            $atts['campus']
+        );
+        // find major code in college's available degrees
+        foreach ( $programs as $program ) {
+          if ( $program['value'] ===  $atts['major_code'] ) {
+            $view_data['student_type'] = $program['type'];
+            break;
+          }
+        }
       }
     }
 
