@@ -54,6 +54,9 @@
   {{#if major_code }}
     <input type="hidden" name="poiCode" value="{{ major_code }}">
   {{/if}}
+  {{#if student_type }}
+    <input type="hidden" name="StudentType" value="{{ student_type }}">
+  {{/if}}
 
   {{#if major_codes }}
     <div class="form-group required has-feedback">
@@ -67,16 +70,18 @@
     </div>
   {{/if}}
 
-  {{#if_cond degreeLevel '==' 'grad'}} {{! Move the StudentType field after POICode because StudentType will be auto-selected !}}
-    <div class="form-group required has-feedback">
-      <label class="control-label" for="StudentType">I will be a future</label>
-      <select name="StudentType" id="StudentType" class="form-control" required aria-required="true">
-        <option value="" selected="selected">-</option>
-        {{#each student_types }}
-          <option value="{{ value }}">{{ label }}</option>
-        {{/each}}
-      </select>
-    </div>
+  {{#if_cond degreeLevel '==' 'grad'}} {{! On grad forms, move the StudentType field after POICode because StudentType will be auto-selected }}
+    {{#unless student_type }} {{! If shortcode hasn't pre-selected the studentType, render dropdown }}
+      <div class="form-group required has-feedback">
+        <label class="control-label" for="StudentType">I will be a future</label>
+        <select name="StudentType" id="StudentType" class="form-control" required aria-required="true">
+          <option value="" selected="selected">-</option>
+          {{#each student_types }}
+            <option value="{{ value }}">{{ label }}</option>
+          {{/each}}
+        </select>
+      </div>
+    {{/unless}}
   {{/if_cond}}
 
   {{#if enrollment_terms }}
