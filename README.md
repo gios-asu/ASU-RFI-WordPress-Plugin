@@ -29,6 +29,7 @@ WordPress plugin to submit Request For Information requests into Salesforce
   * **source_id** = integer site identifier (issued by Enrollment services department) will default to the site wide setting configured in the plugin admin settings.
   * **college_program_code** = 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`, it will default to the value set in the RFI Admin Options menu so only use this attribute if you want to override one specific form.
   * **campus** = eg `TEMPE` or leave blank for all Campuses.
+  * **semesters** = comma-delimited list of semesters allowed to be selected in 'My anticipated start date' dropdown (eg: `spring,summer,fall`). If omitted, the dropdown will be auto-filled with Spring, Summer, Fall for Undergrad Forms, and Spring, Fall for Grad Forms.
 
 
 ![Screenshot](http://i.imgur.com/PFWa83O.png)

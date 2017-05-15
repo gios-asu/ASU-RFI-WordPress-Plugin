@@ -25,22 +25,43 @@ class ASUSemesterService {
    *    Since this is for display purposes only, hide the smaller semesters that
    *    dont get included on public facing forms
    */
-  public static function get_available_enrollment_terms( $degree_level = 'undergrad' ) {
-    // Enrollment services staff requested Summer session be included for undergrad form
-    if ( 'undergrad' === $degree_level ) {
-      $semester_names = array(
-        1 => 'Spring',
-        4 => 'Summer',
-        7 => 'Fall',
-        // 9 => 'Winter',
-      );
+  public static function get_available_enrollment_terms( $degree_level = 'undergrad', $semesters = null ) {
+    // If semesters provided in shortcode attribute, override default semester list
+    if ( !empty( $semesters ) ) {
+      $semesters = array_map( 'trim', explode( ',', $semesters ) );
+      $semester_names = array();
+
+      foreach ( $semesters as $semester ) {
+        if ( 'spring' === strtolower( $semester ) ) {
+          $semester_names[1] = 'Spring';
+
+        } elseif ( 'summer' === strtolower( $semester ) ) {
+          $semester_names[4] = 'Summer';
+
+        } elseif ( 'fall' === strtolower( $semester ) ) {
+          $semester_names[7] = 'Fall';
+
+        } elseif ( 'winter' === strtolower( $semester ) ) {
+          $semester_names[9] = 'Winter';
+        }
+      }
     } else {
-      $semester_names = array(
-        1 => 'Spring',
-        // 4 => 'Summer',
-        7 => 'Fall',
-        // 9 => 'Winter',
-      );
+      // Enrollment services staff requested Summer session be included for undergrad form
+      if ( 'undergrad' === $degree_level ) {
+        $semester_names = array(
+          1 => 'Spring',
+          4 => 'Summer',
+          7 => 'Fall',
+          // 9 => 'Winter',
+        );
+      } else {
+        $semester_names = array(
+          1 => 'Spring',
+          // 4 => 'Summer',
+          7 => 'Fall',
+          // 9 => 'Winter',
+        );
+      }
     }
 
     $years = array( date( 'Y' ), date( 'Y' ) + 1, date( 'Y' ) + 2 ); // this year and two years in the future
@@ -55,18 +76,39 @@ class ASUSemesterService {
       }
     }
 
-    $current_month_number = date( 'n' ); // 0 = jan, 12 = dec
+    $current_month_number = date( 'n' ); // 1 = jan, 12 = dec
 
     // LOGIC
-    // if it is: jan 1st X, first semseter should be Fall of X
-    // if it is: April 1st X, first semseter shoudl be Spring of X+1
-    if ( $current_month_number >= 0 ) {
-      array_shift( $terms ); // remove the spring of this year
+    // if date is: jan 1st X, first semester in array should be Summer of X
+    // if date is: june 1st X, first semester in array should be Fall of X
+    // if date is: aug 1st X, first semester in array should be Spring of X + 1
+    if ( $current_month_number >= 1 && 1 === substr( $terms[0]['value'], -1 ) ) {
+      array_shift( $terms ); // remove the first Spring
     }
-    if ( $current_month_number >= 5 ) {
-      array_shift( $terms ); // remove fall of this year
-    }
+    if ( $current_month_number >= 5  ) {
+      //drop the first occurrences of Spring and Summer, if present. so first term is Fall this year
+      $i = -1;
+      while ( substr( $terms[$i + 1]['value'], -1 ) < 7 ) {
+        $i++;
+      }
 
+      while ( $i >= 0 ) {
+        array_shift( $terms );
+        $i--;
+      }
+    }
+    if ( $current_month_number >= 8 ) {
+      //drop all terms in current calendar year, if present. So first term is Spring next year
+      $i = -1;
+      while ( substr( $terms[$i + 1]['value'], -1 ) < 9 ) {
+        $i++;
+      }
+
+      while ( $i >= 0 ) {
+        array_shift( $terms );
+        $i--;
+      }
+    }
     return $terms;
   }
 
