@@ -29,9 +29,10 @@ WordPress plugin to submit Request For Information requests into Salesforce
   * **source_id** = integer site identifier (issued by Enrollment services department) will default to the site wide setting configured in the plugin admin settings.
   * **college_program_code** = 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`, it will default to the value set in the RFI Admin Options menu so only use this attribute if you want to override one specific form.
   * **campus** = eg `TEMPE` or leave blank for all Campuses.
+  * **semesters** = comma-delimited list of semesters allowed to be selected in 'My anticipated start date' dropdown (eg: `spring,summer,fall`). If omitted, the dropdown will be auto-filled with Spring, Summer, Fall for Undergrad Forms, and Spring, Fall for Grad Forms.
 
 
-![Screenshot](http://i.imgur.com/JrLb8Ps.png)
+![Screenshot](http://i.imgur.com/PFWa83O.png)
 
 # Analytics
 If your site is using Google Analytics and has made the `ga` function available in the global scope, uppon successful submission of the form will load the ecommerce plugin and trigger the correct evaluation of the form submission based on the geographical location of the client. Currently the formula is $100 for in state, $200 for nationall, and $300 for international.

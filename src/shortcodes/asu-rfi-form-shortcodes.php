@@ -116,7 +116,9 @@ class ASU_RFI_Form_Shortcodes extends Hook {
    *     major_code_picker = boolean, if true then programs for the college will be provided in a dropdown
    *     major_code = string, if provided then no picker, just a hidden major code value
    *     campus = string, default is all campuses, if provided the major_code_picker will be
-   *          restricted down to just the majors offered on that particular campus.
+   *         restricted down to just the majors offered on that particular campus.
+   *     semesters = comma-delimited list of semesters to which a student can apply for submission (values:
+   *         fall, spring, summer)
    */
   public function asu_rfi_form( $atts, $content = '' ) {
     // if there are no attributes passed then $atts is not an array, its a string
@@ -132,6 +134,11 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'attribute' => ASU_RFI_Admin_Page::$college_code_option_name,
                 'default'   => null,
     ) ) );
+    ensure_default( $atts, 'semesters', null );
+
+    // shortcode attributes are always passed as strings. this ensures the value is parsed as a Boolean
+    // TRUE if 'true', 1, or 'on' is used (and FALSE otherwise.)
+    $atts['major_code_picker'] = filter_var( $atts['major_code_picker'], FILTER_VALIDATE_BOOLEAN );
 
     $view_data = array(
           'form_endpoint' => self::PRODUCTION_FORM_ENDPOINT,
@@ -143,10 +150,10 @@ class ASU_RFI_Form_Shortcodes extends Hook {
                 'default'   => 0,
               )
           ),
-          'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms( $atts['degree_level'] ),
+          'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms( $atts['degree_level'], $atts['semesters'] ),
           'student_types' => StudentTypeService::get_student_types(),
           'college_program_code' => null,
-          'major_code_picker' => false,
+          'major_code_picker' => $atts['major_code_picker'],
           'major_code' => $atts['major_code'],
         );
 
@@ -180,12 +187,28 @@ class ASU_RFI_Form_Shortcodes extends Hook {
 
       $view_data['college_program_code'] = $atts['college_program_code'];
 
-      if ( isset( $atts['major_code_picker'] ) ) {
+      if ( $atts['major_code_picker'] ) {
         $view_data['major_codes'] = ASUDegreeStore::get_programs(
             $atts['college_program_code'],
             $view_data['degreeLevel'],
             $atts['campus']
         );
+
+      } elseif ( 'grad' === $view_data['degreeLevel'] && ! empty( $atts['major_code'] ) ) {
+        // since 'major code picker' is not used, if this is for a Graduate form
+        // assign studentType to match the degree program (Masters, Doctoral, etc.)
+        $programs = ASUDegreeStore::get_programs(
+            $atts['college_program_code'],
+            $view_data['degreeLevel'],
+            $atts['campus']
+        );
+        // find major code in college's available degrees
+        foreach ( $programs as $program ) {
+          if ( $program['value'] ===  $atts['major_code'] ) {
+            $view_data['student_type'] = $program['type'];
+            break;
+          }
+        }
       }
     }
 
