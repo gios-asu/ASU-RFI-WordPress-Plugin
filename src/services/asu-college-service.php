@@ -19,6 +19,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  * College Information Service for ASU
  */
 class ASUCollegeService {
+  private static $RPC_TIMEOUT = 15; // seconds
 
   public function __construct( $client = null ) {
     if ( null === $client ) {
@@ -31,7 +32,7 @@ class ASUCollegeService {
    */
   public function get_colleges() {
     $request = new Request( 'eAdvisorDSFind.listColleges' );
-    $response = $this->client->send( $request );
+    $response = $this->client->send( $request, ASUCollegeService::$RPC_TIMEOUT );
     return array_map( function( $item ) {
         return array( 'name' => $item->me['string'] );
     }, $response->val->me['array'] );
@@ -47,7 +48,7 @@ class ASUCollegeService {
         array(
         new Value( $college_name, 'string' )
     ) );
-    $response = $this->client->send( $request );
+    $response = $this->client->send( $request, ASUCollegeService::$RPC_TIMEOUT );
     return $response->val->me['string'];
   }
 
