@@ -76,38 +76,26 @@ class ASUSemesterService {
       }
     }
 
+    // in case `semesters` shortcode parameter list is out of order,
+    // sort $terms by value to get terms correctly ordered (Spring, Summer, Fall)
+    asort($terms);
+
     $current_month_number = date( 'n' ); // 1 = jan, 12 = dec
 
     // LOGIC
     // if date is: jan 1st X, first semester in array should be Summer of X
     // if date is: june 1st X, first semester in array should be Fall of X
     // if date is: aug 1st X, first semester in array should be Spring of X + 1
-    if ( $current_month_number >= 1 && 1 === substr( $terms[0]['value'], -1 ) ) {
+    if ( $current_month_number >= 1 && 1 === (int) substr( $terms[0]['value'], -1 ) ) {
       array_shift( $terms ); // remove the first Spring
     }
-    if ( $current_month_number >= 5  ) {
-      //drop the first occurrences of Spring and Summer, if present. so first term is Fall this year
-      $i = -1;
-      while ( substr( $terms[$i + 1]['value'], -1 ) < 7 ) {
-        $i++;
-      }
-
-      while ( $i >= 0 ) {
-        array_shift( $terms );
-        $i--;
-      }
+    if ( $current_month_number >= 5 && 4 === (int) substr( $terms[0]['value'], -1 ) ) {
+      //drop the first occurrence of Summer, if present. so first term is Fall this year
+      array_shift( $terms );
     }
-    if ( $current_month_number >= 8 ) {
-      //drop all terms in current calendar year, if present. So first term is Spring next year
-      $i = -1;
-      while ( substr( $terms[$i + 1]['value'], -1 ) < 9 ) {
-        $i++;
-      }
-
-      while ( $i >= 0 ) {
-        array_shift( $terms );
-        $i--;
-      }
+    if ( $current_month_number >= 8 && 7 === (int) substr( $terms[0]['value'], -1 ) ) {
+      //drop the first occurrence of Fall, if present. so first term is Spring next year
+      array_shift( $terms );
     }
     return $terms;
   }
