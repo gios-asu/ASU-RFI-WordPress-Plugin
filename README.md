@@ -12,7 +12,7 @@ WordPress plugin to submit Request For Information requests into Salesforce
 # Site Settings
 ![screen shot 2016-12-13 at 12 43 24 pm](https://cloud.githubusercontent.com/assets/295804/21156084/c728ccae-c131-11e6-8e0f-7cbc1a6e3db6.png)
 
-**source_id** You will need to obtain a orignal source identifier from the [ASU Enrollment Services Department](mailto:ecomm@asu.edu) for your college or department.
+**source_id** You will need to obtain a original source identifier from the [ASU Enrollment Services Department](mailto:ecomm@asu.edu) for your college or department.
 
 **College Code** 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`. This will be the default college used for RFI forms on the site.
 
@@ -30,6 +30,17 @@ WordPress plugin to submit Request For Information requests into Salesforce
   * **college_program_code** = 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`, it will default to the value set in the RFI Admin Options menu so only use this attribute if you want to override one specific form.
   * **campus** = eg `TEMPE` or leave blank for all Campuses.
   * **semesters** = comma-delimited list of semesters allowed to be selected in 'My anticipated start date' dropdown (eg: `spring,summer,fall`). If omitted, the dropdown will be auto-filled with Spring, Summer, Fall for Undergrad Forms, and Spring, Fall for Grad Forms.
+
+### Available Major Codes for SOS
+	SUSUSTBA - Sustainability (BA)
+	SUSUSTBS - Sustainability (BS)
+	SUSUSTMA - Sustainability, MA
+	SUSUSTMS - Sustainability, MS
+	SUSUSTPHD - Sustainability, PhD
+	SUSUSTCPHD - Sustainability (Complex Adaptive Systems Science), PhD
+	SUEMSLEMSL - Sustainability Leadership - Executive, EMSL
+	SUSUSLMSL - Sustainability Leadership, MSL
+	SUSUSOMSUS - Sustainability Solutions, MSUS
 
 
 ![Screenshot](http://i.imgur.com/PFWa83O.png)

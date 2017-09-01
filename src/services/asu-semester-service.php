@@ -27,7 +27,7 @@ class ASUSemesterService {
    */
   public static function get_available_enrollment_terms( $degree_level = 'undergrad', $semesters = null ) {
     // If semesters provided in shortcode attribute, override default semester list
-    if ( !empty( $semesters ) ) {
+    if ( ! empty( $semesters ) ) {
       $semesters = array_map( 'trim', explode( ',', $semesters ) );
       $semester_names = array();
 
@@ -78,7 +78,7 @@ class ASUSemesterService {
 
     // in case `semesters` shortcode parameter list is out of order,
     // sort $terms by value to get terms correctly ordered (Spring, Summer, Fall)
-    asort($terms);
+    asort( $terms );
 
     $current_month_number = date( 'n' ); // 1 = jan, 12 = dec
 
@@ -90,11 +90,11 @@ class ASUSemesterService {
       array_shift( $terms ); // remove the first Spring
     }
     if ( $current_month_number >= 5 && 4 === (int) substr( $terms[0]['value'], -1 ) ) {
-      //drop the first occurrence of Summer, if present. so first term is Fall this year
+      // drop the first occurrence of Summer, if present. so first term is Fall this year
       array_shift( $terms );
     }
     if ( $current_month_number >= 8 && 7 === (int) substr( $terms[0]['value'], -1 ) ) {
-      //drop the first occurrence of Fall, if present. so first term is Spring next year
+      // drop the first occurrence of Fall, if present. so first term is Spring next year
       array_shift( $terms );
     }
     return $terms;
