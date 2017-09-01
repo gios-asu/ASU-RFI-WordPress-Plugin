@@ -204,7 +204,7 @@ class ASU_RFI_Form_Shortcodes extends Hook {
         );
         // find major code in college's available degrees
         foreach ( $programs as $program ) {
-          if ( $program['value'] ===  $atts['major_code'] ) {
+          if ( $program['value'] === $atts['major_code'] ) {
             $view_data['student_type'] = $program['type'];
             break;
           }
