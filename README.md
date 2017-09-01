@@ -31,6 +31,17 @@ WordPress plugin to submit Request For Information requests into Salesforce
   * **campus** = eg `TEMPE` or leave blank for all Campuses.
   * **semesters** = comma-delimited list of semesters allowed to be selected in 'My anticipated start date' dropdown (eg: `spring,summer,fall`). If omitted, the dropdown will be auto-filled with Spring, Summer, Fall for Undergrad Forms, and Spring, Fall for Grad Forms.
 
+### Available Major Codes for SOS
+	SUSUSTBA - Sustainability (BA)
+	SUSUSTBS - Sustainability (BS)
+	SUSUSTMA - Sustainability, MA
+	SUSUSTMS - Sustainability, MS
+	SUSUSTPHD - Sustainability, PhD
+	SUSUSTCPHD - Sustainability (Complex Adaptive Systems Science), PhD
+	SUEMSLEMSL - Sustainability Leadership - Executive, EMSL
+	SUSUSLMSL - Sustainability Leadership, MSL
+	SUSUSOMSUS - Sustainability Solutions, MSUS
+
 
 ![Screenshot](http://i.imgur.com/PFWa83O.png)
 
