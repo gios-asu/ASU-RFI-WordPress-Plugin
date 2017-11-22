@@ -37,10 +37,12 @@ WordPress plugin to submit Request For Information requests into Salesforce
 	SUSUSTMA - Sustainability, MA
 	SUSUSTMS - Sustainability, MS
 	SUSUSTPHD - Sustainability, PhD
+	SUSUEPHD - Sustainability, PhD in Sustainable Energy
 	SUSUSTCPHD - Sustainability (Complex Adaptive Systems Science), PhD
 	SUEMSLEMSL - Sustainability Leadership - Executive, EMSL
 	SUSUSLMSL - Sustainability Leadership, MSL
 	SUSUSOMSUS - Sustainability Solutions, MSUS
+	
 
 
 ![Screenshot](http://i.imgur.com/PFWa83O.png)
