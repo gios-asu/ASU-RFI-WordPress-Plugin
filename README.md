@@ -42,7 +42,7 @@ WordPress plugin to submit Request For Information requests into Salesforce
 	SUEMSLEMSL - Sustainability Leadership - Executive, EMSL
 	SUSUSLMSL - Sustainability Leadership, MSL
 	SUSUSOMSUS - Sustainability Solutions, MSUS
-	
+  SUGSUSSMS - Global Sustainability Science, MS
 
 
 ![Screenshot](http://i.imgur.com/PFWa83O.png)
