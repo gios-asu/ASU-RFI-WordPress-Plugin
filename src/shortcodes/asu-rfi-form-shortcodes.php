@@ -328,9 +328,16 @@ class ASU_RFI_Form_Shortcodes extends Hook
     // get the code
     $responseCode = wp_remote_retrieve_response_code($response);
 
-    // return the URL for redirecting our user, or a WP_Error
+    // return a URL on a 200, and a WP_Error on any other code
     if (200 === $responseCode) {
-      return $this->buildRedirectUrl($_POST['thank_you']);
+      if (isset($_POST['thank_you']) && !empty($_POST['thank_you'])) {
+          // if we're redirecting to a page that is not our original form, then we don't need
+          // the querystring items, and can simply redirect.
+          return $_POST['thank_you'];
+        } else {
+        // if there is no thank_you page set, go back to the form page with querystring vars
+        return $this->buildRedirectUrl($_POST['formUrl']);
+      }
     } else {
       return new \WP_Error('submit', ' ' . $response->get_error_message());
     }
