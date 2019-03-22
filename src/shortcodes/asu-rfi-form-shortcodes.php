@@ -30,7 +30,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
   const PRODUCTION_FORM_ENDPOINT  = 'https://requestinfo.asu.edu/routing_form_post';
   const DEVELOPMENT_FORM_ENDPOINT = 'https://requestinfo-qa.asu.edu/routing_form_post';
   const RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
-  const RECAPTCHA_REQUIRED_SCORE = 0.7;
 
   public function __construct()
   {
@@ -355,6 +354,18 @@ class ASU_RFI_Form_Shortcodes extends Hook
       return new \WP_Error('recaptcha', 'Unable to verify via Google reCAPTCHA. No user token.');
     }
 
+    // we also need to know our minimum required score, in order to decide what to do. The Google
+    // score comes back as a Float, so we're casting here to make this a Float as well.
+    $min_required_score = floatval(
+      $this->get_option_attribute_or_default(
+        array(
+          'name'      => ASU_RFI_Admin_Page::$options_name,
+          'attribute' => ASU_RFI_Admin_Page::$google_recaptcha_required_score_option_name,
+          'default'   => 0.7,
+        )
+      )
+    );
+
     /**
      * Google expects our secret key as well. It's stored in the plugin settings.
      */
@@ -388,12 +399,13 @@ class ASU_RFI_Form_Shortcodes extends Hook
     /**
      * the Google JSON will contain (among other fields):
      * - a 'success' field with either TRUE or FALSE
-     * - a 'score' field (only on success) with a score between 0 and 1
+     * - a 'score' field (only on success) with a score between 0 and 1 (as a Float)
      * - an 'error-codes' field (only on error) with one, or more, erorr messages
      */
+
     if ($result->success) {
       // we got a score, but was it good enough?
-      if ($result->score >= self::RECAPTCHA_REQUIRED_SCORE) {
+      if ($result->score >= $min_required_score) {
         // Yes! You passed!
         return true;
       } else {

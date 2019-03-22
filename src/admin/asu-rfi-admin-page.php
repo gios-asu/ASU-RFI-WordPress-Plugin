@@ -24,6 +24,7 @@ class ASU_RFI_Admin_Page extends Hook
   public static $source_id_option_name = 'source_id';
   public static $college_code_option_name = 'college_code';
   public static $google_recaptcha_secret_option_name = 'recaptcha_secret_key';
+  public static $google_recaptcha_required_score_option_name = 'recaptcha_required_score';
   public static $section_id = 'asu-rfi-section_id';
   public static $section_name = 'asu-rfi-section_name';
   public static $page_name = 'asu-rfi-admin-page';
@@ -42,6 +43,7 @@ class ASU_RFI_Admin_Page extends Hook
         self::$source_id_option_name => 0,
         self::$college_code_option_name => null,
         self::$google_recaptcha_secret_option_name => '',
+        self::$google_recaptcha_required_score_option_name => 0.5,
       )
     );
 
@@ -108,6 +110,17 @@ class ASU_RFI_Admin_Page extends Hook
       array(
         $this,
         'recaptcha_secret_key_on_callback',
+      ), // Callback
+      self::$section_name,
+      self::$section_id
+    );
+
+    add_settings_field(
+      self::$google_recaptcha_required_score_option_name,
+      'reCAPTCHA Minimum Score',
+      array(
+        $this,
+        'recaptcha_default_score_on_callback',
       ), // Callback
       self::$section_name,
       self::$section_id
@@ -243,6 +256,32 @@ HTML;
   );
 }
 
+/**
+   * Print the form section for the reCAPTCHA secret key
+   */
+public function recaptcha_default_score_on_callback()
+{
+
+  $value = $this->get_option_attribute_or_default(
+    array(
+      'name'      => self::$options_name,
+      'attribute' => self::$google_recaptcha_required_score_option_name,
+      'default'   => '',
+    )
+  );
+
+  $html = '<select id="' . self::$google_recaptcha_required_score_option_name . '" name="' . self::$options_name . '[' .  self::$google_recaptcha_required_score_option_name . ']">';
+
+  for ($i = 0.0; $i <= 1.0; $i += 0.1) {
+    $selected = selected($value, $i, 0);
+    $html .= '<option value="' . $i . '"' . $selected . '>' . $i . '</option>';
+  }
+
+  $html .= '</select>';
+  $html .= '<p><em>Select the minimum required score for reCAPTCHA to allow an RFI form submission. A score of 0 means highly likely to be bad traffic (spammer/bot/etc.), while a score of 1 is highly likely to be good traffic. For public-facing forms, a level of 0.7 or higher is suggested.</em></p>';
+
+  echo $html;
+}
 
 
 /**
