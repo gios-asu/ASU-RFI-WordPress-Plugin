@@ -155,12 +155,8 @@ class ASU_RFI_Form_Shortcodes extends Hook
       )
     ));
     ensure_default($atts, 'semesters', null);
-
-
-
-    // shortcode attributes are always passed as strings. this ensures the value is parsed as a Boolean
-    // TRUE if 'true', 1, or 'on' is used (and FALSE otherwise.)
-    $atts['major_code_picker'] = filter_var($atts['major_code_picker'], FILTER_VALIDATE_BOOLEAN);
+    ensure_default($atts, 'thank_you_page', '');
+    ensure_default($atts, 'major_code_picker', 0);
 
     $view_data = array(
       'form_endpoint' => esc_url(admin_url('admin-post.php')), // since we're using callbacks on admin-post now
@@ -331,10 +327,10 @@ class ASU_RFI_Form_Shortcodes extends Hook
     // return a URL on a 200, and a WP_Error on any other code
     if (200 === $responseCode) {
       if (isset($_POST['thank_you']) && !empty($_POST['thank_you'])) {
-          // if we're redirecting to a page that is not our original form, then we don't need
-          // the querystring items, and can simply redirect.
-          return $_POST['thank_you'];
-        } else {
+        // if we're redirecting to a page that is not our original form, then we don't need
+        // the querystring items, and can simply redirect.
+        return $_POST['thank_you'];
+      } else {
         // if there is no thank_you page set, go back to the form page with querystring vars
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
