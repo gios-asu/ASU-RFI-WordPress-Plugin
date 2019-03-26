@@ -2,9 +2,9 @@
   "name": "ASU-RFI-WordPress-Plugin",
   "version": "1.1.3",
   "description": "WordPress plugin to handle ASU request for information forms",
-  "main": "index.js",
+  "main": "asu-rfi-wordpress-plugin.php",
   "repository": "https://github.com/gios-asu/ASU-RFI-WordPress-Plugin",
-  "author": "GIOS ASU<gioswebasu@gmail.com>",
+  "author": "Julie Ann Wrigley Global Institute of Sustainability (https://sustainability.asu.edu)",
   "license": "MIT",
   "private": true,
   "dependencies": {
