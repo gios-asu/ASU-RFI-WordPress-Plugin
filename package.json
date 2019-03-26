@@ -6,5 +6,8 @@
   "repository": "https://github.com/gios-asu/ASU-RFI-WordPress-Plugin",
   "author": "GIOS ASU<gioswebasu@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "jquery-validation": "^1.19.0"
+  }
 }
