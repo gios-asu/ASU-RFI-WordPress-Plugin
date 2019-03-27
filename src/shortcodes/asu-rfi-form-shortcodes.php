@@ -318,9 +318,15 @@ class ASU_RFI_Form_Shortcodes extends Hook
       $this->currentEndPoint,
       array(
         'body' => $_POST,
-        'timeout' => 10
+        'timeout' => 20
       )
     );
+
+    // wp_remote_post() returns an array of data on success, and a WP_Error object on failure
+    if (is_wp_error($response)) {
+      return $response;
+    }
+
 
     /**
     * retrieve the response code from our request. Based on my testing, the endpoint is
@@ -329,6 +335,10 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
     // get the code
     $responseCode = wp_remote_retrieve_response_code($response);
+    $responseMessage = wp_remote_retrieve_response_message($response);
+    if (empty($responseMessage)) {
+      $responseMessage = 'An unknown error occurred.';
+    }
 
     // return a URL on a 200, and a WP_Error on any other code
     if (200 === $responseCode) {
@@ -341,7 +351,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-      return new \WP_Error('submit', ' ' . wp_remote_retrieve_response_message($response));
+      return new \WP_Error('submit', ' ' . $responseMessage);
     }
   }
 
