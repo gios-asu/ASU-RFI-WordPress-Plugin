@@ -182,13 +182,11 @@ class ASU_RFI_Form_Shortcodes extends Hook
       'major_code' => $atts['major_code']
     );
 
-    // sets the hidden form element 'testmode'. Using this to determine which endpoint to use, as well.
+    // sets the hidden form element 'testmode', defaulting to 'Prod'
     if (isset($atts['test_mode']) && 0 === strcasecmp('test', $atts['test_mode'])) {
       $view_data['testmode'] = 'Test';
-      $this->currentEndPoint = self::DEVELOPMENT_FORM_ENDPOINT;
     } else {
-      $view_data['testmode'] = 'Prod'; // default to production mode
-      $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
+      $view_data['testmode'] = 'Prod';
     }
 
     // Use the attribute source id over the sites option
@@ -312,6 +310,19 @@ class ASU_RFI_Form_Shortcodes extends Hook
     unset($_POST['g-recaptcha-response']);
     unset($_POST['action']);
     unset($_POST['rfi-submit']);
+
+    /**
+     * determine which endpoint to use (normal, or QA) based on value we set in a hidden field.
+     * We only expect 'Test' or 'Prod', and use 'Prod' for any value except 'Test'
+     */
+    switch ($_POST['testmode']) {
+      case 'Test':
+        $this->currentEndPoint = self::DEVELOPMENT_FORM_ENDPOINT;
+        break;
+      case 'Prod':
+      default:
+        $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT
+    }
 
     // submit the form (using the Wordpress HTTP API)
     $response = wp_remote_post(
