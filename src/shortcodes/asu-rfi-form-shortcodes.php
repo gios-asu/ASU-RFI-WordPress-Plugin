@@ -321,7 +321,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         break;
       case 'Prod':
       default:
-        $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT
+        $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
     }
 
     // submit the form (using the Wordpress HTTP API)
