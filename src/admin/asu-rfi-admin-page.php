@@ -24,6 +24,7 @@ class ASU_RFI_Admin_Page extends Hook
   public static $source_id_option_name = 'source_id';
   public static $college_code_option_name = 'college_code';
   public static $google_recaptcha_secret_option_name = 'recaptcha_secret_key';
+  public static $google_recaptcha_site_option_name = 'recaptcha_site_key';
   public static $google_recaptcha_required_score_option_name = 'recaptcha_required_score';
   public static $section_id = 'asu-rfi-section_id';
   public static $section_name = 'asu-rfi-section_name';
@@ -43,6 +44,7 @@ class ASU_RFI_Admin_Page extends Hook
         self::$source_id_option_name => 0,
         self::$college_code_option_name => null,
         self::$google_recaptcha_secret_option_name => '',
+        self::$google_recaptcha_site_option_name => '',
         self::$google_recaptcha_required_score_option_name => 0.5,
       )
     );
@@ -110,6 +112,17 @@ class ASU_RFI_Admin_Page extends Hook
       array(
         $this,
         'recaptcha_secret_key_on_callback',
+      ), // Callback
+      self::$section_name,
+      self::$section_id
+    );
+
+    add_settings_field(
+      self::$google_recaptcha_site_option_name,
+      'reCAPTCHA Site (public) Key',
+      array(
+        $this,
+        'recaptcha_site_key_on_callback',
       ), // Callback
       self::$section_name,
       self::$section_id
@@ -233,7 +246,6 @@ HTML;
    */
 public function recaptcha_secret_key_on_callback()
 {
-
   $value = $this->get_option_attribute_or_default(
     array(
       'name'      => self::$options_name,
@@ -244,7 +256,7 @@ public function recaptcha_secret_key_on_callback()
 
   $html = <<<HTML
     <input type="text" id="%s" name="%s[%s]" value="%s" size="40"/><br/>
-    <em>Enter the shared <b>secret</b> key from the appropriate Google reCAPTCHA account. This is <b>required</b>, and form submissions will not work without a reCAPTCHA key.</em>
+    <em><b>Required:</b> Enter the <b>secret</b> key from the appropriate Google reCAPTCHA account.</em>
 HTML;
 
   printf(
@@ -258,6 +270,36 @@ HTML;
 
 /**
    * Print the form section for the reCAPTCHA secret key
+   */
+public function recaptcha_site_key_on_callback()
+{
+  $value = $this->get_option_attribute_or_default(
+    array(
+      'name'      => self::$options_name,
+      'attribute' => self::$google_recaptcha_site_option_name,
+      'default'   => '',
+    )
+  );
+
+  $html = <<<HTML
+  <input type="text" id="%s" name="%s[%s]" value="%s" size="40"/><br/>
+  <em><b>Required:</b> Enter the public <b>site</b> key from the appropriate Google reCAPTCHA account.</em>
+HTML;
+
+
+  printf(
+    $html,
+    self::$google_recaptcha_site_option_name,
+    self::$options_name,
+    self::$google_recaptcha_site_option_name,
+    $value
+  );
+}
+
+
+
+/**
+   * Print the form section for the reCAPTCHA minimum scores
    */
 public function recaptcha_default_score_on_callback()
 {
