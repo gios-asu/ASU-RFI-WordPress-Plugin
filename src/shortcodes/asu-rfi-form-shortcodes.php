@@ -334,7 +334,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-      return new \WP_Error('submit', ' ' . $response->get_error_message());
+      return new \WP_Error('submit', ' ' . wp_remote_retrieve_response_message($response));
     }
   }
 
