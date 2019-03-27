@@ -168,6 +168,13 @@ class ASU_RFI_Form_Shortcodes extends Hook
           'default'   => 0,
         )
       ),
+      'site_key' => $this->get_option_attribute_or_default(
+        array(
+          'name'      => ASU_RFI_Admin_Page::$options_name,
+          'attribute' => ASU_RFI_Admin_Page::$google_recaptcha_site_option_name,
+          'default'   => null,
+        )
+      ),
       'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms($atts['degree_level'], $atts['semesters']),
       'student_types' => StudentTypeService::get_student_types(),
       'college_program_code' => null,
