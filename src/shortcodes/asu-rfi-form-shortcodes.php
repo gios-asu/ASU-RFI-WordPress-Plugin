@@ -524,8 +524,9 @@ class ASU_RFI_Form_Shortcodes extends Hook
     return $redirectUrl;
   }
 
-  public function rfi_request_timeout()
+  public function rfi_request_timeout($time)
   {
+    error_log('HTTP Timeout callback recieved time limit of: ' . $time . '. Setting to 20.');
     // not sure if setting this in wp_remote_post() is actually working. Trying this method.
     return 20;
   }
