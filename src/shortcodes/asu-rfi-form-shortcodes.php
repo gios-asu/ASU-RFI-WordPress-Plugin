@@ -51,6 +51,9 @@ class ASU_RFI_Form_Shortcodes extends Hook
     // NOT logged-in users, and send them both to our RFI handling method.
     $this->add_action('admin_post_nopriv_rfi_form', $this, 'rfi_post');
     $this->add_action('admin_post_rfi_form', $this, 'rfi_post');
+
+    // an attempt to extend the wp_remote_post() timeout
+    $this->add_filter('http_request_timeout', 'rfi_request_timeout');
   }
 
   /**
@@ -519,5 +522,11 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ), $redirectUrl);
 
     return $redirectUrl;
+  }
+
+  public function rfi_request_timeout()
+  {
+    // not sure if setting this in wp_remote_post() is actually working. Trying this method.
+    return 20;
   }
 }
