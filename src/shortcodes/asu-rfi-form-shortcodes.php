@@ -53,7 +53,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     $this->add_action('admin_post_rfi_form', $this, 'rfi_post');
 
     // an attempt to extend the wp_remote_post() timeout
-    $this->add_filter('http_request_timeout', 'rfi_request_timeout');
+    $this->add_filter('http_request_timeout', $this, 'rfi_request_timeout');
   }
 
   /**
