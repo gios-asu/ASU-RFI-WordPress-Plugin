@@ -139,6 +139,8 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function asu_rfi_form($atts, $content = '')
   {
+    error_log('Building RFI form...');
+
     // if there are no attributes passed then $atts is not an array, its a string
     if (!is_array($atts)) {
       $atts = array();
@@ -280,20 +282,25 @@ class ASU_RFI_Form_Shortcodes extends Hook
   public function rfi_post()
   {
     // Step 1: Send the token (from our form) to Google for a reCAPTCHA score.
+    error_log('Step 1: reCAPTCHA...');
     $verified = $this->recaptcha_verify();
 
     if (is_wp_error($verified)) {
+      error_log('reCAPTCHA failed.');
       $this->redirect_with_error($verified, $_POST['formUrl']);
     }
 
     // Step 2: submit the form to our endpoint and redirect to the URL we get back
+    error_log('Step 2: submitting the form...');
     $posted = $this->submit_form();
 
     if (is_wp_error($posted)) {
+      error_log('Form submission FAILED!');
       $this->redirect_with_error($posted, $_POST['formUrl']);
     }
 
     // if it's all good, we can redirect to the URL that came back from our method call
+    error_log('Step 3: Success! Redirecting...');
     wp_redirect($posted);
     //exit;
   }
@@ -306,6 +313,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function submit_form()
   {
+    error_log('Submitting form to ASU endpoint...');
     // the actual form submission doesn't need our reCAPTCHA stuff
     unset($_POST['g-recaptcha-response']);
     unset($_POST['action']);
@@ -323,6 +331,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       default:
         $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
     }
+    error_log('Using endpoint: ' . $this->currentEndPoint);
 
     // submit the form (using the Wordpress HTTP API)
     $response = wp_remote_post(
@@ -335,6 +344,8 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
     // wp_remote_post() returns an array of data on success, and a WP_Error object on failure
     if (is_wp_error($response)) {
+      error_log('Result was an error: ' . $response->get_error_message());
+
       return $response;
     }
 
@@ -353,6 +364,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
     // return a URL on a 200, and a WP_Error on any other code
     if (200 === $responseCode) {
+      error_log('Result was a 200. Redirecting...');
       if (isset($_POST['thank_you']) && !empty($_POST['thank_you'])) {
         // if we're redirecting to a page that is not our original form, then we don't need
         // the querystring items, and can simply redirect.
@@ -374,6 +386,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function recaptcha_verify()
   {
+
     // make sure our form came through with the expected recaptcha token
     if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
       $token = $_POST['g-recaptcha-response'];
@@ -414,7 +427,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     $recaptchaResult = wp_remote_post(self::RECAPTCHA_URL, array(
       'body' => $data,
     ));
-
+    error_log('Verifying reCAPTCHA token with ' . self::RECAPTCHA_URL);
     // check to see if we got an error object.
     if (is_wp_error($recaptchaResult)) {
       return $recaptchaResult;
@@ -432,15 +445,19 @@ class ASU_RFI_Form_Shortcodes extends Hook
      */
 
     if ($result->success) {
+      error_log('Result was SUCCESS...');
       // we got a score, but was it good enough?
       if ($result->score >= $min_required_score) {
+        error_log('Passing score of: ' . $result->score);
         // Yes! You passed!
         return true;
       } else {
+        error_log('Failing score of: ' . $result->score);
         // No! You are a bot!
         return new \WP_Error('recaptcha', 'Insufficient score reported by Google reCAPTCHA');
       }
     } else {
+      error_log('Result was ERROR. No reCAPTCHA score returned.');
       // we did NOT get a score. Gather the Google error(s) and return it/them.
       $my_error = new \WP_Error();
 
