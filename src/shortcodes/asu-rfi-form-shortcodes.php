@@ -142,12 +142,14 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function asu_rfi_form($atts, $content = '')
   {
-    error_log('Building RFI form...');
+    error_log('Starting asu_rfi_form() method...');
 
     // if there are no attributes passed then $atts is not an array, its a string
     if (!is_array($atts)) {
       $atts = array();
     }
+    error_log('Setting defaults...');
+
     ensure_default($atts, 'campus', null);
     ensure_default($atts, 'major_code', null);
     ensure_default($atts, 'degree_level', 'undergrad');
@@ -161,6 +163,8 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ensure_default($atts, 'semesters', null);
     ensure_default($atts, 'thank_you_page', '');
     ensure_default($atts, 'major_code_picker', 0);
+
+    error_log('Creating view data...');
 
     $view_data = array(
       'form_endpoint' => esc_url(admin_url('admin-post.php')), // since we're using callbacks on admin-post now
@@ -242,6 +246,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       }
     }
 
+    error_log('Checking for previous response data (aka querystring)...');
     $view_data = $this->add_previous_submission_response($view_data);
 
     // Figure out which form to show
@@ -249,6 +254,8 @@ class ASU_RFI_Form_Shortcodes extends Hook
     if (isset($atts['type']) && 0 === strcasecmp('full', $atts['type'])) {
       $view_name = 'rfi-form.form';
     }
+
+    error_log('Adding view data end exiting...');
 
     $response = $this->view($view_name)->add_data($view_data)->build();
     return $response->content;
@@ -298,12 +305,12 @@ class ASU_RFI_Form_Shortcodes extends Hook
     $posted = $this->submit_form();
 
     if (is_wp_error($posted)) {
-      error_log('Form submission FAILED!');
+      error_log('Form submission FAILED! Redirecting to ' . $_POST['formUrl']);
       $this->redirect_with_error($posted, $_POST['formUrl']);
     }
 
     // if it's all good, we can redirect to the URL that came back from our method call
-    error_log('Step 3: Success! Redirecting...');
+    error_log('Step 3: Success! Redirecting to ' . $posted);
     wp_redirect($posted);
     //exit;
   }
@@ -334,16 +341,18 @@ class ASU_RFI_Form_Shortcodes extends Hook
       default:
         $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
     }
-    error_log('Using endpoint: ' . $this->currentEndPoint);
+    error_log('Posting to endpoint: ' . $this->currentEndPoint);
 
     // submit the form (using the Wordpress HTTP API)
     $response = wp_remote_post(
       $this->currentEndPoint,
       array(
         'body' => $_POST,
-        'timeout' => 20
+        //'timeout' => 20,
       )
     );
+
+    error_log('Post complete...');
 
     // wp_remote_post() returns an array of data on success, and a WP_Error object on failure
     if (is_wp_error($response)) {
@@ -524,10 +533,12 @@ class ASU_RFI_Form_Shortcodes extends Hook
     return $redirectUrl;
   }
 
+  /**
+   * Filter callback for setting HTTP API request timeouts.
+   */
   public function rfi_request_timeout($time)
   {
-    error_log('HTTP Timeout callback recieved time limit of: ' . $time . '. Setting to 20.');
-    // not sure if setting this in wp_remote_post() is actually working. Trying this method.
+    // This works only if you don't set a timeout in the wp_remote_post() call itself
     return 20;
   }
 }
