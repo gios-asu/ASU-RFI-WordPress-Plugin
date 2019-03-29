@@ -342,17 +342,18 @@ class ASU_RFI_Form_Shortcodes extends Hook
         $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
     }
     error_log('Posting to endpoint: ' . $this->currentEndPoint);
-
+    $start = time();
+    error_log('Starting at ' . $start);
     // submit the form (using the Wordpress HTTP API)
     $response = wp_remote_post(
       $this->currentEndPoint,
       array(
         'body' => $_POST,
-        //'timeout' => 20,
       )
     );
-
-    error_log('Post complete...');
+    $end = time();
+    $diff = $start - $end;
+    error_log('Post complete at: ' . $end . '(' . $diff . ' seconds)');
 
     // wp_remote_post() returns an array of data on success, and a WP_Error object on failure
     if (is_wp_error($response)) {
@@ -539,6 +540,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
   public function rfi_request_timeout($time)
   {
     // This works only if you don't set a timeout in the wp_remote_post() call itself
+
     return 20;
   }
 }
