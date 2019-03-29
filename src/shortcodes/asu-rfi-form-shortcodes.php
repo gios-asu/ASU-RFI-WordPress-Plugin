@@ -470,7 +470,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
         return new \WP_Error('recaptcha', 'Insufficient score reported by Google reCAPTCHA');
       }
     } else {
-      error_log('Result was ERROR. No reCAPTCHA score returned.');
       // we did NOT get a score. Gather the Google error(s) and return it/them.
       $my_error = new \WP_Error();
 
@@ -479,7 +478,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       foreach ($result->{'error-codes'} as $thisError) {
         $my_error->add('recaptcha', ' Google reCAPTCHA reported ' . $thisError);
       }
-
+      error_log('Result was ERROR: ' . $my_error->get_error_message());
       return $my_error;
     }
   }
