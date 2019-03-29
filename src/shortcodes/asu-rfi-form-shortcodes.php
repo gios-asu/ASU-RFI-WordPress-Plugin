@@ -349,6 +349,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       $this->currentEndPoint,
       array(
         'body' => $_POST,
+        'timeout' => 20
       )
     );
     $end = time();
