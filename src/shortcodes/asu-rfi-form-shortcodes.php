@@ -11,12 +11,12 @@ use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
 use ASURFIWordPress\Services\Client_Geocoding_Service;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use Guzzle\Common\Exception\GuzzleException;
 
-// Avoid direct calls to this file
+// Avoid direct calls to this filed
 
 if (!defined('ASU_RFI_WORDPRESS_PLUGIN_VERSION')) {
   header('Status: 403 Forbidden');
@@ -361,30 +361,30 @@ class ASU_RFI_Form_Shortcodes extends Hook
      * Try the request. Our calling code is expecting WP_Errors, and NOT exceptions.
      * When an exception is raised, we'll return a suitable WP_Error object.
      */
+    $response = null;
+
     try {
       $response = $guzzleClient->request('POST', $this->currentEndPoint, [
         'form_params' => $_POST
       ]);
     } catch (RequestException $e) {
-      // raised by network issues: timeout, DNS issue, etc.
-      if ($e->hasResponse) {
-        $eMsg = Psr7\str($e->getResponse()->getBody());
-        return new WP_Error('network', 'A network error was reported: ' . $eMsg);
-      }
+      // used for network issues (timeouts, DNS problems, etc.)
+      return new \WP_Error('request', $e->getMessage());
     } catch (ClientException $e) {
-      // raised on 400 errors
-      if ($e->hasResponse) {
-        $eMsg = Psr7\str($e->getResponse()->getBody());
-        return new WP_Error('client', 'The server reported a client error: ' . $eMsg);
-      }
+      // used for 400 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('client', '[' . $statusCode . '] ' . $reason);
     } catch (ServerException $e) {
-      // raised by 500 errors
-      if ($e->hasResponse) {
-        $eMsg = Psr7\str($e->getResponse()->getBody());
-        return new WP_Error('server', 'The server returned an internal error: ' . $eMsg);
-      }
-    } catch (\Exception $e) {
-      return new WP_Error('unknown', 'An unknown error occurred while processing your request.');
+      // used for 500 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('server', '[' . $statusCode . '] ' . $reason);
+    } catch (Exception $e) {
+      // for general exceptions (this is a namespaced Guzzle exception, and NOT \Exception)
+      return new \WP_Error('general', $e->getMessage());
     }
 
     $end = time();
@@ -392,14 +392,11 @@ class ASU_RFI_Form_Shortcodes extends Hook
     error_log('Post complete at: ' . $end . '(' . $diff . ' seconds)');
 
     /**
-    * retrieve the response code from our request. Based on my testing, the endpoint is
-    * using the standard 200 for success and 400 for an error.
-    */
-
-    // get the code
+     * If we get here, then there should have been no exceptions (and, therefore, no 400/500 errors).
+     * As a last-chance sanity check, we make sure to show the user positive feedback ONLY when the
+     * resulting status is a 200.
+     */
     $statusCode = $response->getStatusCode();
-    $reason = $response->getReasonPhrase();
-
 
     // return a URL on a 200, and a WP_Error on any other code
     if (200 === $statusCode) {
@@ -413,7 +410,8 @@ class ASU_RFI_Form_Shortcodes extends Hook
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-      return new \WP_Error('submit', 'We received an unknown status code while processing your request.');
+      error_log('Last sanity check was NOT a 200. Returning an error.');
+      return new \WP_Error('unknown', 'We received an unexpected status code while processing your request.');
     }
   }
 
