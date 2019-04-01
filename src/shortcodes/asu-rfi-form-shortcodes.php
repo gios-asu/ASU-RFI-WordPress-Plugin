@@ -47,6 +47,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
   public function define_hooks()
   {
+    error_log('Defining hooks...');
     $this->add_action('wp_enqueue_scripts', $this, 'wp_enqueue_scripts');
     $this->add_shortcode('asu-rfi-form', $this, 'asu_rfi_form');
     $this->add_action('init', $this, 'setup_rewrites');
@@ -111,6 +112,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function setup_rewrites()
   {
+    error_log('Setting up rewrite rules...');
     add_rewrite_tag('%statusFlag%', '([^&]+)');
     add_rewrite_tag('%msg%', '([^&]+)');
   }
@@ -121,6 +123,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function wp_enqueue_scripts()
   {
+    error_log('Enqueueing Scripts...');
     if ($this->current_page_has_rfi_shortcode()) {
       $url_to_css_file = plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/css/asu-rfi.css';
       wp_enqueue_style($this->plugin_slug, $url_to_css_file, array(), $this->version);
@@ -395,7 +398,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
      * If we get here, then there should have been no exceptions (and, therefore, no 400/500 errors).
      * As a last-chance sanity check, we make sure to show the user positive feedback ONLY when the
      * resulting status is a 200.
-     */
+     */ cd
     $statusCode = $response->getStatusCode();
 
     // return a URL on a 200, and a WP_Error on any other code
@@ -516,7 +519,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function redirect_with_error($error, $url)
   {
-
+    error_log('Using redirect_with_error() on ' . $url);
     // clean up the URL
     $location = esc_url_raw($url);
 
