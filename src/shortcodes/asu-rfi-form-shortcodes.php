@@ -10,6 +10,11 @@ use ASURFIWordPress\Stores\ASUDegreeStore;
 use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
 use ASURFIWordPress\Services\Client_Geocoding_Service;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 
 // Avoid direct calls to this file
 
@@ -27,6 +32,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
   use \ASURFIWordPress\Options_Handler_Trait;
 
   private $path_to_views;
+  private $currentEndPoint;
   const PRODUCTION_FORM_ENDPOINT  = 'https://requestinfo.asu.edu/routing_form_post';
   const DEVELOPMENT_FORM_ENDPOINT = 'https://requestinfo-qa.asu.edu/routing_form_post';
   const RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
@@ -344,25 +350,46 @@ class ASU_RFI_Form_Shortcodes extends Hook
     error_log('Posting to endpoint: ' . $this->currentEndPoint);
     $start = time();
     error_log('Starting at ' . $start);
-    // submit the form (using the Wordpress HTTP API)
-    $response = wp_remote_post(
-      $this->currentEndPoint,
-      array(
-        'body' => $_POST,
-        'timeout' => 20
-      )
-    );
-    $end = time();
-    $diff = $start - $end;
-    error_log('Post complete at: ' . $end . '(' . $diff . ' seconds)');
 
-    // wp_remote_post() returns an array of data on success, and a WP_Error object on failure
-    if (is_wp_error($response)) {
-      error_log('Result was an error: ' . $response->get_error_message());
+    // prepare guzzle request
+    $guzzleClient = new Client([
+      'base_uri' => $this->currentEndPoint,
+      'timeout' => 20.0,
+    ]);
 
-      return $response;
+    /**
+     * Try the request. Our calling code is expecting WP_Errors, and NOT exceptions.
+     * When an exception is raised, we'll return a suitable WP_Error object.
+     */
+    try {
+      $response = $guzzleClient->request('POST', $this->currentEndPoint, [
+        'form_params' => $_POST
+      ]);
+    } catch (RequestException $e) {
+      // raised by network issues: timeout, DNS issue, etc.
+      if ($e->hasResponse) {
+        $eMsg = Psr7\str($e->getResponse()->getBody());
+        return new WP_Error('network', 'A network error was reported: ' . $eMsg);
+      }
+    } catch (ClientException $e) {
+      // raised on 400 errors
+      if ($e->hasResponse) {
+        $eMsg = Psr7\str($e->getResponse()->getBody());
+        return new WP_Error('client', 'The server reported a client error: ' . $eMsg);
+      }
+    } catch (ServerException $e) {
+      // raised by 500 errors
+      if ($e->hasResponse) {
+        $eMsg = Psr7\str($e->getResponse()->getBody());
+        return new WP_Error('server', 'The server returned an internal error: ' . $eMsg);
+      }
+    } catch (\Exception $e) {
+      return new WP_Error('unknown', 'An unknown error occurred while processing your request.');
     }
 
+    $end = time();
+    $diff = $end - $start;
+    error_log('Post complete at: ' . $end . '(' . $diff . ' seconds)');
 
     /**
     * retrieve the response code from our request. Based on my testing, the endpoint is
@@ -370,14 +397,12 @@ class ASU_RFI_Form_Shortcodes extends Hook
     */
 
     // get the code
-    $responseCode = wp_remote_retrieve_response_code($response);
-    $responseMessage = wp_remote_retrieve_response_message($response);
-    if (empty($responseMessage)) {
-      $responseMessage = 'An unknown error occurred.';
-    }
+    $statusCode = $response->getStatusCode();
+    $reason = $response->getReasonPhrase();
+
 
     // return a URL on a 200, and a WP_Error on any other code
-    if (200 === $responseCode) {
+    if (200 === $statusCode) {
       error_log('Result was a 200. Redirecting...');
       if (isset($_POST['thank_you']) && !empty($_POST['thank_you'])) {
         // if we're redirecting to a page that is not our original form, then we don't need
@@ -388,7 +413,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-      return new \WP_Error('submit', ' ' . $responseMessage);
+      return new \WP_Error('submit', 'We received an unknown status code while processing your request.');
     }
   }
 
