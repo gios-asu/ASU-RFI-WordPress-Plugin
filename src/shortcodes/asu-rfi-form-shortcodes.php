@@ -398,7 +398,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
      * If we get here, then there should have been no exceptions (and, therefore, no 400/500 errors).
      * As a last-chance sanity check, we make sure to show the user positive feedback ONLY when the
      * resulting status is a 200.
-     */ cd
+     */
     $statusCode = $response->getStatusCode();
 
     // return a URL on a 200, and a WP_Error on any other code
