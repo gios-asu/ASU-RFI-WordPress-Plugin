@@ -172,7 +172,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ensure_default($atts, 'semesters', null);
     ensure_default($atts, 'thank_you_page', '');
     ensure_default($atts, 'major_code_picker', 0);
-    ensure_defaults($atts, 'endpoint', 'prod');
+    ensure_default($atts, 'endpoint', 'prod');
 
     error_log('Creating view data...');
 
@@ -358,6 +358,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       default:
         $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
     }
+    unset($_POST['endpoint']);
     error_log('Posting to endpoint: ' . $this->currentEndPoint);
     $start = time();
     error_log('Starting at ' . $start);
@@ -412,12 +413,14 @@ class ASU_RFI_Form_Shortcodes extends Hook
     // return a URL on a 200, and a WP_Error on any other code
     if (200 === $statusCode) {
       error_log('Result was a 200. Redirecting...');
-      if (isset($_POST['thank_you']) && !empty($_POST['thank_you'])) {
+      if (isset($thank_you_page) && !empty($thank_you_page)) {
         // if we're redirecting to a page that is not our original form, then we don't need
         // the querystring items, and can simply redirect.
-        return $_POST['thank_you'];
+        error_log('Thank you page is set: ' . $thank_you_page . '...');
+        return $thank_you_page;
       } else {
         // if there is no thank_you page set, go back to the form page with querystring vars
+        error_log('No thank you page set. Returning to original form page...');
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
