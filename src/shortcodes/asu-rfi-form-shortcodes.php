@@ -340,11 +340,15 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function submit_form()
   {
-    error_log('Submitting form to ASU endpoint...');
-    // the actual form submission doesn't need our reCAPTCHA stuff
+    error_log('Entering submit_form() method...');
+
+    $thank_you_page = $_POST['thank_you'];
+
+    // the actual form submission doesn't need our special hidden fields
     unset($_POST['g-recaptcha-response']);
     unset($_POST['action']);
     unset($_POST['rfi-submit']);
+    unset($_POST['thank_you']);
 
     /**
      * determine which endpoint to use (normal, or QA) based on value we set in a hidden field.
