@@ -172,6 +172,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ensure_default($atts, 'semesters', null);
     ensure_default($atts, 'thank_you_page', '');
     ensure_default($atts, 'major_code_picker', 0);
+    ensure_defaults($atts, 'endpoint', 'prod');
 
     error_log('Creating view data...');
 
@@ -205,6 +206,13 @@ class ASU_RFI_Form_Shortcodes extends Hook
       $view_data['testmode'] = 'Test';
     } else {
       $view_data['testmode'] = 'Prod';
+    }
+
+    // sets the hidden form element 'endpoint', defaulting to 'Prod'
+    if (isset($atts['endpoint']) && 0 === strcasecmp('test', $atts['endpoint'])) {
+      $view_data['endpoint'] = 'Test';
+    } else {
+      $view_data['endpoint'] = 'Prod';
     }
 
     // Use the attribute source id over the sites option
@@ -284,7 +292,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         $view_data['client_geo_location'] = Client_Geocoding_Service::client_geo_location();
       } else {
         error_log('error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message);
-        $view_data['error_message'] = $message ? 'Error: ' . $message : 'Something went wrong with your submission';
+        $view_data['error_message'] = $message ?'Error: ' . $message : 'Something went wrong with your submission';
       }
     }
     return $view_data;
@@ -342,7 +350,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
      * determine which endpoint to use (normal, or QA) based on value we set in a hidden field.
      * We only expect 'Test' or 'Prod', and use 'Prod' for any value except 'Test'
      */
-    switch ($_POST['testmode']) {
+    switch ($_POST['endpoint']) {
       case 'Test':
         $this->currentEndPoint = self::DEVELOPMENT_FORM_ENDPOINT;
         break;
