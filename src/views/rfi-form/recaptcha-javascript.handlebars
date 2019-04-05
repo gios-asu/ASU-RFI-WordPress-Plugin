@@ -1,8 +1,44 @@
 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 <script>
     grecaptcha.ready(function () {
-        grecaptcha.execute('{{ site_key }}', { action: 'rfi' }).then(function (token) {
-            $('#g-recaptcha-response').val(token);
-        });
+        // disable the form if we are missing our site key, as we won't be able to get a
+        // reCAPTCHA token without it.
+        var siteKey = $.trim('{{ site_key }}');
+        console.log('Site key length: ' + siteKey.length);
+        if (0 === siteKey.length) {
+            $('.asu-rfi-form').before('<p class="alert alert-warning">We\'re sorry, but this form not currently available.</p>');
+            $('.asu-rfi-form').fadeTo(0.5, 0.25);
+            $('.asu-rfi-form input[type="submit"]').attr('disabled', 'disabled');
+        }
+    });
+
+    /**
+     * reCAPTCHA processing on form submit
+     */
+    $('.asu-rfi-form').submit(function (e) {
+        // check for an existing value in our hidden field.
+        currentToken = $.trim($('#g-recaptcha-response').val());
+        console.log('Current token = ' + currentToken);
+
+        if (currentToken.length != 0) {
+            // already have a token, so go ahead and try the submit
+            console.log('Existing token. Submitting form.');
+            return;
+        } else {
+            // if nothing is there, call out to Google for a reCAPTCHA token
+            e.preventDefault();
+            console.log('Getting token from Google...');
+            grecaptcha.execute('{{ site_key }}', { action: 'rfi' }).then(function (token) {
+                console.log("Token returned: " + token);
+                var d = new Date();
+                console.log('Received key at: ' + d);
+                console.log('Key length is: ' + token.length);
+                console.log(token);
+                $('#g-recaptcha-response').val(token);
+                // submit the form. This WILL trigger our submit() method again, which
+                // is why we test for an existing key above - or we'll create an infinite loop
+                $('.asu-rfi-form').submit();
+            });
+        }
     });
 </script>
