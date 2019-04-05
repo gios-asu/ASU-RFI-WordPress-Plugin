@@ -129,6 +129,11 @@ class ASU_RFI_Form_Shortcodes extends Hook
       wp_enqueue_style($this->plugin_slug, $url_to_css_file, array(), $this->version);
       $url_to_jquery_validator = plugin_dir_url(dirname(dirname(__FILE__))) . 'node_modules/jquery-validation/dist/jquery.validate.min.js';
       wp_enqueue_script('jquery-validation', $url_to_jquery_validator, array('jquery'), '1.16.0', false);
+
+      // dequeue ContactForm7, as their reCAPTCHA code creates a token on page load, which can
+      // expire before the form is submitted (tokens are only good for a few minutes)
+      wp_dequeue_script('contact-form-7');
+      wp_dequeue_style('contact-form-7');
     }
   }
 
@@ -292,7 +297,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         $view_data['client_geo_location'] = Client_Geocoding_Service::client_geo_location();
       } else {
         error_log('error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message);
-        $view_data['error_message'] = $message ?'Error: ' . $message : 'Something went wrong with your submission';
+        $view_data['error_message'] = $message ? 'Error: ' . $message : 'Something went wrong with your submission';
       }
     }
     return $view_data;
