@@ -47,7 +47,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
   public function define_hooks()
   {
-    error_log('Defining hooks...');
     $this->add_action('wp_enqueue_scripts', $this, 'wp_enqueue_scripts');
     $this->add_shortcode('asu-rfi-form', $this, 'asu_rfi_form');
     $this->add_action('init', $this, 'setup_rewrites');
@@ -112,7 +111,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function setup_rewrites()
   {
-    error_log('Setting up rewrite rules...');
     add_rewrite_tag('%statusFlag%', '([^&]+)');
     add_rewrite_tag('%msg%', '([^&]+)');
   }
@@ -123,7 +121,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function wp_enqueue_scripts()
   {
-    error_log('Enqueueing Scripts...');
     if ($this->current_page_has_rfi_shortcode()) {
       $url_to_css_file = plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/css/asu-rfi.css';
       wp_enqueue_style($this->plugin_slug, $url_to_css_file, array(), $this->version);
@@ -156,13 +153,10 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   public function asu_rfi_form($atts, $content = '')
   {
-    error_log('Starting asu_rfi_form() method...');
-
     // if there are no attributes passed then $atts is not an array, its a string
     if (!is_array($atts)) {
       $atts = array();
     }
-    error_log('Setting defaults...');
 
     ensure_default($atts, 'campus', null);
     ensure_default($atts, 'major_code', null);
@@ -178,8 +172,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ensure_default($atts, 'thank_you_page', '');
     ensure_default($atts, 'major_code_picker', 0);
     ensure_default($atts, 'endpoint', 'prod');
-
-    error_log('Creating view data...');
 
     $view_data = array(
       'form_endpoint' => esc_url(admin_url('admin-post.php')), // since we're using callbacks on admin-post now
@@ -268,7 +260,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       }
     }
 
-    error_log('Checking for previous response data (aka querystring)...');
+
     $view_data = $this->add_previous_submission_response($view_data);
 
     // Figure out which form to show
@@ -277,7 +269,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       $view_name = 'rfi-form.form';
     }
 
-    error_log('Adding view data end exiting...');
+
 
     $response = $this->view($view_name)->add_data($view_data)->build();
     return $response->content;
@@ -296,7 +288,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         $view_data['success_message'] = 'Thank you for your submission!';
         $view_data['client_geo_location'] = Client_Geocoding_Service::client_geo_location();
       } else {
-        error_log('error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message);
+
         $view_data['error_message'] = $message ? 'Error: ' . $message : 'Something went wrong with your submission';
       }
     }
@@ -314,25 +306,25 @@ class ASU_RFI_Form_Shortcodes extends Hook
   public function rfi_post()
   {
     // Step 1: Send the token (from our form) to Google for a reCAPTCHA score.
-    error_log('Step 1: reCAPTCHA...');
+
     $verified = $this->recaptcha_verify();
 
     if (is_wp_error($verified)) {
-      error_log('reCAPTCHA failed.');
+
       $this->redirect_with_error($verified, $_POST['formUrl']);
     }
 
     // Step 2: submit the form to our endpoint and redirect to the URL we get back
-    error_log('Step 2: submitting the form...');
+
     $posted = $this->submit_form();
 
     if (is_wp_error($posted)) {
-      error_log('Form submission FAILED! Redirecting to ' . $_POST['formUrl']);
+
       $this->redirect_with_error($posted, $_POST['formUrl']);
     }
 
     // if it's all good, we can redirect to the URL that came back from our method call
-    error_log('Step 3: Success! Redirecting to ' . $posted);
+
     wp_redirect($posted);
     //exit;
   }
@@ -345,8 +337,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function submit_form()
   {
-    error_log('Entering submit_form() method...');
-
     $thank_you_page = $_POST['thank_you'];
 
     // the actual form submission doesn't need our special hidden fields
@@ -368,9 +358,9 @@ class ASU_RFI_Form_Shortcodes extends Hook
         $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
     }
     unset($_POST['endpoint']);
-    error_log('Posting to endpoint: ' . $this->currentEndPoint);
+
     $start = time();
-    error_log('Starting at ' . $start);
+
 
     // prepare guzzle request
     $guzzleClient = new Client([
@@ -410,7 +400,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
     $end = time();
     $diff = $end - $start;
-    error_log('Post complete at: ' . $end . '(' . $diff . ' seconds)');
+
 
     /**
      * If we get here, then there should have been no exceptions (and, therefore, no 400/500 errors).
@@ -421,19 +411,19 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
     // return a URL on a 200, and a WP_Error on any other code
     if (200 === $statusCode) {
-      error_log('Result was a 200. Redirecting...');
+
       if (isset($thank_you_page) && !empty($thank_you_page)) {
         // if we're redirecting to a page that is not our original form, then we don't need
         // the querystring items, and can simply redirect.
-        error_log('Thank you page is set: ' . $thank_you_page . '...');
+
         return $thank_you_page;
       } else {
         // if there is no thank_you page set, go back to the form page with querystring vars
-        error_log('No thank you page set. Returning to original form page...');
+
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-      error_log('Last sanity check was NOT a 200. Returning an error.');
+
       return new \WP_Error('unknown', 'We received an unexpected status code while processing your request.');
     }
   }
@@ -446,7 +436,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function recaptcha_verify()
   {
-
     // make sure our form came through with the expected recaptcha token
     if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
       $token = $_POST['g-recaptcha-response'];
@@ -487,7 +476,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     $recaptchaResult = wp_remote_post(self::RECAPTCHA_URL, array(
       'body' => $data,
     ));
-    error_log('Verifying reCAPTCHA token with ' . self::RECAPTCHA_URL);
+
     // check to see if we got an error object.
     if (is_wp_error($recaptchaResult)) {
       return $recaptchaResult;
@@ -505,14 +494,14 @@ class ASU_RFI_Form_Shortcodes extends Hook
      */
 
     if ($result->success) {
-      error_log('Result was SUCCESS...');
+
       // we got a score, but was it good enough?
       if ($result->score >= $min_required_score) {
-        error_log('Passing score of: ' . $result->score);
+
         // Yes! You passed!
         return true;
       } else {
-        error_log('Failing score of: ' . $result->score);
+
         // No! You are a bot!
         return new \WP_Error('recaptcha', 'Insufficient score reported by Google reCAPTCHA');
       }
@@ -525,7 +514,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       foreach ($result->{'error-codes'} as $thisError) {
         $my_error->add('recaptcha', ' Google reCAPTCHA reported ' . $thisError);
       }
-      error_log('Result was ERROR: ' . $my_error->get_error_message());
+
       return $my_error;
     }
   }
@@ -539,7 +528,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function redirect_with_error($error, $url)
   {
-    error_log('Using redirect_with_error() on ' . $url);
     // clean up the URL
     $location = esc_url_raw($url);
 
