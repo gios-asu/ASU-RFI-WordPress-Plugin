@@ -266,8 +266,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
       $view_name = 'rfi-form.form';
     }
 
-
-
     $response = $this->view($view_name)->add_data($view_data)->build();
     return $response->content;
   }
@@ -303,7 +301,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
   public function rfi_post()
   {
     // Step 1: Send the token (from our form) to Google for a reCAPTCHA score.
-
     $verified = $this->recaptcha_verify();
 
     if (is_wp_error($verified)) {
@@ -312,7 +309,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
     }
 
     // Step 2: submit the form to our endpoint and redirect to the URL we get back
-
     $posted = $this->submit_form();
 
     if (is_wp_error($posted)) {
@@ -356,9 +352,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
     }
     unset($_POST['endpoint']);
 
-    $start = time();
-
-
     // prepare guzzle request
     $guzzleClient = new Client([
       'base_uri' => $this->currentEndPoint,
@@ -395,10 +388,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
       return new \WP_Error('general', $e->getMessage());
     }
 
-    $end = time();
-    $diff = $end - $start;
-
-
     /**
      * If we get here, then there should have been no exceptions (and, therefore, no 400/500 errors).
      * As a last-chance sanity check, we make sure to show the user positive feedback ONLY when the
@@ -412,15 +401,12 @@ class ASU_RFI_Form_Shortcodes extends Hook
       if (isset($thank_you_page) && !empty($thank_you_page)) {
         // if we're redirecting to a page that is not our original form, then we don't need
         // the querystring items, and can simply redirect.
-
         return $thank_you_page;
       } else {
         // if there is no thank_you page set, go back to the form page with querystring vars
-
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-
       return new \WP_Error('unknown', 'We received an unexpected status code while processing your request.');
     }
   }
@@ -441,8 +427,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       return new \WP_Error('recaptcha', 'Unable to verify via Google reCAPTCHA. No user token.');
     }
 
-    // we also need to know our minimum required score, in order to decide what to do. The Google
-    // score comes back as a Float, so we're casting here to make this a Float as well.
+    // get the minimum required score, and our secret key, from the database
     $min_required_score = floatval(
       $this->get_option_attribute_or_default(
         array(
@@ -453,9 +438,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
       )
     );
 
-    /**
-     * Google expects our secret key as well. It's stored in the plugin settings.
-     */
     $secret_key = $this->get_option_attribute_or_default(
       array(
         'name'      => ASU_RFI_Admin_Page::$options_name,
@@ -464,13 +446,12 @@ class ASU_RFI_Form_Shortcodes extends Hook
       )
     );
 
-    // gather the data
+    // gather the data and send our request
     $data = [
       'secret' => $secret_key,
       'response' => $token,
     ];
 
-    // use Guzzle to send the request
     $guzzleClient = new Client([
       'base_uri' => self::RECAPTCHA_URL,
     ]);
@@ -502,8 +483,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       return new \WP_Error('general', $e->getMessage());
     }
 
-    // no exceptions, so let's get our response (Guzzle has it buried a few layers deep) and
-    // turn the JSON into a PHP object
+    // get our response and turn the JSON into a PHP object
     $result = json_decode($response->getBody()->getContents());
 
     /**
@@ -514,14 +494,11 @@ class ASU_RFI_Form_Shortcodes extends Hook
      */
 
     if ($result->success) {
-
       // we got a score, but was it good enough?
       if ($result->score >= $min_required_score) {
-
         // Yes! You passed!
         return true;
       } else {
-
         // No! You are a bot!
         return new \WP_Error('recaptcha', 'Insufficient score reported by Google reCAPTCHA');
       }
