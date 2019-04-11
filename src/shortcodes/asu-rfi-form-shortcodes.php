@@ -464,24 +464,47 @@ class ASU_RFI_Form_Shortcodes extends Hook
       )
     );
 
-    // Use the WordPress HTTP API to make the request for a reCAPTCHA score
+    // gather the data
     $data = [
       'secret' => $secret_key,
       'response' => $token,
     ];
 
-    $recaptchaResult = wp_remote_post(self::RECAPTCHA_URL, array(
-      'body' => $data,
-    ));
+    // use Guzzle to send the request
+    $guzzleClient = new Client([
+      'base_uri' => self::RECAPTCHA_URL,
+    ]);
 
-    // check to see if we got an error object.
-    if (is_wp_error($recaptchaResult)) {
-      return $recaptchaResult;
+    $response = null;
+
+    // try the request and return error objects for common exceptions.
+    try {
+      $response = $guzzleClient->request('POST', self::RECAPTCHA_URL, [
+        'form_params' => $data
+      ]);
+    } catch (RequestException $e) {
+      // network problems (timeout, etc.)
+      return new \WP_Error('request', $e->getMessage());
+    } catch (ClientException $e) {
+      // for 400 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('client', '[' . $statusCode . '] ' . $reason);
+    } catch (ServerException $e) {
+      // for 500 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('server', '[' . $statusCode . '] ' . $reason);
+    } catch (GuzzleException $e) {
+      // for otherwise uncaught exceptions
+      return new \WP_Error('general', $e->getMessage());
     }
 
-    // decode our results, which are in the 'body' key of the array we get back
-    // from wp_remote_post()
-    $result = json_decode($recaptchaResult['body']);
+    // no exceptions, so let's get our response (Guzzle has it buried a few layers deep) and
+    // turn the JSON into a PHP object
+    $result = json_decode($response->getBody()->getContents());
 
     /**
      * the Google JSON will contain (among other fields):
