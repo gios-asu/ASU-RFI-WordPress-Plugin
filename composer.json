@@ -27,7 +27,8 @@
     "gios-asu/nectary": "^0.2.2",
     "gios-asu/honeycomb": "^1.0.4",
     "phpxmlrpc/phpxmlrpc": "^4.0",
-    "phine/country": "^1.1"
+    "phine/country": "^1.1",
+    "guzzlehttp/guzzle": "~6.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.8",

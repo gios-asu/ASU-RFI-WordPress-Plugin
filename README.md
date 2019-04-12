@@ -8,6 +8,9 @@ WordPress plugin to submit Request For Information requests into Salesforce
 * [GitHub Updater WordPress Plugin](https://github.com/afragen/github-updater)
 * The active theme should have a recent verson of Twitter Boostrap.
 
+# Install Notes
+Please note that you will need to run `composer install` and `yarn` in the project directory to bring in all required libraries.
+
 
 # Site Settings
 ![screen shot 2016-12-13 at 12 43 24 pm](https://cloud.githubusercontent.com/assets/295804/21156084/c728ccae-c131-11e6-8e0f-7cbc1a6e3db6.png)
@@ -30,6 +33,8 @@ WordPress plugin to submit Request For Information requests into Salesforce
   * **college_program_code** = 2-5 character string, usually all caps, eg `LA` for `College of Liberal Arts and Sciences` or `SU` for `School of Sustainability`, it will default to the value set in the RFI Admin Options menu so only use this attribute if you want to override one specific form.
   * **campus** = eg `TEMPE` or leave blank for all Campuses.
   * **semesters** = comma-delimited list of semesters allowed to be selected in 'My anticipated start date' dropdown (eg: `spring,summer,fall`). If omitted, the dropdown will be auto-filled with Spring, Summer, Fall for Undergrad Forms, and Spring, Fall for Grad Forms.
+  * **test_mode** = either 'test' or 'prod' (anything other than the literal string 'test', including not having this attribute at all, will result in 'prod'). The use of this flag by the actual endpoint is uknown to us, but it's here just in case you need to specify it.
+  * **endpoint** = either 'test' or 'prod' (anything other than the literal string 'test', including not having this attribute at all, will result in 'prod'). Determines which RFI endpoint is used. Setting this to 'test' will send requests to the QA endpoint where, presumably, the **do not** end result in actual submissions to SalesForce.
   * **thank_you_page** = A URL to which we will send the user after an RFI submission has received a passing grade from Google's reCAPTCHA system, and was successfully submitted. To redirect to a page that is already set up in Wordpress, you can use a relative URL, as in `/about/thank-you`.
 
 ### Available Major Codes for SOS

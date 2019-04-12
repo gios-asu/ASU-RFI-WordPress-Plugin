@@ -17,6 +17,7 @@
 <form method="post" action="{{ form_endpoint }}" class="asu-rfi-form">
   <input type="hidden" name="degreeLevel" value="{{ degreeLevel }}">
   <input type="hidden" name="testmode" value="{{ testmode }}">
+  <input type="hidden" name="endpoint" value="{{ endpoint }}">
   <input type="hidden" name="thank_you" value="{{ thank_you }}">
   <input type="hidden" name="formUrl" value="{{ formUrl }}">
   <input type="hidden" name="source_id" value="{{ source_id }}">
@@ -113,6 +114,7 @@
 
   <div class="form-group">
     <input type="submit" name="rfi-submit" value="Submit" class="btn btn-default" aria-label="Submit Request">
+    <input type="hidden" id="token-check" name="token-check" value="">
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" value="" />
   </div>
 </form>

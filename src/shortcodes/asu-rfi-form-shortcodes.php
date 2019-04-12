@@ -10,8 +10,13 @@ use ASURFIWordPress\Stores\ASUDegreeStore;
 use ASURFIWordPress\Admin\ASU_RFI_Admin_Page;
 use ASURFIWordPress\Helpers\ConditionalHelper;
 use ASURFIWordPress\Services\Client_Geocoding_Service;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use Guzzle\Common\Exception\GuzzleException;
 
-// Avoid direct calls to this file
+// Avoid direct calls to this filed
 
 if (!defined('ASU_RFI_WORDPRESS_PLUGIN_VERSION')) {
   header('Status: 403 Forbidden');
@@ -27,6 +32,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
   use \ASURFIWordPress\Options_Handler_Trait;
 
   private $path_to_views;
+  private $currentEndPoint;
   const PRODUCTION_FORM_ENDPOINT  = 'https://requestinfo.asu.edu/routing_form_post';
   const DEVELOPMENT_FORM_ENDPOINT = 'https://requestinfo-qa.asu.edu/routing_form_post';
   const RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
@@ -117,6 +123,11 @@ class ASU_RFI_Form_Shortcodes extends Hook
       wp_enqueue_style($this->plugin_slug, $url_to_css_file, array(), $this->version);
       $url_to_jquery_validator = plugin_dir_url(dirname(dirname(__FILE__))) . 'node_modules/jquery-validation/dist/jquery.validate.min.js';
       wp_enqueue_script('jquery-validation', $url_to_jquery_validator, array('jquery'), '1.16.0', false);
+
+      // dequeue ContactForm7, as their reCAPTCHA code creates a token on page load, which can
+      // expire before the form is submitted (tokens are only good for a few minutes)
+      wp_dequeue_script('contact-form-7');
+      wp_dequeue_style('contact-form-7');
     }
   }
 
@@ -143,6 +154,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     if (!is_array($atts)) {
       $atts = array();
     }
+
     ensure_default($atts, 'campus', null);
     ensure_default($atts, 'major_code', null);
     ensure_default($atts, 'degree_level', 'undergrad');
@@ -156,6 +168,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ensure_default($atts, 'semesters', null);
     ensure_default($atts, 'thank_you_page', '');
     ensure_default($atts, 'major_code_picker', 0);
+    ensure_default($atts, 'endpoint', 'prod');
 
     $view_data = array(
       'form_endpoint' => esc_url(admin_url('admin-post.php')), // since we're using callbacks on admin-post now
@@ -168,6 +181,13 @@ class ASU_RFI_Form_Shortcodes extends Hook
           'default'   => 0,
         )
       ),
+      'site_key' => $this->get_option_attribute_or_default(
+        array(
+          'name'      => ASU_RFI_Admin_Page::$options_name,
+          'attribute' => ASU_RFI_Admin_Page::$google_recaptcha_site_option_name,
+          'default'   => null,
+        )
+      ),
       'enrollment_terms' => ASUSemesterService::get_available_enrollment_terms($atts['degree_level'], $atts['semesters']),
       'student_types' => StudentTypeService::get_student_types(),
       'college_program_code' => null,
@@ -175,13 +195,18 @@ class ASU_RFI_Form_Shortcodes extends Hook
       'major_code' => $atts['major_code']
     );
 
-    // sets the hidden form element 'testmode'. Using this to determine which endpoint to use, as well.
+    // sets the hidden form element 'testmode', defaulting to 'Prod'
     if (isset($atts['test_mode']) && 0 === strcasecmp('test', $atts['test_mode'])) {
       $view_data['testmode'] = 'Test';
-      $this->currentEndPoint = self::DEVELOPMENT_FORM_ENDPOINT;
     } else {
-      $view_data['testmode'] = 'Prod'; // default to production mode
-      $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
+      $view_data['testmode'] = 'Prod';
+    }
+
+    // sets the hidden form element 'endpoint', defaulting to 'Prod'
+    if (isset($atts['endpoint']) && 0 === strcasecmp('test', $atts['endpoint'])) {
+      $view_data['endpoint'] = 'Test';
+    } else {
+      $view_data['endpoint'] = 'Prod';
     }
 
     // Use the attribute source id over the sites option
@@ -232,6 +257,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       }
     }
 
+
     $view_data = $this->add_previous_submission_response($view_data);
 
     // Figure out which form to show
@@ -257,7 +283,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
         $view_data['success_message'] = 'Thank you for your submission!';
         $view_data['client_geo_location'] = Client_Geocoding_Service::client_geo_location();
       } else {
-        error_log('error submitting ASU RFI (code: ' . $response_status_code . ') : ' . $message);
+
         $view_data['error_message'] = $message ? 'Error: ' . $message : 'Something went wrong with your submission';
       }
     }
@@ -278,6 +304,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
     $verified = $this->recaptcha_verify();
 
     if (is_wp_error($verified)) {
+
       $this->redirect_with_error($verified, $_POST['formUrl']);
     }
 
@@ -285,10 +312,12 @@ class ASU_RFI_Form_Shortcodes extends Hook
     $posted = $this->submit_form();
 
     if (is_wp_error($posted)) {
+
       $this->redirect_with_error($posted, $_POST['formUrl']);
     }
 
     // if it's all good, we can redirect to the URL that came back from our method call
+
     wp_redirect($posted);
     //exit;
   }
@@ -301,40 +330,84 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function submit_form()
   {
-    // the actual form submission doesn't need our reCAPTCHA stuff
+    $thank_you_page = $_POST['thank_you'];
+
+    // the actual form submission doesn't need our special hidden fields
     unset($_POST['g-recaptcha-response']);
     unset($_POST['action']);
     unset($_POST['rfi-submit']);
-
-    // submit the form (using the Wordpress HTTP API)
-    $response = wp_remote_post(
-      $this->currentEndPoint,
-      array(
-        'body' => $_POST,
-        'timeout' => 10
-      )
-    );
+    unset($_POST['thank_you']);
 
     /**
-    * retrieve the response code from our request. Based on my testing, the endpoint is
-    * using the standard 200 for success and 400 for an error.
-    */
+     * determine which endpoint to use (normal, or QA) based on value we set in a hidden field.
+     * We only expect 'Test' or 'Prod', and use 'Prod' for any value except 'Test'
+     */
+    switch ($_POST['endpoint']) {
+      case 'Test':
+        $this->currentEndPoint = self::DEVELOPMENT_FORM_ENDPOINT;
+        break;
+      case 'Prod':
+      default:
+        $this->currentEndPoint = self::PRODUCTION_FORM_ENDPOINT;
+    }
+    unset($_POST['endpoint']);
 
-    // get the code
-    $responseCode = wp_remote_retrieve_response_code($response);
+    // prepare guzzle request
+    $guzzleClient = new Client([
+      'base_uri' => $this->currentEndPoint,
+      'timeout' => 20.0,
+    ]);
+
+    /**
+     * Try the request. Our calling code is expecting WP_Errors, and NOT exceptions.
+     * When an exception is raised, we'll return a suitable WP_Error object.
+     */
+    $response = null;
+
+    try {
+      $response = $guzzleClient->request('POST', $this->currentEndPoint, [
+        'form_params' => $_POST
+      ]);
+    } catch (RequestException $e) {
+      // used for network issues (timeouts, DNS problems, etc.)
+      return new \WP_Error('request', $e->getMessage());
+    } catch (ClientException $e) {
+      // used for 400 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('client', '[' . $statusCode . '] ' . $reason);
+    } catch (ServerException $e) {
+      // used for 500 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('server', '[' . $statusCode . '] ' . $reason);
+    } catch (Exception $e) {
+      // for general exceptions (this is a namespaced Guzzle exception, and NOT \Exception)
+      return new \WP_Error('general', $e->getMessage());
+    }
+
+    /**
+     * If we get here, then there should have been no exceptions (and, therefore, no 400/500 errors).
+     * As a last-chance sanity check, we make sure to show the user positive feedback ONLY when the
+     * resulting status is a 200.
+     */
+    $statusCode = $response->getStatusCode();
 
     // return a URL on a 200, and a WP_Error on any other code
-    if (200 === $responseCode) {
-      if (isset($_POST['thank_you']) && !empty($_POST['thank_you'])) {
+    if (200 === $statusCode) {
+
+      if (isset($thank_you_page) && !empty($thank_you_page)) {
         // if we're redirecting to a page that is not our original form, then we don't need
         // the querystring items, and can simply redirect.
-        return $_POST['thank_you'];
+        return $thank_you_page;
       } else {
         // if there is no thank_you page set, go back to the form page with querystring vars
         return $this->buildRedirectUrl($_POST['formUrl']);
       }
     } else {
-      return new \WP_Error('submit', ' ' . $response->get_error_message());
+      return new \WP_Error('unknown', 'We received an unexpected status code while processing your request.');
     }
   }
 
@@ -354,8 +427,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
       return new \WP_Error('recaptcha', 'Unable to verify via Google reCAPTCHA. No user token.');
     }
 
-    // we also need to know our minimum required score, in order to decide what to do. The Google
-    // score comes back as a Float, so we're casting here to make this a Float as well.
+    // get the minimum required score, and our secret key, from the database
     $min_required_score = floatval(
       $this->get_option_attribute_or_default(
         array(
@@ -366,9 +438,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
       )
     );
 
-    /**
-     * Google expects our secret key as well. It's stored in the plugin settings.
-     */
     $secret_key = $this->get_option_attribute_or_default(
       array(
         'name'      => ASU_RFI_Admin_Page::$options_name,
@@ -377,24 +446,45 @@ class ASU_RFI_Form_Shortcodes extends Hook
       )
     );
 
-    // Use the WordPress HTTP API to make the request for a reCAPTCHA score
+    // gather the data and send our request
     $data = [
       'secret' => $secret_key,
       'response' => $token,
     ];
 
-    $recaptchaResult = wp_remote_post(self::RECAPTCHA_URL, array(
-      'body' => $data,
-    ));
+    $guzzleClient = new Client([
+      'base_uri' => self::RECAPTCHA_URL,
+    ]);
 
-    // check to see if we got an error object.
-    if (is_wp_error($recaptchaResult)) {
-      return $recaptchaResult;
+    $response = null;
+
+    // try the request and return error objects for common exceptions.
+    try {
+      $response = $guzzleClient->request('POST', self::RECAPTCHA_URL, [
+        'form_params' => $data
+      ]);
+    } catch (RequestException $e) {
+      // network problems (timeout, etc.)
+      return new \WP_Error('request', $e->getMessage());
+    } catch (ClientException $e) {
+      // for 400 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('client', '[' . $statusCode . '] ' . $reason);
+    } catch (ServerException $e) {
+      // for 500 errors
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $reason = $response->getReasonPhrase();
+      return new \WP_Error('server', '[' . $statusCode . '] ' . $reason);
+    } catch (GuzzleException $e) {
+      // for otherwise uncaught exceptions
+      return new \WP_Error('general', $e->getMessage());
     }
 
-    // decode our results, which are in the 'body' key of the array we get back
-    // from wp_remote_post()
-    $result = json_decode($recaptchaResult['body']);
+    // get our response and turn the JSON into a PHP object
+    $result = json_decode($response->getBody()->getContents());
 
     /**
      * the Google JSON will contain (among other fields):
@@ -435,7 +525,6 @@ class ASU_RFI_Form_Shortcodes extends Hook
    */
   private function redirect_with_error($error, $url)
   {
-
     // clean up the URL
     $location = esc_url_raw($url);
 
