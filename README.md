@@ -8,6 +8,9 @@ WordPress plugin to submit Request For Information requests into Salesforce
 * [GitHub Updater WordPress Plugin](https://github.com/afragen/github-updater)
 * The active theme should have a recent verson of Twitter Boostrap.
 
+# Install Notes
+Please note that you will need to run `composer install` and `yarn` in the project directory to bring in all required libraries.
+
 
 # Site Settings
 ![screen shot 2016-12-13 at 12 43 24 pm](https://cloud.githubusercontent.com/assets/295804/21156084/c728ccae-c131-11e6-8e0f-7cbc1a6e3db6.png)
