@@ -4,7 +4,7 @@
 Plugin Name: ASU RFI WordPress Plugin
 Plugin URI: http://github.com/gios-asu/ASU-RFI-WordPress-Plugin
 Description: WordPress plugin to submit Request For Information requests into Salesforce
-Version: 1.1.3
+Version: 1.1.4
 Author: Julie Ann Wrigley Global Institute of Sustainability
 License: Copyright 2016
 
@@ -19,7 +19,7 @@ if (!function_exists('add_filter')) {
   exit();
 }
 
-define('ASU_RFI_WORDPRESS_PLUGIN_VERSION', '1.1.2');
+define('ASU_RFI_WORDPRESS_PLUGIN_VERSION', '1.1.4');
 
 define('ASU_DIRECTORY_XML_RPC_SERVER', 'https://webapp4.asu.edu/programs/XmlRpcServer');
 
