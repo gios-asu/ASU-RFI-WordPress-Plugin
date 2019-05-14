@@ -13,7 +13,7 @@ if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
  */
 class Client_Geocoding_Service {
 
-  private static $geocoding_service_prodiver = 'http://freegeoip.net/json/%s';
+  private static $geocoding_service_provider = 'http://api.ipstack.com/%s?access_key=377ca6741403819532ddf526d67c4513';
 
   /**
    * Client_geo_location - returns a string of json from the geocoding providor given
@@ -40,7 +40,7 @@ class Client_Geocoding_Service {
    */
   private static function get_ipinfo() {
     $remote_addr = self::get_client_ip_address();
-    $url = sprintf( self::$geocoding_service_prodiver , $remote_addr );
+    $url = sprintf( self::$geocoding_service_provider , $remote_addr );
     if ( empty( $remote_addr ) ) {
       return 'null';
     }

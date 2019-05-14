@@ -1,0 +1,47 @@
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+<script>
+    grecaptcha.ready(function () {
+        // disable the form if we are missing our site key, as we won't be able to get a
+        // reCAPTCHA token without it.
+        var siteKey = $.trim('{{ site_key }}');
+        if (0 === siteKey.length) {
+            $('.asu-rfi-form').before('<p class="alert alert-warning">We\'re sorry, but this form not currently available.</p>');
+            $('.asu-rfi-form').fadeTo(0.5, 0.25);
+            $('.asu-rfi-form input[type="submit"]').attr('disabled', 'disabled');
+        }
+
+        $token = $.trim($('#g-recaptcha-response').val());
+        if (0 != $token.length) {
+            console.log('A token exists after page load. Removing.');
+            $('#g-recaptcha-response').val('');
+        }
+
+    });
+
+    /**
+     * reCAPTCHA processing on form submit
+     */
+    $('.asu-rfi-form').submit(function (e) {
+        // see if we've already put a token in there
+        currentToken = $.trim($('#g-recaptcha-response').val());
+        tokenCheck = $('#token-check').val();
+
+        if (currentToken.length != 0 && 'check' == tokenCheck) {
+            // already have a token, and our check, so go ahead and try the submit
+            return;
+        } else {
+            // if nothing is there, or our check field is not set to 'check',
+            // get a new token. This prevents us from using stale tokens set by
+            // ContactForm7 on page load
+            e.preventDefault();
+            $('#g-recaptcha-response').val('');
+            grecaptcha.execute('{{ site_key }}', { action: 'rfi' }).then(function (token) {
+                $('#g-recaptcha-response').val(token);
+                $('#token-check').val('check');
+                // submit the form. This WILL trigger our submit() method again, which
+                // is why we test for a token/check above - or we'll create an infinite loop
+                $('.asu-rfi-form').submit();
+            });
+        }
+    });
+</script>
