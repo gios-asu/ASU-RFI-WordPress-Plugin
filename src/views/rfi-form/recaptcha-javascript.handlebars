@@ -10,12 +10,11 @@
             $('.asu-rfi-form input[type="submit"]').attr('disabled', 'disabled');
         }
 
-        $token = $.trim($('#g-recaptcha-response').val());
-        if (0 != $token.length) {
+        token = $.trim($('#g-recaptcha-response').val());
+        if (0 != token.length) {
             console.log('A token exists after page load. Removing.');
             $('#g-recaptcha-response').val('');
         }
-
     });
 
     /**
