@@ -10,12 +10,11 @@
             $('.asu-rfi-form input[type="submit"]').attr('disabled', 'disabled');
         }
 
-        $token = $.trim($('#g-recaptcha-response').val());
-        if (0 != $token.length) {
+        token = $.trim($('#g-recaptcha-response').val());
+        if (0 != token.length) {
             console.log('A token exists after page load. Removing.');
             $('#g-recaptcha-response').val('');
         }
-
     });
 
     /**
@@ -25,7 +24,6 @@
         // see if we've already put a token in there
         currentToken = $.trim($('#g-recaptcha-response').val());
         tokenCheck = $('#token-check').val();
-
         if (currentToken.length != 0 && 'check' == tokenCheck) {
             // already have a token, and our check, so go ahead and try the submit
             return;
@@ -33,6 +31,7 @@
             // if nothing is there, or our check field is not set to 'check',
             // get a new token. This prevents us from using stale tokens set by
             // ContactForm7 on page load
+            $('.asu-rfi-form input[type="submit"]').attr('disabled', 'disabled');
             e.preventDefault();
             $('#g-recaptcha-response').val('');
             grecaptcha.execute('{{ site_key }}', { action: 'rfi' }).then(function (token) {
