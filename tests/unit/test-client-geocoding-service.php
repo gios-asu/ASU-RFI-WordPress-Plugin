@@ -30,7 +30,7 @@ class Client_Geocoding_Service_Test extends WP_UnitTestCase {
     $geo_location_json_string = Client_Geocoding_Service::client_geo_location();
     $this->assertInternalType('string', $geo_location_json_string);
     $this->assertContains('"country_code":"US"', $geo_location_json_string);
-    $this->assertContains('"zip_code":"91773"', $geo_location_json_string);
+    $this->assertContains('"zip":"91773"', $geo_location_json_string);
   }
 
 
