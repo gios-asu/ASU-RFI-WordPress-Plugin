@@ -6,9 +6,9 @@ use Honeycomb\Wordpress\Hook;
 
 // Avoid direct calls to this file
 
-if (!defined('ASU_RFI_WORDPRESS_PLUGIN_VERSION')) {
-    header('Status: 403 Forbidden');
-    header('HTTP/1.1 403 Forbidden');
+if ( ! defined( 'ASU_RFI_WORDPRESS_PLUGIN_VERSION' ) ) {
+    header( 'Status: 403 Forbidden' );
+    header( 'HTTP/1.1 403 Forbidden' );
     exit();
 }
 
@@ -16,8 +16,8 @@ if (!defined('ASU_RFI_WORDPRESS_PLUGIN_VERSION')) {
  * ASU_RFI_Form_Shortcodes
  * provides the shortcode [asu-rfi-form]
  */
-class ASU_RFI_Admin_Page extends Hook
-{
+class ASU_RFI_Admin_Page extends Hook {
+
     use \ASURFIWordPress\Options_Handler_Trait;
 
     public static $options_name = 'asu-rfi-options';
@@ -31,12 +31,11 @@ class ASU_RFI_Admin_Page extends Hook
     public static $section_name = 'asu-rfi-section_name';
     public static $page_name = 'asu-rfi-admin-page';
 
-    public function __construct($version = '0.1')
-    {
-        parent::__construct($version);
+    public function __construct( $version = '0.1' ) {
+        parent::__construct( $version );
 
-        $this->add_action('admin_menu', $this, 'admin_menu');
-        $this->add_action('admin_init', $this, 'admin_init');
+        $this->add_action( 'admin_menu', $this, 'admin_menu' );
+        $this->add_action( 'admin_init', $this, 'admin_init' );
 
         // Set default options
         add_option(
@@ -55,24 +54,22 @@ class ASU_RFI_Admin_Page extends Hook
 
 
     /**
-   * Add filters and actions
-   *
-   * @override
-   */
-    public function define_hooks()
-    {
-        $this->add_action('admin_init', $this, 'admin_init');
+     * Add filters and actions
+     *
+     * @override
+     */
+    public function define_hooks() {
+        $this->add_action( 'admin_init', $this, 'admin_init' );
     }
 
     /**
-   * Set up administrative fields
-   */
-    public function admin_init()
-    {
+     * Set up administrative fields
+     */
+    public function admin_init() {
         register_setting(
             self::$options_group,
             self::$options_name,
-            array($this, 'form_submit')
+            array( $this, 'form_submit' )
         );
 
         add_settings_section(
@@ -141,32 +138,30 @@ class ASU_RFI_Admin_Page extends Hook
         );
     }
 
-    public function admin_menu()
-    {
+    public function admin_menu() {
         $page_title = 'ASU RFI Plugin Settings';
         $menu_title = 'ASU RFI';
         $capability = 'manage_options';
-        $path = plugin_dir_url(__FILE__);
+        $path = plugin_dir_url( __FILE__ );
 
         add_options_page(
             'Settings Admin',
             'ASU RFI Form',
             $capability,
             self::$page_name,
-            array($this, 'render_admin_page')
+            array( $this, 'render_admin_page' )
         );
     }
 
-    public function render_admin_page()
-    {
+    public function render_admin_page() {
         ?>
     <div class="wrap">
         <h1>ASU Request For Information Form Settings</h1>
         <form method="post" action="options.php">
         <?php
             // This prints out all hidden setting fields
-        settings_fields(self::$options_group);
-        do_settings_sections(self::$section_name);
+        settings_fields( self::$options_group );
+        do_settings_sections( self::$section_name );
         submit_button();
         ?>
         </form>
@@ -177,18 +172,16 @@ class ASU_RFI_Admin_Page extends Hook
 
 
     /**
-   * Print the section text
-   */
-    public function print_section_info()
-    {
+     * Print the section text
+     */
+    public function print_section_info() {
           print 'Enter your settings below:';
     }
 
     /**
-   * Print the form section for the college code
-   */
-    public function college_code_on_callback()
-    {
+     * Print the form section for the college code
+     */
+    public function college_code_on_callback() {
 
           $value = $this->get_option_attribute_or_default(
               array(
@@ -214,10 +207,9 @@ HTML;
     }
 
     /**
-   * Print the form section for the source_id form element
-   */
-    public function source_id_on_callback()
-    {
+     * Print the form section for the source_id form element
+     */
+    public function source_id_on_callback() {
 
           $value = $this->get_option_attribute_or_default(
               array(
@@ -243,10 +235,9 @@ HTML;
     }
 
     /**
-   * Print the form section for the reCAPTCHA secret key
-   */
-    public function recaptcha_secret_key_on_callback()
-    {
+     * Print the form section for the reCAPTCHA secret key
+     */
+    public function recaptcha_secret_key_on_callback() {
           $value = $this->get_option_attribute_or_default(
               array(
               'name'      => self::$options_name,
@@ -270,10 +261,9 @@ HTML;
     }
 
     /**
-   * Print the form section for the reCAPTCHA secret key
-   */
-    public function recaptcha_site_key_on_callback()
-    {
+     * Print the form section for the reCAPTCHA secret key
+     */
+    public function recaptcha_site_key_on_callback() {
           $value = $this->get_option_attribute_or_default(
               array(
               'name'      => self::$options_name,
@@ -287,7 +277,6 @@ HTML;
   <em><b>Required:</b> Enter the public <b>site</b> key from the appropriate Google reCAPTCHA account.</em>
 HTML;
 
-
           printf(
               $html,
               self::$google_recaptcha_site_option_name,
@@ -300,10 +289,9 @@ HTML;
 
 
     /**
-   * Print the form section for the reCAPTCHA minimum scores
-   */
-    public function recaptcha_default_score_on_callback()
-    {
+     * Print the form section for the reCAPTCHA minimum scores
+     */
+    public function recaptcha_default_score_on_callback() {
 
           $value = $this->get_option_attribute_or_default(
               array(
@@ -313,10 +301,10 @@ HTML;
               )
           );
 
-          $html = '<select id="' . self::$google_recaptcha_required_score_option_name . '" name="' . self::$options_name . '[' .  self::$google_recaptcha_required_score_option_name . ']">';
+          $html = '<select id="' . self::$google_recaptcha_required_score_option_name . '" name="' . self::$options_name . '[' . self::$google_recaptcha_required_score_option_name . ']">';
 
-        for ($i = 0.0; $i <= 1.0; $i += 0.1) {
-            $selected = selected($value, $i, 0);
+        for ( $i = 0.0; $i <= 1.0; $i += 0.1 ) {
+            $selected = selected( $value, $i, 0 );
             $html .= '<option value="' . $i . '"' . $selected . '>' . $i . '</option>';
         }
 
@@ -328,18 +316,17 @@ HTML;
 
 
     /**
-   * Handle form submissions for validations
-   */
-    public function form_submit($input)
-    {
+     * Handle form submissions for validations
+     */
+    public function form_submit( $input ) {
           // intval the source_id_option_name
-        if (isset($input[self::$source_id_option_name])) {
-            $input[self::$source_id_option_name] = intval($input[self::$source_id_option_name]);
+        if ( isset( $input[ self::$source_id_option_name ] ) ) {
+            $input[ self::$source_id_option_name ] = intval( $input[ self::$source_id_option_name ] );
         }
 
           // upper case the colege code
-        if (isset($input[self::$college_code_option_name])) {
-            $input[self::$college_code_option_name] = strtoupper($input[self::$college_code_option_name]);
+        if ( isset( $input[ self::$college_code_option_name ] ) ) {
+            $input[ self::$college_code_option_name ] = strtoupper( $input[ self::$college_code_option_name ] );
         }
 
           // the reCAPTCHA secret key is not modified
