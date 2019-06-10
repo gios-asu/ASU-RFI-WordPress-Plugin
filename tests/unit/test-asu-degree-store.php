@@ -33,7 +33,7 @@ class ASUDegreeStoreTest extends WP_UnitTestCase {
 
   function test_get_transient_name_length() {
     $name = ASUDegreeStore::get_transient_name('AREALLYREALLYREALLYREALLYLONGCOLLEGENAME','undergraduate','AREALLYLONGCAMPUSNAME');
-    $this->assertLessThan(40, count($name), 'transient names should be less that 40 characters');
+    $this->assertLessThan(40, strlen($name), 'transient names should be less that 40 characters');
   }
 
   function test_get_programs() {
