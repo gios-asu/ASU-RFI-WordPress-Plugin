@@ -170,6 +170,9 @@ class ASU_RFI_Form_Shortcodes extends Hook
     ensure_default($atts, 'major_code_picker', 0);
     ensure_default($atts, 'endpoint', 'prod');
 
+    // make sure this true/false string becomes the proper boolean value
+    $atts['major_code_picker'] = filter_var( $atts['major_code_picker'], FILTER_VALIDATE_BOOLEAN);
+
     $view_data = array(
       'form_endpoint' => esc_url(admin_url('admin-post.php')), // since we're using callbacks on admin-post now
       'thank_you' => $atts['thank_you_page'],
@@ -233,7 +236,7 @@ class ASU_RFI_Form_Shortcodes extends Hook
 
       $view_data['college_program_code'] = $atts['college_program_code'];
 
-      if ($atts['major_code_picker']) {
+      if (TRUE === $atts['major_code_picker']) {
         $view_data['major_codes'] = ASUDegreeStore::get_programs(
           $atts['college_program_code'],
           $view_data['degreeLevel'],
