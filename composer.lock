@@ -434,16 +434,16 @@
         },
         {
             "name": "phpxmlrpc/phpxmlrpc",
-            "version": "4.1.1",
+            "version": "4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gggeek/phpxmlrpc.git",
-                "reference": "e7b08a72aecd879884bc85988640cf49302ce041"
+                "reference": "9b400d2c102f2a55839af8f73279274ebe148526"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gggeek/phpxmlrpc/zipball/e7b08a72aecd879884bc85988640cf49302ce041",
-                "reference": "e7b08a72aecd879884bc85988640cf49302ce041",
+                "url": "https://api.github.com/repos/gggeek/phpxmlrpc/zipball/9b400d2c102f2a55839af8f73279274ebe148526",
+                "reference": "9b400d2c102f2a55839af8f73279274ebe148526",
                 "shasum": ""
             },
             "require": {
@@ -456,7 +456,7 @@
                 "ext-curl": "*",
                 "ext-mbstring": "*",
                 "indeyets/pake": "~1.99",
-                "phpunit/phpunit": ">=4.0.0",
+                "phpunit/phpunit": ">=4.0.0, <6.0.0",
                 "phpunit/phpunit-selenium": "*",
                 "sami/sami": "~3.1"
             },
@@ -481,7 +481,7 @@
                 "webservices",
                 "xmlrpc"
             ],
-            "time": "2016-10-01T12:29:37+00:00"
+            "time": "2020-03-04T10:26:33+00:00"
         },
         {
             "name": "psr/http-message",
@@ -887,6 +887,7 @@
             ],
             "description": "Handlebars processor for php",
             "homepage": "https://github.com/XaminProject/handlebars.php",
+            "abandoned": true,
             "time": "2015-08-06T22:16:36+00:00"
         }
     ],
@@ -1618,6 +1619,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
@@ -1723,6 +1725,7 @@
                 "github",
                 "test"
             ],
+            "abandoned": "php-coveralls/php-coveralls",
             "time": "2016-01-20T17:35:46+00:00"
         },
         {
@@ -2457,12 +2460,12 @@
             "version": "0.10.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git",
+                "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
                 "reference": "b39490465f6fd7375743a395019cd597e12119c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress-Coding-Standards/WordPress-Coding-Standards/zipball/b39490465f6fd7375743a395019cd597e12119c9",
+                "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/b39490465f6fd7375743a395019cd597e12119c9",
                 "reference": "b39490465f6fd7375743a395019cd597e12119c9",
                 "shasum": ""
             },
