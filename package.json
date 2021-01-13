@@ -1,6 +1,6 @@
 {
   "private": true,
   "dependencies": {
-    "jquery-validation": "^1.19.0"
+    "jquery-validation": "^1.19.3"
   }
 }
